@@ -1,0 +1,35 @@
+From 99654045be3e00a889d5e3951637dadd3a3aa316 Mon Sep 17 00:00:00 2001
+From: augustinmanecy <augustin.manecy@gmail.com>
+Date: Sun, 19 Oct 2014 23:02:42 +0200
+Subject: [PATCH] Disable classic uart driver for uart 1 (ttyO0) and 3 (ttyO2)
+ via u-boot arguments
+
+---
+ include/configs/omap3_overo.h |    4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/include/configs/omap3_overo.h b/include/configs/omap3_overo.h
+index 850e995..7b10d79 100644
+--- a/include/configs/omap3_overo.h
++++ b/include/configs/omap3_overo.h
+@@ -181,6 +181,8 @@
+ 	"mtdparts=" MTDPARTS_DEFAULT "\0" \
+ 	"mmcargs=setenv bootargs console=${console} " \
+ 		"${optargs} " \
++		"board.disable_uart1=yes" \
++		"board.disable_uart3=yes" \
+ 		"mpurate=${mpurate} " \
+ 		"vram=${vram} " \
+ 		"omapfb.mode=dvi:${dvimode} " \
+@@ -189,6 +191,8 @@
+ 		"rootfstype=${mmcrootfstype}\0" \
+ 	"nandargs=setenv bootargs console=${console} " \
+ 		"${optargs} " \
++		"board.disable_uart1=yes" \
++		"board.disable_uart3=yes" \
+ 		"mpurate=${mpurate} " \
+ 		"vram=${vram} " \
+ 		"omapfb.mode=dvi:${dvimode} " \
+-- 
+1.7.9.5
+

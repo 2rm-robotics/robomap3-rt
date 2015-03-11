@@ -1,0 +1,153 @@
+From 666f43a1989a36189b8c8abc0f0a77e04e1b39ec Mon Sep 17 00:00:00 2001
+From: Fabien COLONNIER <fabien.colonnier@gmail.com>
+Date: Thu, 6 Nov 2014 20:55:39 +0100
+Subject: [PATCH] add possibility to disable classic SPI driver (spidev) from
+ u-boot
+
+---
+ arch/arm/mach-omap2/board-overo.c |   97 ++++++++++++++++++++++++++++++++++---
+ 1 file changed, 91 insertions(+), 6 deletions(-)
+
+diff --git a/arch/arm/mach-omap2/board-overo.c b/arch/arm/mach-omap2/board-overo.c
+index c530c17..bdd6fa0 100644
+--- a/arch/arm/mach-omap2/board-overo.c
++++ b/arch/arm/mach-omap2/board-overo.c
+@@ -69,6 +69,10 @@
+ /* Define macro to disable the classic I2C driver */
+ #define OVERO_DISABLE_I2C3		(1 << 2)
+ 
++/* Define macro to disable the classic SPI driver */
++#define OVERO_DISABLE_SPI1_CHANNEL0	(1 << 0)
++#define OVERO_DISABLE_SPI1_CHANNEL1	(1 << 1)
++
+ #define OVERO_GPIO_BT_XGATE	15
+ #define OVERO_GPIO_W2W_NRESET	16
+ #define OVERO_GPIO_PENDOWN	114
+@@ -103,6 +107,10 @@ static struct board_platform_data overo_board_I2Cdata = {
+ 	.options = 0,
+ };
+ 
++static struct board_platform_data overo_board_SPIdata = {
++	.options = 0,
++};
++
+ /* end specific board configuration options */
+ 
+ static void mt9v032_set_clock(struct v4l2_subdev *subdev, unsigned int rate)
+@@ -616,14 +624,39 @@ static struct spi_board_info overo_spi_board_info[] __initdata = {
+ #endif
+ };
+ 
+-static int __init overo_spi_init(void)
++/* old function for the spi initialization */
++//static int __init overo_spi_init(void)
++//{
++//	overo_ads7846_init();
++//	spi_register_board_info(overo_spi_board_info,
++//			ARRAY_SIZE(overo_spi_board_info));
++//	return 0;
++//}
++
++/* specific initializations of SPI depending of u-boot parameters */
++
++/**
++ * overo_spi_init() - initialize the supported spi ports if u-boot do not explicitly asked to not start one of them.
++ *
++ * Initializes all available SPI channels except if "board.disable_SPImCHANNELx=yes" is a u-boot argument.
++ * If used, have to replace the overo_spi_init(); call
++ */
++
++
++static int __init overo_spi_init_new(void)
+ {
+-	overo_ads7846_init();
+-	spi_register_board_info(overo_spi_board_info,
+-			ARRAY_SIZE(overo_spi_board_info));
++	
++	if ((overo_board_SPIdata.options & OVERO_DISABLE_SPI1_CHANNEL0)==0) 
++	{
++		overo_ads7846_init();
++		spi_register_board_info(overo_spi_board_info, ARRAY_SIZE(overo_spi_board_info));
++	}	
+ 	return 0;
++
+ }
+ 
++/* end of specific initialization of spi */
++
+ #if defined(CONFIG_USB_EHCI_HCD_OMAP) || \
+ 	defined (CONFIG_USB_EHCI_HCD_OMAP_MODULE)
+ static const struct usbhs_omap_board_data usbhs_bdata __initconst = {
+@@ -847,7 +880,58 @@ static int __init disable_i2c3_early_param(char *str)
+ 
+ early_param("board.disable_i2c3", disable_i2c3_early_param);
+ 
+-/* end of specific UART initializations */
++/* end of specific I2C initializations */
++
++/* specific initializations of SPI depending of u-boot parameters */
++
++/**
++ * disable_spi_early_param() - process the u-boot parameters given after board.disable_SPImCSx.
++ *
++ * if "yes" was given as argument, the SPI1 is not started as a default SPI bus. 
++ * This is usefull to let an other SPI-module of the kernel takes care of the SPI, e.g, a real time uart module (RTDM module).
++ * NB: only the SPI1 and the 2 channels 0 and 1 are accessible from the connectors of the overo board
++ *
++ */
++static int __init disable_SPI1CS0_early_param(char *str)
++{
++	char opt[16];
++
++	if (!str)
++		return -EINVAL;
++
++	strncpy(opt, str, 16);
++
++	if (!strcmp(opt, "yes"))
++	{
++		overo_board_SPIdata.options  |= OVERO_DISABLE_SPI1_CHANNEL0;	//OVERO_DISABLE_SPI1_CHANNEL1
++		printk("Default spi driver of SPI1_CHANNEL0 is disabled!\n");
++	}
++	return 0;
++}
++
++static int __init disable_SPI1CS1_early_param(char *str)
++{
++	char opt[16];
++
++	if (!str)
++		return -EINVAL;
++
++	strncpy(opt, str, 16);
++
++	if (!strcmp(opt, "yes"))
++	{
++		overo_board_SPIdata.options  |= OVERO_DISABLE_SPI1_CHANNEL1;	
++		printk("Default spi driver of SPI1_CHANNEL0 is disabled!\n");
++	}
++	return 0;
++}
++
++
++early_param("board.disable_SPI1CS0", disable_SPI1CS0_early_param);
++early_param("board.disable_SPI1CS1", disable_SPI1CS1_early_param);
++
++/* end of specific SPI initializations */
++
+ 
+ static void __init overo_init(void)
+ {
+@@ -865,7 +949,8 @@ static void __init overo_init(void)
+ 			     ARRAY_SIZE(overo_nand_partitions));
+ 	overo_init_musb();
+ 	overo_init_usbhs();
+-	overo_spi_init();
++	//overo_spi_init();
++	overo_spi_init_new(); // replace overo_spi_init() to allow to disable classic spi driver from the u-boot
+ 	overo_init_smsc911x();
+ 	overo_init_led();
+ 	overo_init_keys();
+-- 
+1.7.9.5
+

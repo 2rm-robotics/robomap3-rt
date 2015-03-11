@@ -1,0 +1,25 @@
+From c4a01f39ca8fa25f20a3b5cd660d5478f57671cc Mon Sep 17 00:00:00 2001
+From: augustinmanecy <augustin.manecy@gmail.com>
+Date: Sun, 19 Oct 2014 22:57:41 +0200
+Subject: [PATCH] Make 800MHz the default mpurate
+
+---
+ include/configs/omap3_overo.h |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/include/configs/omap3_overo.h b/include/configs/omap3_overo.h
+index 62e047d..850e995 100644
+--- a/include/configs/omap3_overo.h
++++ b/include/configs/omap3_overo.h
+@@ -168,7 +168,7 @@
+ #define CONFIG_EXTRA_ENV_SETTINGS \
+ 	"loadaddr=0x82000000\0" \
+ 	"console=ttyO2,115200n8\0" \
+-	"mpurate=500\0" \
++	"mpurate=800\0" \
+ 	"optargs=\0" \
+ 	"vram=12M\0" \
+ 	"dvimode=1024x768MR-16@60\0" \
+-- 
+1.7.9.5
+

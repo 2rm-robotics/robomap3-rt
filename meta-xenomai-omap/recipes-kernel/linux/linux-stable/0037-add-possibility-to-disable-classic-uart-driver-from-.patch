@@ -1,0 +1,161 @@
+From 9f8d9216533b8850fbe7f92b6a30c5696c421d71 Mon Sep 17 00:00:00 2001
+From: augustinmanecy <augustin.manecy@gmail.com>
+Date: Sun, 19 Oct 2014 20:39:21 +0200
+Subject: [PATCH] add possibility to disable classic uart driver from u-boot.
+ Useful to manage the uart using a rtdm driver.
+
+---
+ arch/arm/mach-omap2/board-overo.c |  116 ++++++++++++++++++++++++++++++++++++-
+ 1 file changed, 115 insertions(+), 1 deletion(-)
+
+diff --git a/arch/arm/mach-omap2/board-overo.c b/arch/arm/mach-omap2/board-overo.c
+index 460ae96..06b5264 100644
+--- a/arch/arm/mach-omap2/board-overo.c
++++ b/arch/arm/mach-omap2/board-overo.c
+@@ -61,6 +61,11 @@
+ #include "hsmmc.h"
+ #include "common-board-devices.h"
+ 
++/* Define macro to disable the classic UART driver */
++#define OVERO_DISABLE_UART1		(1 << 0)
++#define OVERO_DISABLE_UART2		(1 << 1)
++#define OVERO_DISABLE_UART3		(1 << 2)
++
+ #define OVERO_GPIO_BT_XGATE	15
+ #define OVERO_GPIO_W2W_NRESET	16
+ #define OVERO_GPIO_PENDOWN	114
+@@ -82,6 +87,17 @@
+ #define MT9V032_I2C_ADDR	0x5C
+ #define MT9V032_I2C_BUS_NUM	3
+ 
++/* Specific board configuration options */
++struct board_platform_data {
++	unsigned options;
++};
++
++static struct board_platform_data overo_board_pdata = {
++	.options = 0,
++};
++
++/* end specific board configuration options */
++
+ static void mt9v032_set_clock(struct v4l2_subdev *subdev, unsigned int rate)
+ {
+ 	struct isp_device *isp = v4l2_dev_to_isp_device(subdev->v4l2_dev);
+@@ -696,6 +712,103 @@ static inline void __init overo_init_musb(void)
+ static inline void __init overo_init_musb(void) { return; }
+ #endif
+ 
++/* specific initializations of UART depending of u-boot parameters */
++
++/**
++ * overo_serial_init() - initialize the supported serial ports if u-boot do not explicitly asked to not start one of them.
++ *
++ * Initializes all available UARTs except if "board.disable_uartx=yes" is a u-boot argument.
++ * If used, have to replace the omap_serial_init(); call
++ */
++void __init overo_serial_init(void)
++{
++	struct omap_board_data bdata;	// defined in "mux.h"
++
++	bdata.flags = 0;
++	bdata.pads = NULL;
++	bdata.pads_cnt = 0;
++
++	bdata.id = 0;
++	if ((overo_board_pdata.options & OVERO_DISABLE_UART1)==0) 
++		omap_serial_init_port(&bdata, NULL);	// second argument is of type "struct omap_uart_port_info *info", and we don't care here
++
++	bdata.id = 1;
++	if ((overo_board_pdata.options & OVERO_DISABLE_UART2)==0) 
++		omap_serial_init_port(&bdata, NULL);
++
++	bdata.id = 2;
++	if ((overo_board_pdata.options & OVERO_DISABLE_UART3)==0) 
++		omap_serial_init_port(&bdata, NULL);
++}
++
++/**
++ * disable_uartX_early_param() - process the u-boot parameters given after board.disable_uartX.
++ *
++ * if "yes" was given as argument, the UARTx is not started as a default serial port. 
++ * This is usefull to let an other UART-module of the kernel take care of the UART, e.g, a real time uart module.
++ *
++ */
++static int __init disable_uart1_early_param(char *str)
++{
++	char opt[16];
++
++	if (!str)
++		return -EINVAL;
++
++	strncpy(opt, str, 16);
++
++	if (!strcmp(opt, "yes"))
++	{
++		overo_board_pdata.options  |= OVERO_DISABLE_UART1;
++		printk("Serial driver of UART 1 (ttyO0) disabled!\n");
++	}
++
++	return 0;
++}
++
++static int __init disable_uart2_early_param(char *str)
++{
++	char opt[16];
++
++	if (!str)
++		return -EINVAL;
++
++	strncpy(opt, str, 16);
++
++	if (!strcmp(opt, "yes"))
++	{
++		overo_board_pdata.options  |= OVERO_DISABLE_UART2;
++		printk("Serial driver of UART 2 (ttyO1) disabled!\n");
++	}
++
++	return 0;
++}
++
++static int __init disable_uart3_early_param(char *str)
++{
++	char opt[16];
++
++	if (!str)
++		return -EINVAL;
++
++	strncpy(opt, str, 16);
++
++	if (!strcmp(opt, "yes"))
++	{
++		overo_board_pdata.options  |= OVERO_DISABLE_UART3;
++		printk("Serial driver of UART 3 (ttyO2) disabled!\n");
++	}
++
++	return 0;
++}
++
++early_param("board.disable_uart1", disable_uart1_early_param);
++early_param("board.disable_uart2", disable_uart2_early_param);
++early_param("board.disable_uart3", disable_uart3_early_param);
++
++/* end of specific UART initializations */
++
++
+ static void __init overo_init(void)
+ {
+ 	int ret;
+@@ -705,7 +818,8 @@ static void __init overo_init(void)
+ 	overo_i2c_init();
+ 	omap_hsmmc_init(mmc);
+ 	overo_display_init();
+-	omap_serial_init();
++	//omap_serial_init();
++	overo_serial_init();	// replace omap_serial_init() to allow to disable uart from u-boot
+ 	omap_sdrc_init(NULL, NULL);
+ 	omap_nand_flash_init(0, overo_nand_partitions,
+ 			     ARRAY_SIZE(overo_nand_partitions));
+-- 
+1.7.9.5
+

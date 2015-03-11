@@ -1,0 +1,300 @@
+Correct misconfiguration of divisor when setting the baudrate. 
+The configuration is now done as described by the OMAP35x Technical Reference Manual
+in table 17-30 (page 2699); the baudrate can be set to any value in:
+300 600 1200 2400 4800 9600 14400 19200 28800 38400 57600 
+115200 230400 460800 921600 1843200 3686400
+The maximum baudrate is 3,686,400 Baud
+
+diff -u rt_serial/uart_omap.c-orig rt_serial/uart_omap.c
+--- rt_serial/uart_omap.c-orig	2013-12-08 17:28:20.000000000 +0100
++++ rt_serial/uart_omap.c	2014-11-09 16:49:28.086805670 +0100
+@@ -17,6 +17,8 @@
+  */
+ /*
+  * Changes by Guillaume Sanahuja to comply with OMAP UART
++ * Modified by Fabien Colonnier to enable classical UART Speed
++ * Validated by Augustin Manecy (and add VERBOSE_DEBUG mode)
+  */
+ 
+ 
+@@ -30,6 +32,9 @@
+ 
+ #define RT_16550_DRIVER_NAME	"rt_uart"
+ 
++/* VERBOSE_DEBUG MODE */
++// #define VERBOSE_DEBUG 	// uncomment this line to turn on the VERBOSE_DEBUG mode
++
+ #define MAX_DEVICES		3
+ 
+ #define IN_BUFFER_SIZE		4096
+@@ -96,6 +101,10 @@
+ #define SYSS 0x16
+ #define TLR 0x07
+ 
++//omap uart clock	/*	added by Fabien //see OMAP35x Technical Reference Manual -> Table 17-30 	*/
++#define UARTCLK 48000000	
++#define MAX_BAUDRATE 3686400	
++
+ //SYSC bits
+ #define SRST 0x02
+ 
+@@ -213,8 +222,9 @@
+ 	int c;
+ 	int count;
+ 	unsigned long base = ctx->base_addr;
+-
+-//rtdm_printk("rt_16550_tx_interrupt\n");
++#ifdef VERBOSE_DEBUG
++	rtdm_printk("rt_16550_tx_interrupt\n");
++#endif
+ /*	if (uart->modem & MSR_CTS)*/
+ 	{
+ 		for (count = ctx->tx_fifo;
+@@ -246,7 +256,10 @@
+ 	int events = 0;
+ 	int modem;
+ 	int ret = RTDM_IRQ_NONE;
+-//rtdm_printk("rt_16550_interrupt\n");
++	
++	#ifdef VERBOSE_DEBUG
++		rtdm_printk("rt_16550_interrupt\n");
++	#endif
+ 	ctx = rtdm_irq_get_arg(irq_context, struct rt_16550_context);
+ 	base = ctx->base_addr;
+ 
+@@ -320,7 +333,8 @@
+ 	rtdm_lockctx_t lock_ctx;
+ 	unsigned long base = ctx->base_addr;
+ 	int err = 0;
+-//rtdm_printk("rt_16550_set_config\n");
++
++	rtdm_printk("rt_16550_set_config\n");
+ 	/* make line configuration atomic and IRQ-safe */
+ 	rtdm_lock_get_irqsave(&ctx->lock, lock_ctx);
+ 
+@@ -329,13 +343,33 @@
+ 					  struct rtdm_dev_context,
+ 					  dev_private)->device->device_id;
+ 		int baud_div;
++		int Diff13, Diff16;		//added variables
++		unsigned int N13, N16, Mode;		//added variables
+ 
+ 		ctx->config.baud_rate = config->baud_rate;
+-		baud_div = (baud_base[dev_id] + (ctx->config.baud_rate>>1)) /
+-			ctx->config.baud_rate;
+-
+-		//calcul non correct, donne 3 dans le cas 921600		
+-		if(ctx->config.baud_rate==921600) baud_div=4; 
++		/* Choice of the mode inspired by omap-serial.c */
++		N13 = UARTCLK / (13 * ctx->config.baud_rate);
++		N16 = UARTCLK / (16 * ctx->config.baud_rate);
++		Diff13 = ctx->config.baud_rate - (UARTCLK / (13 * N13));
++		Diff16 = ctx->config.baud_rate - (UARTCLK / (16 * N16));
++		if (Diff13 < 0)
++	                Diff13 = -Diff13;
++        	if (Diff16 < 0)
++			Diff16 = -Diff16; 
++		if (Diff13 >= Diff16)
++		{	
++			Mode = 16;
++			rt_16550_reg_out(base, MDR1, 0);//16x mode
++		}
++		else
++		{
++			Mode = 13;
++			rt_16550_reg_out(base, MDR1, 0x03);//13x mode		
++		}
++		// New choice of baud divisor	(see serial_omap_get_divisor in omap-serial.c)
++		baud_div = (UARTCLK / (Mode * ctx->config.baud_rate));				
++	
++		rtdm_printk("CONFIG : BaudRate %d \n\tMode : %d \n\tDivisor : %d \n", ctx->config.baud_rate, Mode, baud_div);
+ 
+ 		rt_16550_reg_out(base, LCR, LCR_DLAB);			
+ 		rt_16550_reg_out(base, DLL, baud_div & 0xff);
+@@ -352,20 +386,13 @@
+ 	if (testbits(config->config_mask, RTSER_SET_PARITY |
+ 					  RTSER_SET_DATA_BITS |
+ 					  RTSER_SET_STOP_BITS |
+-					  RTSER_SET_BAUD)) {
++					  RTSER_SET_BAUD)) 
++	{
+ 		rt_16550_reg_out(base, LCR,
+ 				 (ctx->config.parity << 3) |
+ 				 (ctx->config.stop_bits << 2) |
+ 				 ctx->config.data_bits);
+ 
+-		if(ctx->config.baud_rate==460800 || ctx->config.baud_rate==921600)
+-		{
+-			rt_16550_reg_out(base, MDR1, 0x03);//13x mode
+-		}
+-		else
+-		{
+-			rt_16550_reg_out(base, MDR1, 0);//16x mode
+-		}	
+ 		ctx->status = 0;
+ 		ctx->ioc_events &= ~RTSER_EVENT_ERRPEND;
+ 	}
+@@ -455,7 +482,11 @@
+ 
+ 		rtdm_lock_put_irqrestore(&ctx->lock, lock_ctx);
+ 	}
+-//rtdm_printk("fin rt_16550_set_config\n");
++	
++	#ifdef VERBOSE_DEBUG
++		rtdm_printk("End of rt_16550_set_config\n");
++	#endif
++	
+ 	return err;
+ }
+ 
+@@ -475,7 +506,11 @@
+ 	int err;
+ 	uint64_t *dummy;
+ 	rtdm_lockctx_t lock_ctx;
+-//rtdm_printk("rt_16550_open\n");
++	
++	#ifdef VERBOSE_DEBUG
++		rtdm_printk("rt_16550_open\n");
++	#endif
++	
+ 	ctx = (struct rt_16550_context *)context->dev_private;
+ 
+ 	/* IPC initialisation - cannot fail with used parameters */
+@@ -528,7 +563,10 @@
+ 			 IER_RX);
+ 
+ 	rtdm_lock_put_irqrestore(&ctx->lock, lock_ctx);
+-//rtdm_printk("fin rt_16550_open\n");
++	
++	#ifdef VERBOSE_DEBUG
++		rtdm_printk("End of rt_16550_open\n");
++	#endif
+ 	return 0;
+ }
+ 
+@@ -540,7 +578,10 @@
+ 	int lsr;
+ 	uint64_t *in_history;
+ 	rtdm_lockctx_t lock_ctx;
+-//rtdm_printk("rt_16550_close\n");
++
++	#ifdef VERBOSE_DEBUG
++		rtdm_printk("rt_16550_close\n");
++	#endif
+ 	ctx = (struct rt_16550_context *)context->dev_private;
+ 	base = ctx->base_addr;
+ 
+@@ -553,7 +594,9 @@
+ 	rt_16550_reg_out(base, IER, 0);
+ 	rt_16550_reg_in(base, IIR);
+ 	lsr=rt_16550_reg_in(base, LSR);
+-	//rtdm_printk("lsr %x\n",lsr);
++	#ifdef VERBOSE_DEBUG
++		rtdm_printk("lsr %x\n",lsr);
++	#endif
+ 	if((lsr&0x01)==0x01)
+ 		rt_16550_reg_in(base, RHR);
+ 	rt_16550_reg_in(base, MSR);
+@@ -568,7 +611,9 @@
+ 	rt_16550_cleanup_ctx(ctx);
+ 
+ 	kfree(in_history);
+-//rtdm_printk("fin rt_16550_close\n");
++	#ifdef VERBOSE_DEBUG
++		rtdm_printk("End of rt_16550_close\n");
++	#endif
+ 	return 0;
+ }
+ 
+@@ -618,7 +663,7 @@
+ 
+ 		if (testbits(config->config_mask, RTSER_SET_BAUD) &&
+ 		    (config->baud_rate >
+-		     baud_base[context->device->device_id] ||
++		     MAX_BAUDRATE ||
+ 		     config->baud_rate <= 0))
+ 			/* invalid baudrate for this port */
+ 			return -EINVAL;
+@@ -795,7 +840,9 @@
+ 			ctx->status = 0;
+ 			fcr |= FCR_FIFO | FCR_RESET_RX;
+ 			lsr=rt_16550_reg_in(base, LSR);
+-			//rtdm_printk("lsr %x\n",lsr);
++			#ifdef VERBOSE_DEBUG
++				rtdm_printk("lsr %x\n",lsr);
++			#endif
+ 			if((lsr&0x01)==0x01)
+ 				rt_16550_reg_in(base, RHR);
+ 		}
+@@ -1135,7 +1182,7 @@
+ 	.driver_name		= RT_16550_DRIVER_NAME,
+ 	.driver_version		= RTDM_DRIVER_VER(1, 5, 2),
+ 	.peripheral_name	= "omap_uart",
+-	.provider_name		= "Jan Kiszka",
++	.provider_name		= "Guillaume Sanahuja",
+ };
+ 
+ void rt_16550_exit(void);
+@@ -1149,7 +1196,9 @@
+ 	int lsr;
+ 	int val;
+ 
+-//rtdm_printk("rt_16550_init\n");
++	#ifdef VERBOSE_DEBUG
++		rtdm_printk("rt_16550_init\n");
++	#endif
+ 
+ 	for (i = 0; i < MAX_DEVICES; i++) {
+ 		if (port_num[i]==0 || port_num[i]>MAX_DEVICES)
+@@ -1213,9 +1262,13 @@
+ 		{
+ 			//rtdm_task_sleep(1000*1000*1000);
+ 			val=rt_16550_reg_in(base, SYSS);
+-			//rtdm_printk("SYSS %x\n",val);
+-		}
+-		//rtdm_printk("reset ok\n");
++			#ifdef VERBOSE_DEBUG
++				rtdm_printk("SYSS %x\n",val);
++			#endif
++		}
++		#ifdef VERBOSE_DEBUG
++			rtdm_printk("reset ok\n");
++		#endif
+ 
+ 		rt_16550_reg_out(base, MDR1, 0x07);
+ 		rt_16550_reg_out(base, SCR, 0x08);
+@@ -1238,7 +1291,9 @@
+ 
+ 		device[dev->device_id] = dev;
+ 	}
+-//rtdm_printk("fin rt_16550_init\n");
++	#ifdef VERBOSE_DEBUG
++		rtdm_printk("fin rt_16550_init\n");
++	#endif
+ 	return 0;
+ 
+       release_io_out:
+@@ -1256,16 +1311,20 @@
+ void rt_16550_exit(void)
+ {
+ 	int i;
+-//rtdm_printk("rt_16550_exit\n");
++	#ifdef VERBOSE_DEBUG
++		rtdm_printk("rt_16550_exit\n");
++	#endif
+ 	for (i = 0; i < MAX_DEVICES; i++)
+ 		if (device[i]) {
+ 			rtdm_dev_unregister(device[i], 1000);
+ 			rt_16550_release_io(i);
+ 			kfree(device[i]);
+ 		}
+-
+-//rtdm_printk("fin rt_16550_exit\n");
++	#ifdef VERBOSE_DEBUG
++		rtdm_printk("End of rt_16550_exit\n");
++	#endif
+ }
+ 
+ module_init(rt_16550_init);
+ module_exit(rt_16550_exit);
++

@@ -1,0 +1,23 @@
+# LAYER_CONF_VERSION is increased each time build/conf/bblayers.conf
+# changes incompatibly
+LCONF_VERSION = "6"
+
+BBPATH = "${TOPDIR}"
+BBFILES ?= ""
+
+BBLAYERS ?= " \
+  ${HOME}/yocto/poky-daisy/meta \
+  ${HOME}/yocto/poky-daisy/meta-yocto \
+  ${HOME}/yocto/poky-daisy/meta-openembedded/meta-oe \
+  ${HOME}/yocto/poky-daisy/meta-openembedded/meta-networking \
+  ${HOME}/yocto/overo/meta-rt-mag-overo \
+  ${HOME}/yocto/overo/meta-xenomai \
+  "
+
+BBLAYERS_NON_REMOVABLE ?= " \
+  ${HOME}/yocto/poky-daisy/meta \
+  ${HOME}/yocto/poky-daisy/meta-yocto \
+  "
+
+BBMASK = "${HOME}/yocto/overo/meta-xenomai/recipes-images/images/core-xenomai-rpi-image|${HOME}/yocto/overo/meta-xenomai/recipes-kernel/linux/linux-xenomai-raspberrypi_3.8.13"
+

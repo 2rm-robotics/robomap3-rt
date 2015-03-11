@@ -1,0 +1,32 @@
+From 78563f5086094b6a7e7250524e58ac88aa84a24f Mon Sep 17 00:00:00 2001
+From: augustinmanecy <augustin.manecy@gmail.com>
+Date: Sun, 19 Oct 2014 23:04:59 +0200
+Subject: [PATCH] Disable classic i2c driver for i2c 3 via u-boot arguments
+
+---
+ include/configs/omap3_overo.h |    2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/include/configs/omap3_overo.h b/include/configs/omap3_overo.h
+index 7b10d79..d69bc0e 100644
+--- a/include/configs/omap3_overo.h
++++ b/include/configs/omap3_overo.h
+@@ -183,6 +183,7 @@
+ 		"${optargs} " \
+ 		"board.disable_uart1=yes" \
+ 		"board.disable_uart3=yes" \
++		"board.disable_i2c3=yes" \
+ 		"mpurate=${mpurate} " \
+ 		"vram=${vram} " \
+ 		"omapfb.mode=dvi:${dvimode} " \
+@@ -193,6 +194,7 @@
+ 		"${optargs} " \
+ 		"board.disable_uart1=yes" \
+ 		"board.disable_uart3=yes" \
++		"board.disable_i2c3=yes" \
+ 		"mpurate=${mpurate} " \
+ 		"vram=${vram} " \
+ 		"omapfb.mode=dvi:${dvimode} " \
+-- 
+1.7.9.5
+

@@ -1,0 +1,34 @@
+From 9196d32c04150c04dfa389b3dc906fdbf18da9df Mon Sep 17 00:00:00 2001
+From: augustinmanecy <augustin.manecy@gmail.com>
+Date: Sun, 9 Nov 2014 13:18:04 +0100
+Subject: [PATCH] Disable classic spi driver (spidev) for SPI1 CS0 and CS1
+
+---
+ include/configs/omap3_overo.h |    4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/include/configs/omap3_overo.h b/include/configs/omap3_overo.h
+index d69bc0e..acc7b4b 100644
+--- a/include/configs/omap3_overo.h
++++ b/include/configs/omap3_overo.h
+@@ -184,6 +184,8 @@
+ 		"board.disable_uart1=yes" \
+ 		"board.disable_uart3=yes" \
+ 		"board.disable_i2c3=yes" \
++		"board.disable_SPI1CS0=yes" \
++		"board.disable_SPI1CS1=yes" \
+ 		"mpurate=${mpurate} " \
+ 		"vram=${vram} " \
+ 		"omapfb.mode=dvi:${dvimode} " \
+@@ -195,6 +197,8 @@
+ 		"board.disable_uart1=yes" \
+ 		"board.disable_uart3=yes" \
+ 		"board.disable_i2c3=yes" \
++		"board.disable_SPI1CS0=yes" \
++		"board.disable_SPI1CS1=yes" \
+ 		"mpurate=${mpurate} " \
+ 		"vram=${vram} " \
+ 		"omapfb.mode=dvi:${dvimode} " \
+-- 
+1.7.9.5
+
