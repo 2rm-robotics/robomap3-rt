@@ -6,7 +6,6 @@ RDEPENDS_${PN} = "kernel"
 DEPENDS = "virtual/kernel xenomai"
 PR = "r6"
 
-SRCREV = "286"
 SRC_URI = " \
 	file://rt_serial/uart_omap.c \
 	file://rt_serial/Correct-Misconfiguration-of-divisor-for-uart-speed.patch \

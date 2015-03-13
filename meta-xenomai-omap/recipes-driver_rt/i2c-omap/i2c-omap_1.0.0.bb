@@ -6,7 +6,6 @@ RDEPENDS_${PN} = "kernel"
 DEPENDS = "virtual/kernel xenomai"
 PR = "r9"
 
-SRCREV = "315"
 SRC_URI = "file://rt_i2c/i2c_omap.c \
 	file://rt_i2c/i2c_omap.h \
 	file://rt_i2c/rti2c.h \

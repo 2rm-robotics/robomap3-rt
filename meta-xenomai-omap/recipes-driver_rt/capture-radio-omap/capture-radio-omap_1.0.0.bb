@@ -6,7 +6,6 @@ RDEPENDS_${PN} = "kernel"
 DEPENDS = "virtual/kernel xenomai"
 PR = "r0"
 
-SRCREV = "286"
 SRC_URI = "file://rt_radio/capture_omap.c \
 	file://rt_radio/capture_omap.h \
 	file://rt_radio/rtradio.h \
@@ -28,10 +27,9 @@ do_install () {
 	install -d ${D}${base_libdir}/modules/${KERNEL_VERSION}/kernel/drivers/rt
 	install -m 0644 ${S}/capture_omap*${KERNEL_OBJECT_SUFFIX} ${D}${base_libdir}/modules/${KERNEL_VERSION}/kernel/drivers/rt
 
-#	install -d ${D}/etc/modules-load.d
-#	install -m 0644 ${WORKDIR}/capture.conf ${D}/etc/modules-load.d/
+	install -d ${D}/etc/modules-load.d
+	install -m 0644 ${WORKDIR}/capture.conf ${D}/etc/modules-load.d/
 }
 
-# FILES_${PN} += "${base_libdir}/modules/${KERNEL_VERSION}/kernel/drivers/rt/*"
-#FILES_${PN} += "/etc/modules-load.d/*"
+FILES_${PN} += "/etc/modules-load.d/*"
 
