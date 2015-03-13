@@ -1,0 +1,12 @@
+diff -Nurp wmiconfig/Makefile wmiconfig_patched/Makefile
+--- wmiconfig/Makefile	2014-07-23 18:26:32.000000000 +0200
++++ wmiconfig_patched/Makefile	2014-07-23 18:37:51.588111024 +0200
+@@ -18,7 +18,7 @@
+ #==============================================================================
+ CC :=$(ATH_CROSS_COMPILE_TYPE)gcc
+ #To disable PAL commands set ATH_INCLUDE_PAL=0
+-ATH_INCLUDE_PAL=1
++ATH_INCLUDE_PAL=0
+ ifeq ($(ATH_INCLUDE_PAL),1)
+ AR :=$(ATH_CROSS_COMPILE_TYPE)ar
+ RM :=$(ATH_CROSS_COMPILE_TYPE)rm
