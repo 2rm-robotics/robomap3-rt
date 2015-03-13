@@ -1,0 +1,14 @@
+Index: qt-mobility/plugins/geoservices/nokia/qgeomappingmanagerengine_nokia.cpp
+===================================================================
+--- qt-mobility/plugins/geoservices/nokia/qgeomappingmanagerengine_nokia.cpp
++++ qt-mobility/plugins/geoservices/nokia/qgeomappingmanagerengine_nokia.cpp
+@@ -188,6 +188,7 @@
+     }
+ 
+-        if (m_cache->maximumCacheSize() > DISK_CACHE_MAX_SIZE)
+-            m_cache->setMaximumCacheSize(DISK_CACHE_MAX_SIZE);
++//disable limitation 
++        //if (m_cache->maximumCacheSize() > DISK_CACHE_MAX_SIZE)
++          //  m_cache->setMaximumCacheSize(DISK_CACHE_MAX_SIZE);
+ 
+         m_networkManager->setCache(m_cache);

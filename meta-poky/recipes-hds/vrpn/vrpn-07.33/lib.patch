@@ -1,0 +1,84 @@
+Index: CMakeLists.txt
+===================================================================
+--- ./CMakeLists.txt
++++ ./CMakeLists.txt
+@@ -773,6 +773,9 @@
+ 			ARCHIVE
+ 			DESTINATION
+ 			lib
++			LIBRARY
++			DESTINATION
++			lib
+ 			COMPONENT
+			serversdk 
+ 			PUBLIC_HEADER
+@@ -815,6 +818,9 @@
+ 			ARCHIVE
+ 			DESTINATION
+ 			lib
++			LIBRARY
++			DESTINATION
++			lib
+ 			COMPONENT
+			clientsdk
+ 			PUBLIC_HEADER
+Index: Makefile
+===================================================================
+--- ./Makefile
++++ ./Makefile
+@@ -190,9 +190,9 @@
+   endif
+ 
+   ifeq ($(HW_OS), pc_linux_arm)
+-        CC := arm-linux-g++
+-        RANLIB := arm-linux-ranlib
+-	AR := arm-linux-ar ruv
++        CC := arm-poky-linux-gnueabi-g++
++        RANLIB := arm-poky-linux-gnueabi-ranlib
++	AR :=arm-poky-linux-gnueabi-ar ruv
+   endif
+ 
+   ifeq ($(HW_OS), pc_cygwin_arm)
+Index: quat/CMakeLists.txt
+===================================================================
+--- ./quat/CMakeLists.txt
++++ ./quat/CMakeLists.txt
+@@ -40,7 +40,10 @@
+ 		ARCHIVE
+ 		DESTINATION
+ 		lib
++		LIBRARY
++		DESTINATION
++		lib
+ 		COMPONENT
+ 		serversdk
+ 		PUBLIC_HEADER
+ 		DESTINATION
+@@ -58,7 +58,10 @@
+ 		ARCHIVE
+ 		DESTINATION
+ 		lib
++		LIBRARY
++		DESTINATION
++		lib
+ 		COMPONENT
+ 		clientsdk
+ 		PUBLIC_HEADER
+ 		DESTINATION
+Index: quat/Makefile
+===================================================================
+--- ./quat/Makefile
++++ ./quat/Makefile
+@@ -147,9 +147,9 @@
+ endif
+ 
+ ifeq ($(HW_OS), pc_linux_arm)
+-  CC = arm-linux-gcc
+-  AR = arm-linux-ar ruv
+-  RANLIB = arm-linux-ranlib
++  CC = arm-poky-linux-gnueabi-gcc
++  AR = arm-poky-linux-gnueabi-ar ruv
++  RANLIB = arm-poky-linux-gnueabi-ranlib
+ endif
+ 
+ ifeq ($(HW_OS), pc_cygwin_arm)

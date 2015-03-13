@@ -1,0 +1,22 @@
+*** ./iir/Cascade.h.old	2013-12-12 15:44:42.214029811 +0100
+--- ./iir/Cascade.h	2013-12-12 15:45:02.486028963 +0100
+***************
+*** 51,56 ****
+--- 51,57 ----
+  // Factored implementation to reduce template instantiations
+  class Cascade
+  {
++ public:
+    struct Stage : Biquad
+    {
+    };
+***************
+*** 67,73 ****
+      Stage* stageArray;
+    };
+  
+- public:
+    int getNumStages () const
+    {
+      return m_numStages;
+--- 68,73 ----

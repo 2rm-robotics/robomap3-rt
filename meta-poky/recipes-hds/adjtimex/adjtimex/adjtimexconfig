@@ -1,0 +1,67 @@
+#!/bin/sh
+
+conffile=/etc/default/adjtimex
+startfile=/etc/init.d/adjtimex
+
+echo -n "Comparing clocks (this will take 70 sec)..."
+
+# Get the parameters
+
+/sbin/adjtimex --print --tick 0  >/etc/adj.adjust  2>/dev/null
+baseline=`awk '/<= tick/{print ($1+$NF)/2}' /etc/adj.adjust`
+hz=`awk '/USER_HZ/{print $3}' /etc/adj.adjust`
+/sbin/adjtimex  --tick $baseline  --frequency 0
+/sbin/adjtimex  --adjust --force-adjust >/etc/adj.adjust
+echo "done."
+ticks=`tail -n 1 /etc/adj.adjust|awk '{print $6}'`
+freq=`tail -n 1 /etc/adj.adjust|awk '{print $7}'`
+# cat /etc/adj.adjust
+# echo hz=$hz baseline=$baseline ticks=$ticks freq=$freq
+rm /etc/adj.adjust
+adjt=`awk "BEGIN{print (($ticks-$baseline)*$hz + $freq/65536.)*.0864}"`
+echo -n "Adjusting system time by ${adjt} sec/day to agree with CMOS clock..."
+
+# Recreate /etc/adjtimex.conf if necessary
+
+if [ -f $conffile ]; then 
+#   echo "using existing $conffile";
+    true;
+else 
+cat >$conffile <<EOF
+#  $conffile - configuration file for adjtimex(8)
+#
+#  you may adjust these values manually or by calling /usr/sbin/adjtimexconfig
+#
+#  This file is sourced by $startfile
+#
+TICK=$TICK
+FREQ=$FREQ
+
+EOF
+fi
+
+# Reset values in $conffile
+
+sed -e "s/^TICK=.*/TICK=$ticks/"		\
+    -e "s/^FREQ=.*/FREQ=$freq/"			\
+    $conffile >$conffile.TMP &&			\
+    mv $conffile.TMP $conffile
+
+# grep "TICK=" /etc/init.d/adjtimex | cut -d'#' -f1 > /etc/adj.tick
+# grep "FREQ=" /etc/init.d/adjtimex | cut -d'#' -f1 > /etc/adj.freq
+# 
+# TICKLINE="`echo -n "TICK="$ticks" # old: "; cat /etc/adj.tick`"
+# FREQLINE="`echo -n "FREQ="$freq" # old: "; cat /etc/adj.freq`"
+# 
+# cp /etc/init.d/adjtimex /etc/init.d/adjtimex.TMP
+# sed -e "s/^TICK=.*/$TICKLINE/" -e "s/^FREQ=.*/$FREQLINE/" \
+#  < /etc/init.d/adjtimex.TMP > /etc/init.d/adjtimex
+# 
+# if [ -s /etc/init.d/adjtimex ]
+# then
+# 	  rm -f /etc/init.d/adjtimex.TMP
+# fi
+# rm -f /etc/adj.tick /etc/adj.freq /etc/adj.adjust
+rm -f /etc/adj.adjust
+echo "done."
+

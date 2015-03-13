@@ -1,0 +1,25 @@
+# Mount the secure folder if needed
+SECURE_DIR=/home/secure
+encfspid=`pidof encfs`
+if [ -z $encfspid ]; then
+  echo "Opening encrypted directory $SECURE_DIR (Hit CTRL+C to log in without opening it)"
+  /usr/bin/encfs /home/root/.crypt $SECURE_DIR || \
+    { echo '=== Failed to open the encrypted folder. Logging off. ==='; exit 1; } 
+fi
+unset encfspid
+export HOME=$SECURE_DIR
+export XAUTHORITY=`pwd`/.Xauthority
+cd 
+cat <<EOF
+ 
+============================== IMPORTANT NOTICE ==============================
+ 
+You are now in a secure directory. To prevent mixing experiments, please 
+refrain from putting files directly into this directory.
+Rather, create a work directory using your UTC login name and use that 
+directory for your own files.
+Thank you!
+ 
+==============================================================================
+ 
+EOF

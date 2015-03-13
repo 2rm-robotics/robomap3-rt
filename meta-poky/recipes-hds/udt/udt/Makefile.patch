@@ -1,0 +1,61 @@
+*** ./Makefile.old	2014-03-06 08:48:06.576804334 +0100
+--- ./Makefile	2014-03-06 08:48:31.744804869 +0100
+***************
+*** 1,4 ****
+! C++ = g++
+  
+  ifndef os
+     os = LINUX
+--- 1,4 ----
+! #C++ = g++
+  
+  ifndef os
+     os = LINUX
+***************
+*** 5,11 ****
+  endif
+  
+  ifndef arch
+!    arch = IA32
+  endif
+  
+  CCFLAGS = -fPIC -Wall -Wextra -D$(os) -finline-functions -O3 -fno-strict-aliasing -fvisibility=hidden
+--- 5,11 ----
+  endif
+  
+  ifndef arch
+! #   arch = IA32
+  endif
+  
+  CCFLAGS = -fPIC -Wall -Wextra -D$(os) -finline-functions -O3 -fno-strict-aliasing -fvisibility=hidden
+***************
+*** 36,49 ****
+!	all: libudt.so libudt.a udt
+  
+  %.o: %.cpp %.h udt.h
+! 	$(C++) $(CCFLAGS) $< -c
+  
+!	libudt.so: $(OBJS)
+  ifneq ($(os), OSX)
+! 	$(C++) -shared -o $@ $^
+  else
+  	$(C++) -dynamiclib -o libudt.dylib -lstdc++ -lpthread -lm $^
+  endif
+
+ libudt.a: $(OBJS)
+! 	ar -rcs $@ $^
+--- 36,49 ----
+!	all: libudt.so.4.11 libudt.a udt
+  
+  %.o: %.cpp %.h udt.h
+! 	$(CXX) $(CCFLAGS) $< -c
+  
+!	libudt.so.4.11: $(OBJS)
+  ifneq ($(os), OSX)
+! 	$(CXX) -shared -Wl,-soname,libudt.so.4.11 -o $@ $^
+  else
+  	$(C++) -dynamiclib -o libudt.dylib -lstdc++ -lpthread -lm $^
+  endif
+
+ libudt.a: $(OBJS)
+! 	$(AR) -rcs $@ $^

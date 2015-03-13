@@ -1,0 +1,31 @@
+#!/bin/sh -e
+### BEGIN INIT INFO
+# Provides:          ardrone2_cam
+# Default-Start:     S
+# Default-Stop:      0 6
+# Short-Description: Raise camera interface.
+### END INIT INFO
+
+PATH="/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin"
+
+case "$1" in
+start)
+	echo -"Configuring ardrone2 cameras interface... "
+	parallel-stream.sh
+	echo "done."
+	;;
+
+stop)
+	echo "Deconfiguring ardrone2 cameras interface... "
+	# nothing to do!
+	echo "done."
+	;;
+
+*)
+	echo "Usage: /etc/init.d/init-cam-ardrone2 {start|stop}"
+	exit 1
+	;;
+esac
+
+exit 0
+

@@ -1,0 +1,54 @@
+*** ./CMakeLists.txt	2014-04-24 08:09:02.485363305 +0200
+--- ./CMakeLists.txt	2014-04-24 08:08:56.969363536 +0200
+***************
+*** 1202,1208 ****
+  			clientsdk
+  			PUBLIC_HEADER
+  			DESTINATION
+! 			include
+  			COMPONENT
+  			clientsdk)
+  
+--- 1202,1208 ----
+  			clientsdk
+  			PUBLIC_HEADER
+  			DESTINATION
+! 			include/vrpn
+  			COMPONENT
+  			clientsdk)
+  		
+*** ./quat/CMakeLists.txt	2014-04-23 18:22:26.903131292 +0200
+--- ./quat/CMakeLists.txt	2014-04-24 08:10:28.721359699 +0200
+***************
+*** 44,50 ****
+  		serversdk
+  		PUBLIC_HEADER
+  		DESTINATION
+! 		include
+  		COMPONENT
+  		serversdk)
+  	install(TARGETS
+--- 44,50 ----
+  		serversdk
+  		PUBLIC_HEADER
+  		DESTINATION
+! 		include/vrpn
+  		COMPONENT
+  		serversdk)
+  	install(TARGETS
+***************
+*** 56,62 ****
+  		clientsdk
+  		PUBLIC_HEADER
+  		DESTINATION
+! 		include
+  		COMPONENT
+  		clientsdk)
+  
+--- 56,62 ----
+  		clientsdk
+  		PUBLIC_HEADER
+  		DESTINATION
+! 		include/vrpn
+  		COMPONENT
+  		clientsdk)

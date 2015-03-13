@@ -1,0 +1,11 @@
+--- snack2.2.10/unix/Makefile.in	2014-06-12 10:55:41.644230101 +0200
++++ snack2.2.10/unix/Makefile.in	2014-06-12 10:55:51.916229671 +0200
+@@ -4,7 +4,7 @@
+ 
+ # The path to the tk.h header file
+ 
+-TK_INCPATH  = @TK_SRC_DIR@/generic
++TK_INCPATH  = @TK_SRC_DIR@/
+ 
+ # The path to the X11 include files
+ 

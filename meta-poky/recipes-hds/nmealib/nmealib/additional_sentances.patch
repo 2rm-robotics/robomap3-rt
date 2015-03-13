@@ -1,0 +1,168 @@
+Index: include/nmea/sentence.h
+===================================================================
+--- include/nmea/sentence.h	(revision 335)
++++ include/nmea/sentence.h	(revision 336)
+@@ -30,5 +30,6 @@
+     GPGSV   = 0x0004,   /**< GSV - Number of SVs in view, PRN numbers, elevation, azimuth & SNR values. */
+     GPRMC   = 0x0008,   /**< RMC - Recommended Minimum Specific GPS/TRANSIT Data. */
+-    GPVTG   = 0x0010    /**< VTG - Actual track made good and speed over ground. */
++    GPVTG   = 0x0010,   /**< VTG - Actual track made good and speed over ground. */
++    GPGST   = 0x0020    /**< GST - GPS Pseudorange Noise Statistics. */
+ };
+ 
+@@ -116,4 +117,20 @@
+ } nmeaGPVTG;
+ 
++/**
++ * GST packet information structure (Pseudorange Noise Statistics)
++ */
++typedef struct _nmeaGPGST
++{
++    nmeaTIME	utc;  		/**< UTC of position */
++    double	rms;		/**< Total RMS standard deviation of ranges inputs to the navigation solution */
++    double	dev_maj;	/**< Standard deviation (meters) of semi-major axis of error ellipse */
++    double	dev_min;	/**< Standard deviation (meters) of semi-minor axis of error ellipse */
++    double	orientation;	/**< Orientation of semi-major axis of error ellipse (true north degrees) */
++    double	dev_lat;	/**< Standard deviation (meters) of latitude error */
++    double	dev_lon;	/**< Standard deviation (meters) of longitude error */
++    double	dev_elv;	/**< Standard deviation (meters) of altitude error */
++
++} nmeaGPGST;
++
+ void nmea_zero_GPGGA(nmeaGPGGA *pack);
+ void nmea_zero_GPGSA(nmeaGPGSA *pack);
+Index: include/nmea/parse.h
+===================================================================
+--- include/nmea/parse.h	(revision 335)
++++ include/nmea/parse.h	(revision 336)
+@@ -32,4 +32,5 @@
+ void nmea_GPRMC2info(nmeaGPRMC *pack, nmeaINFO *info);
+ void nmea_GPVTG2info(nmeaGPVTG *pack, nmeaINFO *info);
++void nmea_GPGST2info(nmeaGPGST *pack, nmeaINFO *info);
+ 
+ #ifdef  __cplusplus
+Index: include/nmea/info.h
+===================================================================
+--- include/nmea/info.h	(revision 335)
++++ include/nmea/info.h	(revision 336)
+@@ -100,4 +100,8 @@
+     double  declination; /**< Magnetic variation degrees (Easterly var. subtracts from true course) */
+ 
++    double dev_lat;	/**< Standard deviation (meters) of latitude error */
++    double dev_lon;	/**< Standard deviation (meters) of longitude error */
++    double dev_elv;	/**< Standard deviation (meters) of altitude error */
++
+     nmeaSATINFO satinfo; /**< Satellites information */
+ 
+Index: src/parse.c
+===================================================================
+--- src/parse.c	(revision 335)
++++ src/parse.c	(revision 336)
+@@ -106,4 +106,5 @@
+         "GPRMC",
+         "GPVTG",
++	"GPGST",
+     };
+ 
+@@ -122,4 +123,6 @@
+     else if(0 == memcmp(buff, pheads[4], 5))
+         return GPVTG;
++    else if(0 == memcmp(buff, pheads[5], 5))
++        return GPGST;
+ 
+     return GPNON;
+@@ -369,4 +372,39 @@
+ 
+ /**
++ * \brief Parse GST packet from buffer.
++ * @param buff a constant character pointer of packet buffer.
++ * @param buff_sz buffer size.
++ * @param pack a pointer of packet which will filled by function.
++ * @return 1 (true) - if parsed successfully or 0 (false) - if fail.
++ */
++int nmea_parse_GPGST(const char *buff, int buff_sz, nmeaGPGST *pack)
++{
++    char time_buff[NMEA_TIMEPARSE_BUF];
++
++    NMEA_ASSERT(buff && pack);
++
++    memset(pack, 0, sizeof(nmeaGPGST));
++
++    nmea_trace_buff(buff, buff_sz);
++
++    if(8 != nmea_scanf(buff, buff_sz,
++        "$GPGST,%s,%f,%f,%f,%f,%f,%f,%f*",
++        &(time_buff[0]),
++        &(pack->rms), &(pack->dev_maj), &(pack->dev_min), &(pack->orientation),
++        &(pack->dev_lat), &(pack->dev_lon), &(pack->dev_elv)))
++    {
++        nmea_error("GPGST parse error!");
++        return 0;
++    }
++
++    if(0 != _nmea_parse_time(&time_buff[0], (int)strlen(&time_buff[0]), &(pack->utc)))
++    {
++        nmea_error("GPGST time parse error!");
++        return 0;
++    }
++
++    return 1;
++}
++/**
+  * \brief Fill nmeaINFO structure by GGA packet data.
+  * @param pack a pointer of packet structure.
+@@ -500,2 +538,25 @@
+     info->smask |= GPVTG;
+ }
++
++/**
++ * \brief Fill nmeaINFO structure by GST packet data.
++ * @param pack a pointer of packet structure.
++ * @param info a pointer of summary information structure.
++ */
++void nmea_GPGST2info(nmeaGPGST *pack, nmeaINFO *info)
++{
++    NMEA_ASSERT(pack && info);
++
++    info->utc.hour = pack->utc.hour;
++    info->utc.min = pack->utc.min;
++    info->utc.sec = pack->utc.sec;
++    info->utc.hsec = pack->utc.hsec;
++    //info->rms = pack->rms;
++    //info->dev_maj = pack->dev_maj;
++    //info->dev_min = pack->dev_min;
++    //info->orientation = pack->orientation;
++    info->dev_lat = pack->dev_lat;
++    info->dev_lon = pack->dev_lon;
++    info->dev_elv = pack->dev_elv;
++    info->smask |= GPGST;
++}
+Index: src/parser.c
+===================================================================
+--- src/parser.c	(revision 335)
++++ src/parser.c	(revision 336)
+@@ -109,4 +109,7 @@
+             nmea_GPVTG2info((nmeaGPVTG *)pack, info);
+             break;
++	case GPGST:
++            nmea_GPGST2info((nmeaGPGST *)pack, info);
++            break;
+         };
+ 
+@@ -227,4 +230,16 @@
+                     (const char *)parser->buffer + nparsed,
+                     sen_sz, (nmeaGPVTG *)node->pack))
++                {
++                    free(node);
++                    node = 0;
++                }
++                break;
++	    case GPGST:
++                if(0 == (node->pack = malloc(sizeof(nmeaGPGST))))
++                    goto mem_fail;
++                node->packType = GPGST;
++                if(!nmea_parse_GPGST(
++                    (const char *)parser->buffer + nparsed,
++                    sen_sz, (nmeaGPGST *)node->pack))
+                 {
+                     free(node);

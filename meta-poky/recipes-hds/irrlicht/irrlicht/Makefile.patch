@@ -1,0 +1,12 @@
+--- Makefile	2015-02-24 10:34:37.304268329 +0100
++++ Makefile	2015-02-24 10:29:31.580281115 +0100
+@@ -86,8 +86,8 @@
+ staticlib sharedlib install: SYSTEM = Linux
+ STATIC_LIB = libIrrlicht.a
+ LIB_PATH = ../../lib/$(SYSTEM)
+-INSTALL_DIR = /usr/local/lib
++INSTALL_DIR ?= /usr/local/lib
+ sharedlib install: SHARED_LIB = libIrrlicht.so
+-sharedlib: LDFLAGS += -L/usr/X11R6/lib$(LIBSELECT) -lGL -lXxf86vm
++#sharedlib: LDFLAGS += -L/usr/X11R6/lib$(LIBSELECT) -lGL -lXxf86vm
+ staticlib sharedlib: CXXINCS += -I/usr/X11R6/include

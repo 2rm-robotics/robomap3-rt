@@ -1,0 +1,11 @@
+--- ./configure.in	2014-06-11 08:21:43.240649006 +0200
++++ ./configure.in	2014-06-11 08:18:53.668645402 +0200
+@@ -170,7 +170,7 @@
+ # Find a usable dtplite (from tcllib) to use in document generation.
+ # -------------------------------------------------------------------
+ 
+-TEA_PROG_DTPLITE
++#TEA_PROG_DTPLITE
+ 
+ #--------------------------------------------------------------------
+ # Finally, substitute all of the various values into the Makefile.

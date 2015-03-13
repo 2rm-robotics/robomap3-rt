@@ -1,0 +1,43 @@
+#!/bin/sh -e
+### BEGIN INIT INFO
+# Provides:          can
+# Default-Start:     S
+# Default-Stop:      0 6
+# Short-Description: Raise can interface.
+### END INIT INFO
+
+PATH="/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin"
+CONF_FILE="/etc/can.conf"
+
+[ -x /sbin/ip ] || { echo "ip not installed"; exit 0;}
+[ -e $CONF_FILE ] || { echo "cannot find $CONF_FILE"; exit 0;}
+. $CONF_FILE
+
+case "$1" in
+start)
+	echo -n "Configuring can0 interface... "
+	ip link set can0 up type can bitrate $BAUDRATE
+	echo "done."
+	;;
+
+stop)
+	echo -n "Deconfiguring can0 interface... "
+	ip link set can0 down
+	echo "done."
+	;;
+
+restart)
+	echo "Reconfiguring can0 interface... "
+	ip link set can0 down
+	ip link set can0 up type can bitrate $BAUDRATE
+	echo "done."
+	;;
+
+*)
+	echo "Usage: /etc/init.d/can {start|stop|restart}"
+	exit 1
+	;;
+esac
+
+exit 0
+
