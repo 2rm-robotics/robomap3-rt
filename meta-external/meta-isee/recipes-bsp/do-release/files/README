@@ -1,0 +1,126 @@
+Table of Contents
+==================
+
+   I. Overview
+  II. Create IGEP Firmware bootable SD-Card
+ III. Booting IGEP device and login/connect methods
+  IV. Update IGEP device flash with lastest IGEP Firmware
+   V. Where learn more ?
+
+
+I. Overview
+============
+This README is about IGEP Firmware by ISEE (www.isee.biz).
+This file contains information about HOWTO create a SD-Card to boot
+the latest IGEP Firmware for your IGEP Technology device.
+Also it explains HOWTO flash default factory firmware using that
+SD-Card as a recovery method.
+
+Please see the corresponding sections above for details.
+
+IMPORTANT NOTE: This software is distributed in the hope that it will be
+useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE 
+
+This software is provided entirely and is not licensed for any use other
+than evaluation purposes of the IGEP technology based devices.
+
+This software provides a mobile environment and visual style for
+IGEP embedded devices. The image supports X11 with a Sato theme,
+Pimlico applications and contains terminal, editor, and file manager.
+
+
+II. Create IGEP Firmware bootable SD-card
+==========================================
+The IGEP Firmware package (igep_firmware-yocto-1.2.1-x.tar.bz) contains these files:
+
+  * README.txt:
+      This file (you are reading NOW !)
+  * igep-media-create:
+      BASH script that creates bootable IGEP SD-card with your personal computer
+  * e-functions:
+      BASH script with helper functions
+  * demo-image-sato-igep00x0.tar.bz:
+      Compressed package file (with bootloader, kernel and root filesystem)
+  * VERSION:
+      IGEP Firmware version of this package ("IGEP Firmware Yocto 1.2.1-x")
+  * CHANGELOG:
+      History of changes about IGEP firmware versions (changelog)
+
+This tarball contains a bootable image, which can be used to directly
+boot the firmware stored on a SD-card.
+
+Under Linux, insert a SD-card media and use igep-media-create script to copy
+the image to SD-card media.
+
+ $ ./igep-media-create --mmc <mmc> --image <image file> --machine <machine>
+
+where,
+
+  <mmc>        - is the SD-Card device of your computer.
+  <image file> - is the file that contains bootloader, kernel and rootfs image.
+  <machine>    - is the IGEP Processor Board. Available options are:
+                   igep0020 - For IGEP v2 Processor Board
+                   igep0030 - For IGEP COM MODULE Processor Board
+                   igep0032 - For IGEP COM PROTON Processor Board
+
+For example, assuming the SD-card device takes '/dev/sdf' and 
+you have an IGEPv2 board ('igep0020'), type
+
+ $ ./igep-media-create --mmc /dev/sdf --image demo-image-sato-igep00x0.tar.bz --machine igep0020
+
+This should give you a bootable SD-card.
+
+III. Booting IGEP device and login/connect methods 
+===================================================
+Insert the SD-card media into the micro-SD card socket of IGEP device and power on it.
+This should result in a running system with Sato graphical desktop root filesystem built by Yocto.
+
+If you want login in/connect to the system, you have several options:
+ o Ethernet, you should assign an IP in the range 192.168.5.[2-254] and connect
+         to target using a SSH client and connecting to 192.168.5.1
+ o Wifi, connect to IGEP_xx network, a dynamic IP should be assigned in your
+         host and you can sign into the target connecting to 192.168.6.1
+ o USB ethernet gadget, connect a IGEP device to USB port of your computer, 
+         dynamic IP should be assigned in your host and you can sign into 
+         the target connecting to 192.168.7.1
+ o (if available) Graphical interface on plugged DVI/TFT display and USB Keyboard in IGEP device
+ 
+The root password is empty, so to log in type 'root' for the user name and hit
+'Enter' at the Password prompt: and you should be in.
+
+
+IV. Update IGEP device flash with lastest IGEP Firmware
+========================================================
+Once your system booted from the SD-card, you can write the firmware into the
+flash. Enter into an IGEP root terminal an run,
+
+ # igep-flash --image /opt/firmware/demo-image-sato-igep00x0.tar.bz
+
+When finish, power off your board, unplug the micro-SD card and power on the
+board. That's all, enjoy the new firmware running from the flash memory. 
+
+-------------------------------
+NOTE: Speed up flash procedure
+-------------------------------
+By default the flash script runs the nandtest command to mark bad blocks, this
+can take a long time and in most cases is not necessary, you can speed up the
+flash procedure running the script as follows:
+
+ # igep-flash --image /opt/firmware/demo-image-sato-igep00x0.tar.bz --skip-nandtest
+
+
+V. Where learn more ?
+=======================
+Learn about IGEP Technology at:
+ http://labs.isee.biz/index.php/gettingstarted/
+
+Learn more at
+ http://www.isee.biz
+ http://labs.isee.biz
+ 
+Visit the Free Support Forum to share experiences and knowledge at
+ http://forum.isee.biz
+
+or using the IRC chat at irc.freenode.net (#igep)
+

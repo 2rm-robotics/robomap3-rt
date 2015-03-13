@@ -1,0 +1,53 @@
+This README file contains information on building the meta-isee
+BSP layer. Please see the corresponding sections below for details.
+
+Dependencies
+============
+
+This layer depends on:
+
+  URI: git://git.isee.biz/pub/scm/poky.git
+  branch: denzil
+
+Table of Contents
+=================
+
+  I. Building the meta-isee BSP layer
+
+
+I. Building the meta-isee BSP layer
+=========================================
+
+In order to build an image with BSP support for a given release, you
+need to download the corresponding BSP repository.
+
+  $ git clone -b denzil git://git.isee.biz/pub/scm/poky.git
+
+Enter to the poky directory,
+
+  $ cd poky
+
+and clone the meta-isee layer.
+
+  $ git clone -b denzil git://git.isee.biz/pub/scm/meta-isee.git
+
+  $ source oe-init-build-env
+
+Having done that, and assuming you downloaded the BSP contents
+at the top-level of your yocto build tree, you can build a igep
+image by adding the location of the meta-isee layer to
+conf/bblayers.conf, e.g.:
+
+        <path to>/meta-isee \
+
+To enable the isee layer, add the igep00x0 MACHINE to conf/local.conf:
+
+  MACHINE ?= "igep00x0"
+
+You should then be able to build a image as such:
+
+  $ bitbake core-image-sato
+
+At the end of a successful build, you should have a image that
+you use boot from flash or a micro-SD card.
+

@@ -1,0 +1,50 @@
+#!/bin/sh
+### BEGIN INIT INFO
+# Provides:          pvr.sh
+# Required-Start:    checkroot
+# Short-Description: PVR SGX driver init.
+### END INIT INFO
+
+[ -e /sbin/modprobe ] || exit 1
+
+# Check if an fb device is available.  If not then just go ahead and
+# exit because we have no display.
+fbset > /dev/null 2>&1
+if [ "$?" == "1" ]
+then
+    # looks like there is no display, so let's exit
+    exit 1
+fi
+
+BITSPERPIXEL="$(fbset | grep geom | awk '{print $6}')"
+YRES="$(fbset | grep geom | awk '{print $3}')"
+
+[ "$VERBOSE" != no ] && echo -n "Loading PVR modules "
+
+# Set RGBA ordering to something the drivers like
+if [ "$BITSPERPIXEL" = "32" ] ; then
+	fbset -rgba 8/16,8/8,8/0,8/24
+fi
+
+# Try to enable triple buffering when there's enough VRAM
+fbset -vyres $(expr $YRES \* 3)
+
+modprobe omaplfb
+modprobe bufferclass_ti
+modprobe pvrsrvkm
+
+touch /etc/powervr-esrev
+SAVED_ESREVISION="$(cat /etc/powervr-esrev)"
+
+devmem2 0x48004B48 w 0x2 > /dev/null
+devmem2 0x48004B10 w 0x1 > /dev/null
+devmem2 0x48004B00 w 0x2 > /dev/null
+
+ES_REVISION="$(devmem2 0x50000014 | sed -e s:0x00010205:5: -e s:0x00010201:3: -e s:0x00010003:2: | tail -n1 | awk -F': ' '{print $2}')"
+
+if [ "${ES_REVISION}" != "${SAVED_ESREVISION}" ]; then
+	echo "${ES_REVISION}" > /etc/powervr-esrev
+fi
+
+# if called more than once it returns 1
+/usr/bin/pvrsrvinit || true

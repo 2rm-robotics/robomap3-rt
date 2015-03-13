@@ -1,0 +1,64 @@
+Index: multimon-1.0/Makefile
+===================================================================
+--- multimon-1.0.orig/Makefile	2012-01-31 10:21:44.958762346 +0100
++++ multimon-1.0/Makefile	2012-01-31 10:24:09.178766096 +0100
+@@ -3,6 +3,7 @@
+ ARCHITECTURE	=$(shell dpkg --print-architecture)
+ 
+ CFLAGS		=-Wall -Wstrict-prototypes -I/usr/X11R6/include
++HOST_CFLAGS	=-Wall -Wstrict-prototypes -I/usr/X11R6/include
+ ifeq ($(OS),SunOS)
+ ifeq ($(DEBUG),y)
+ CFLAGS		+=-g -O -DSUN_AUDIO -DARCH_SPARC
+@@ -24,7 +25,8 @@
+ endif
+ 
+ 
+-BINDIR		=bin-$(shell uname -m)
++BINDIR		=bin
++HOST_BINDIR	=bin-$(shell uname -m)
+ 
+ AS86		=as86 -0 -a
+ LD86		=ld86 -0
+@@ -39,6 +41,7 @@
+ AR		=ar
+ STRIP		=strip
+ MKDIR		=mkdir
++HOST_LDFLAGS	=-lm
+ 
+ all:		$(BINDIR) $(BINDIR)/multimon $(BINDIR)/gen
+ 
+@@ -51,6 +54,9 @@
+ $(BINDIR)/%.o:	%.c
+ 		$(CC) $(CFLAGS) -c -o $@ $<
+ 
++$(HOST_BINDIR)/%.o:	%.c
++		$(HOSTCC) $(HOST_CFLAGS) -c -o $@ $<
++
+ SRC_L2		=hdlc.c pocsag.c
+ SRC_L1		=demod_afsk12.c demod_afsk24.c demod_afsk24_2.c
+ SRC_L1		+=demod_hapn48.c demod_fsk96.c demod_eas.c
+@@ -68,6 +74,7 @@
+ 
+ $(BINDIR):
+ 		$(MKDIR) $(BINDIR)
++		$(MKDIR) $(HOST_BINDIR)
+ 
+ $(BINDIR)/multimon:	$(OBJ_L2) $(OBJ_L1) $(OBJ_MISC)
+ 			$(CC) $^ $(LDFLAGS) $(LDFLAGSX) -o $@
+@@ -75,11 +82,11 @@
+ $(BINDIR)/gen:		$(OBJ_GEN)
+ 			$(CC) $^ $(LDFLAGS) -o $@
+ 
+-$(BINDIR)/mkcostab:	$(BINDIR)/mkcostab.o
+-			$(CC) $^ $(LDFLAGS) -o $@
++$(HOST_BINDIR)/mkcostab:	$(HOST_BINDIR)/mkcostab.o
++			$(HOSTCC) $^ $(HOST_LDFLAGS) -o $@
+ 
+-costabi.c costabf.c:	$(BINDIR)/mkcostab
+-			$(BINDIR)/mkcostab
++costabi.c costabf.c:	$(HOST_BINDIR)/mkcostab
++			$(HOST_BINDIR)/mkcostab
+ 
+ clean:
+ 		$(RM) -f core `find . -name '*.[oas]' -print`

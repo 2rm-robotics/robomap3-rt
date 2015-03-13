@@ -1,0 +1,1 @@
+%__dbi_txn create lock log txn auto_commit nommap private

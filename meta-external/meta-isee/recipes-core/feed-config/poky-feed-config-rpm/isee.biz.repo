@@ -1,0 +1,7 @@
+[isee.biz]
+name=isee.biz
+enabled=1
+autorefresh=0
+baseurl=http://downloads.isee.biz/denzil/rpm
+type=NONE
+keeppackages=0
