@@ -18,5 +18,4 @@ RDEPENDS_${PN} = "\
     opencv-dev \
     nmealib-dev \
     tclap-dev \
-    irrlicht-dev \
     "

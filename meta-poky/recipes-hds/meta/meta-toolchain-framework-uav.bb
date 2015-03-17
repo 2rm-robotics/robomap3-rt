@@ -8,8 +8,6 @@ LIC_FILES_CHKSUM = "file://${COREBASE}/LICENSE;md5=4d92cd373abda3937c2bc47fbc49d
 
 inherit populate_sdk_framework-uav
 
-QT_WEBKIT ="-no-webkit -nomake demos -nomake examples "
-
 QTNAME = "qte"
 QTNAME_genericx86-64 = "qt"
 QTNAME_genericx86 = "qt"
@@ -17,8 +15,8 @@ QTNAME_genericx86 = "qt"
 TOOLCHAIN_HOST_TASK = "nativesdk-packagegroup-${QTNAME}-toolchain-host packagegroup-cross-canadian-${MACHINE} nativesdk-cmake nativesdk-pkgconfig"
 
 TOOLCHAIN_TARGET_TASK = "packagegroup-${QTNAME}-toolchain-target packagegroup-core-standalone-sdk-target packagegroup-framework-uav-toolchain-target"
-TOOLCHAIN_TARGET_TASK_genericx86-64 += "qt-mobility-x11-dev qwt-dev"
-TOOLCHAIN_TARGET_TASK_genericx86    += "qt-mobility-x11-dev qwt-dev"
+TOOLCHAIN_TARGET_TASK_genericx86-64 += "qt-mobility-x11-dev qwt-dev irrlicht-dev"
+TOOLCHAIN_TARGET_TASK_genericx86    += "qt-mobility-x11-dev qwt-dev irrlicht-dev"
 
 TOOLCHAIN_OUTPUTNAME = "${SDK_NAME}-toolchain-framework-uav-${DISTRO_VERSION}"
 
