@@ -4,15 +4,14 @@ LICENSE = "GPLv2"
 LIC_FILES_CHKSUM = "file://${COMMON_LICENSE_DIR}/GPL-2.0;md5=801f80980d171dd6425610833a22dbe6"
 RDEPENDS_${PN} = "kernel"
 DEPENDS = "virtual/kernel xenomai"
-PR = "r9"
+PR = "r10"
 
-SRC_URI = "file://rt_i2c/i2c_omap.c \
-	file://rt_i2c/i2c_omap.h \
-	file://rt_i2c/rti2c.h \
-	file://rt_i2c/Makefile \
-	file://i2c.conf"
+SRC_URI = "git://git.renater.fr/omap3-rtdrivers.git;protocol=git \
+	file://i2c.conf \
+"
+SRCREV = "a5a86afd886e3dad7ecd42a710b1b03bf7730086"
 
-S = "${WORKDIR}/rt_i2c"
+S = "${WORKDIR}/git/rt_i2c"
 
 inherit module
 

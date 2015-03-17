@@ -4,15 +4,14 @@ LICENSE = "GPLv2"
 LIC_FILES_CHKSUM = "file://${COMMON_LICENSE_DIR}/GPL-2.0;md5=801f80980d171dd6425610833a22dbe6"
 RDEPENDS_${PN} = "kernel"
 DEPENDS = "virtual/kernel xenomai"
-PR = "r0"
+PR = "r1"
 
-SRC_URI = "file://rt_radio/capture_omap.c \
-	file://rt_radio/capture_omap.h \
-	file://rt_radio/rtradio.h \
-	file://rt_radio/Makefile \
-	file://capture.conf"
+SRC_URI = "git://git.renater.fr/omap3-rtdrivers.git;protocol=git \
+	file://capture.conf \
+"
+SRCREV = "a5a86afd886e3dad7ecd42a710b1b03bf7730086"
 
-S = "${WORKDIR}/rt_radio"
+S = "${WORKDIR}/git/rt_radio"
 
 inherit module
 

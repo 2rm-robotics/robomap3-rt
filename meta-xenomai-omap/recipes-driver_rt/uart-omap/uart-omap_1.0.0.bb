@@ -4,17 +4,15 @@ LICENSE = "GPLv2"
 LIC_FILES_CHKSUM = "file://${COMMON_LICENSE_DIR}/GPL-2.0;md5=801f80980d171dd6425610833a22dbe6"
 RDEPENDS_${PN} = "kernel"
 DEPENDS = "virtual/kernel xenomai"
-PR = "r6"
+PR = "r7"
 
-SRC_URI = " \
-	file://rt_serial/uart_omap.c \
+SRC_URI = "git://git.renater.fr/omap3-rtdrivers.git;protocol=git \
 	file://rt_serial/Correct-Misconfiguration-of-divisor-for-uart-speed.patch \
-	file://rt_serial/uart_omap.h \
-	file://rt_serial/Makefile \
 	file://uart.conf \
- "
+"
+SRCREV = "a5a86afd886e3dad7ecd42a710b1b03bf7730086"
 
-S = "${WORKDIR}/rt_serial"
+S = "${WORKDIR}/git/rt_serial"
 
 inherit module
 
