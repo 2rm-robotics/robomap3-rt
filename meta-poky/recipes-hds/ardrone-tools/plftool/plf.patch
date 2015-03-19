@@ -1,0 +1,116 @@
+*** plftool.c	2015-03-19 09:02:39.000000000 +0100
+--- plftool.c	2013-12-17 15:55:30.661414241 +0100
+***************
+*** 44,49 ****
+--- 44,52 ----
+  # endif
+  #endif
+  
++ #include <errno.h>
++ #include <string.h>
++ 
+  static const struct option long_options[] =
+  {
+          { "output", required_argument, 0, 'o' },
+***************
+*** 395,413 ****
+      return 0;
+  }
+  
+- 
+  int do_extract_section_nice(int fileidx, int sectionidx)
+  {
+-     /* ##TBD
+-     s_plf_file* file = plf_get_file_header(fileidx);
+      s_plf_section* section = plf_get_section_header(fileidx, sectionidx);
+  
+  
+      switch (section->dwSectionType)
+      {
+! 
+      }
+!     */
+      return 0;
+  }
+  
+--- 398,439 ----
+      return 0;
+  }
+  
+  int do_extract_section_nice(int fileidx, int sectionidx)
+  {
+      s_plf_section* section = plf_get_section_header(fileidx, sectionidx);
+  
++ 	void *buffer;
++ 	u32 buffer_size;
+  
+      switch (section->dwSectionType)
+      {
+! 	case 9:
+! 		plf_get_payload_uncompressed(fileidx, sectionidx, &buffer, &buffer_size);
+! 		
+! 		sFileEntry* file_entry=plf_get_file_section_header(buffer,buffer_size);
+! 		printf("%i %x %i %i %i %s\n",sectionidx,file_entry->dwFlags>>12,file_entry->dwFlags&0x0fff,file_entry->uk_0x04,file_entry->uk_0x08,buffer);
+! 		
+! 		int str_len = strlen(command_args.output)+ strlen(buffer)+ 2;
+! 	      char* filename = (char*)malloc(str_len);
+! 		sprintf(filename, "%s/%s", command_args.output, buffer);
+! 
+! 		switch (file_entry->dwFlags>>12)
+!     		{
+! 			case 0x04:
+! 				make_dir(filename, file_entry->dwFlags&0x0fff);
+! 				break;
+! 			case 0x08:
+! 			{
+! 				write_file_out(buffer, buffer+strlen(buffer)+3*sizeof(u32)+1, buffer_size-strlen(buffer)-3*sizeof(u32)-1, file_entry->dwFlags&0x0fff);
+! 				break;
+! 			}	
+! 		}
+! 		free(buffer);
+! 		free(filename);
+! 		
+! 	break;
+      }
+!     
+      return 0;
+  }
+  
+***************
+*** 454,462 ****
+          section_end   = command_args.section+1;
+      }
+  
+!     make_dir(command_args.output, 0644);
+  
+!     for (i = section_start; i < section_end; ++i)
+      {
+          void* buffer = 0;
+          const char* section_type_fmt =0;
+--- 480,488 ----
+          section_end   = command_args.section+1;
+      }
+  
+!     make_dir(command_args.output, 0755);
+  
+!     for (i = section_start;i<section_end; ++i)
+      {
+          void* buffer = 0;
+          const char* section_type_fmt =0;
+***************
+*** 486,492 ****
+  
+          if (command_args.extract_type == EXTRACT_TYPE_RAW)
+          {
+!             printf("dumping section %d (%s)\n", i, section_type_name);
+              plf_get_payload_uncompressed(fileidx, i, &buffer, &buffer_size);
+  
+              write_file_out(section_type_name, buffer, buffer_size, 0);
+--- 512,518 ----
+  
+          if (command_args.extract_type == EXTRACT_TYPE_RAW)
+          {
+!             //printf("dumping section %d/%d (%s)\n", i,section_end, section_type_name);
+              plf_get_payload_uncompressed(fileidx, i, &buffer, &buffer_size);
+  
+              write_file_out(section_type_name, buffer, buffer_size, 0);

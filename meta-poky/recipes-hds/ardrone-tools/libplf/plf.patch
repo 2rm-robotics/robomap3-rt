@@ -1,0 +1,119 @@
+*** plf.c	2015-03-19 08:50:27.000000000 +0100
+--- plf.c	2013-12-17 12:42:19.805899004 +0100
+***************
+*** 22,40 ****
+   *  You should have received a copy of the GNU General Public License
+   *  along with libplf.  If not, see <http://www.gnu.org/licenses/>.
+   */
+- #include <unistd.h>
+  #include <fcntl.h>
+  #include <string.h>
+  #include <stdio.h>
+  #include <stdlib.h>
+  #include <sys/stat.h>
+  #include "plf_int.h"
+! 
+! #ifdef __WIN32__
+! # define F_O_BINARY O_BINARY
+! #else
+! # define F_O_BINARY 0
+! #endif
+  
+  /* From gzip.c */
+  int  gz_uncompress (u8 *dest, u32 *destLen, const u8 *source, u32 sourceLen);
+--- 22,34 ----
+   *  You should have received a copy of the GNU General Public License
+   *  along with libplf.  If not, see <http://www.gnu.org/licenses/>.
+   */
+  #include <fcntl.h>
+  #include <string.h>
+  #include <stdio.h>
+  #include <stdlib.h>
+  #include <sys/stat.h>
+  #include "plf_int.h"
+! #include <unistd.h>
+  
+  /* From gzip.c */
+  int  gz_uncompress (u8 *dest, u32 *destLen, const u8 *source, u32 sourceLen);
+***************
+*** 79,85 ****
+      fileEntry = &plf_files[fileIdx];
+  
+      /* Open the given filename */
+!     fileEntry->fildes = open(filename, O_RDONLY | F_O_BINARY);
+  
+      if (fileEntry->fildes < 0)
+      {
+--- 73,79 ----
+      fileEntry = &plf_files[fileIdx];
+  
+      /* Open the given filename */
+!     fileEntry->fildes = open(filename, O_RDONLY );
+  
+      if (fileEntry->fildes < 0)
+      {
+***************
+*** 127,133 ****
+      fileEntry = &plf_files[fileIdx];
+  
+      /* Open the given filename */
+!     fileEntry->fildes = open(filename,  O_RDWR | O_CREAT | F_O_BINARY, 0644  );
+  
+      if (fileEntry->fildes < 0)
+      {
+--- 121,127 ----
+      fileEntry = &plf_files[fileIdx];
+  
+      /* Open the given filename */
+!     fileEntry->fildes = open(filename,  O_RDWR | O_CREAT , 0644  );
+  
+      if (fileEntry->fildes < 0)
+      {
+***************
+*** 220,225 ****
+--- 214,230 ----
+      return &(curEntry->hdr);
+  }
+  
++ sFileEntry* plf_get_file_section_header(void* buffer, u32 buffer_size)
++ {
++ 	int i;
++ 	for(i=0;i<buffer_size;i++)
++ 	{
++ 		if(((char*)buffer)[i]==0) break;
++ 	}
++ 	
++ 	return (sFileEntry*)(&((char*)buffer)[i+1]);
++ }
++ 
+  int plf_get_payload_raw(int fileIdx, int sectIdx, void* dst_buffer, u32 offset,
+          u32 len)
+  {
+*** plf.h	2015-03-19 08:50:27.000000000 +0100
+--- plf.h	2013-12-17 12:34:53.465917671 +0100
+***************
+*** 63,68 ****
+--- 63,69 ----
+  int plf_get_payload_raw(int fileIdx, int sectIdx, void* dst_buffer, u32 offset, u32 len);
+  int plf_get_payload_uncompressed(int fileIdx, int sectIdx, void** buffer, u32* buffer_size);
+  s_plf_section* plf_get_section_header(int fileIdx, int sectIdx);
++ sFileEntry* plf_get_file_section_header(void* buffer, u32 buffer_size);
+  s_plf_file* plf_get_file_header(int fileIdx);
+  
+  int plf_close(int fileIdx);
+*** plf_structs.h	2015-03-19 08:50:27.000000000 +0100
+--- plf_structs.h	2013-12-17 12:21:38.129950934 +0100
+***************
+*** 57,60 ****
+--- 57,67 ----
+      u32 dwUncomprSize;  /* +0x10 */
+  } s_plf_section;
+  
++ typedef struct sFileEntryTag
++ {
++   u32 dwFlags;
++   u32 uk_0x04;
++   u32 uk_0x08;
++ } sFileEntry;
++ 
+  #endif /* PLF_STRUCTS_H_ */
