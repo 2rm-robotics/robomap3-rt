@@ -1,0 +1,19 @@
+*** Makefile.old	2015-04-01 14:58:01.114933804 +0200
+--- Makefile	2015-04-01 14:52:38.834947283 +0200
+***************
+*** 7,13 ****
+  
+  CCFLAGS = -std=gnu99 -O2 -Wall -Werror -I../libplf 
+  CCFLAGS+= -ggdb
+! LDFLAGS = -L../libplf
+  LIBS    = -lplf 
+  
+  .PHONY: all clean distclean 
+--- 7,13 ----
+  
+  CCFLAGS = -std=gnu99 -O2 -Wall -Werror -I../libplf 
+  CCFLAGS+= -ggdb
+! #LDFLAGS = -L../libplf
+  LIBS    = -lplf 
+  
+  .PHONY: all clean distclean 

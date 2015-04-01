@@ -14,12 +14,12 @@ DEPENDS ="plftool-native"
 
 S = "${WORKDIR}"
 
-do_unpack_extra() {
+do_extract_firmware() {
 	export LD_LIBRARY_PATH=${STAGING_LIBDIR_NATIVE}
 	plftool -e nice -i ./ardrone2_update.plf -o out/
 }
 
-addtask unpack_extra after do_unpack before do_patch
+addtask extract_firmware after do_configure before do_install
 
 
 do_install() {
