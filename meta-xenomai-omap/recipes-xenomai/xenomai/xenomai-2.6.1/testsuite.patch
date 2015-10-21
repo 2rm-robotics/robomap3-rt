@@ -1,0 +1,7 @@
+on ne compile pas les testsuite car bug pour le nativesdk
+--- xenomai-2.6.1/src/Makefile.am.orig	2013-05-16 11:52:19.763838013 +0200
++++ xenomai-2.6.1/src/Makefile.am	2013-05-16 11:52:28.664394263 +0200
+@@ -1 +1 @@
+-SUBDIRS = include skins drvlib testsuite utils
++SUBDIRS = include skins drvlib utils
+

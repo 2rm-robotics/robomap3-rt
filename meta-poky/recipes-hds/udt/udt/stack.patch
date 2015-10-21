@@ -1,0 +1,83 @@
+*** src/api.cpp	2013-02-20 17:35:26.000000000 +0100
+--- src/api.cpp	2015-10-01 13:43:13.335243243 +0200
+***************
+*** 204,210 ****
+     #ifndef WIN32
+        pthread_mutex_init(&m_GCStopLock, NULL);
+        pthread_cond_init(&m_GCStopCond, NULL);
+!       pthread_create(&m_GCThread, NULL, garbageCollect, this);
+     #else
+        m_GCStopLock = CreateMutex(NULL, false, NULL);
+        m_GCStopCond = CreateEvent(NULL, false, false, NULL);
+--- 204,214 ----
+     #ifndef WIN32
+        pthread_mutex_init(&m_GCStopLock, NULL);
+        pthread_cond_init(&m_GCStopCond, NULL);
+! 	pthread_attr_t attr;
+! 	pthread_attr_init(&attr);
+! 	pthread_attr_setstacksize(&attr, 1024*1024*2);
+!       pthread_create(&m_GCThread, &attr, garbageCollect, this);
+! 	pthread_attr_destroy(&attr);
+     #else
+        m_GCStopLock = CreateMutex(NULL, false, NULL);
+        m_GCStopCond = CreateEvent(NULL, false, false, NULL);
+*** src/queue.cpp	2013-02-20 17:35:26.000000000 +0100
+--- src/queue.cpp	2015-10-01 17:55:09.255635209 +0200
+***************
+*** 497,507 ****
+     m_pSndUList->m_pTimer = m_pTimer;
+  
+     #ifndef WIN32
+!       if (0 != pthread_create(&m_WorkerThread, NULL, CSndQueue::worker, this))
+        {
+           m_WorkerThread = 0;
+           throw CUDTException(3, 1);
+        }
+     #else
+        DWORD threadID;
+        m_WorkerThread = CreateThread(NULL, 0, CSndQueue::worker, this, 0, &threadID);
+--- 497,511 ----
+     m_pSndUList->m_pTimer = m_pTimer;
+  
+     #ifndef WIN32
+! 	pthread_attr_t attr;
+! 	pthread_attr_init(&attr);
+! 	pthread_attr_setstacksize(&attr, 1024*1024*2);
+!       if (0 != pthread_create(&m_WorkerThread, &attr, CSndQueue::worker, this))
+        {
+           m_WorkerThread = 0;
+           throw CUDTException(3, 1);
+        }
++ 	pthread_attr_destroy(&attr);
+     #else
+        DWORD threadID;
+        m_WorkerThread = CreateThread(NULL, 0, CSndQueue::worker, this, 0, &threadID);
+***************
+*** 953,963 ****
+     m_pRendezvousQueue = new CRendezvousQueue;
+  
+     #ifndef WIN32
+!       if (0 != pthread_create(&m_WorkerThread, NULL, CRcvQueue::worker, this))
+        {
+           m_WorkerThread = 0;
+           throw CUDTException(3, 1);
+        }
+     #else
+        DWORD threadID;
+        m_WorkerThread = CreateThread(NULL, 0, CRcvQueue::worker, this, 0, &threadID);
+--- 957,971 ----
+     m_pRendezvousQueue = new CRendezvousQueue;
+  
+     #ifndef WIN32
+! 	pthread_attr_t attr;
+! 	pthread_attr_init(&attr);
+! 	pthread_attr_setstacksize(&attr, 1024*1024*2);
+!       if (0 != pthread_create(&m_WorkerThread, &attr, CRcvQueue::worker, this))
+        {
+           m_WorkerThread = 0;
+           throw CUDTException(3, 1);
+        }
++ 	pthread_attr_destroy(&attr);
+     #else
+        DWORD threadID;
+        m_WorkerThread = CreateThread(NULL, 0, CRcvQueue::worker, this, 0, &threadID);

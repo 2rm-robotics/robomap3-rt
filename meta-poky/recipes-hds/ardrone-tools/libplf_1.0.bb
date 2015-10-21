@@ -7,17 +7,16 @@ LIC_FILES_CHKSUM = "file://${COMMON_LICENSE_DIR}/GPL-3.0;md5=c79ff39f19dfec6d293
 SRCREV = "29"
 SRC_URI = "svn://ardrone-tool.googlecode.com/svn/projects;module=libplf;protocol=http \
 	file://plf.patch;pnum=0 \
+	file://Makefile.patch;pnum=0 \
 "
 
 S = "${WORKDIR}/libplf/trunk"
 
-inherit native
+inherit autotools-brokensep
 
 BBCLASSEXTEND = "native"
 
 DEPENDS ="zlib"
-
-EXTRA_OEMAKE = "'CC=${CC} -fPIC'"
 
 do_install() {
 	install -d ${D}${libdir}

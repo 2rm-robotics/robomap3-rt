@@ -119,7 +119,7 @@ fakeroot tar_sdk() {
 
 fakeroot create_shar() {
 	# copy in the template shar extractor script
-	cp ${COREBASE}/meta-hds/files/toolchain-shar-template.sh ${SDK_DEPLOY}/${TOOLCHAIN_OUTPUTNAME}.sh
+	cp ./toolchain-shar-template.sh ${SDK_DEPLOY}/${TOOLCHAIN_OUTPUTNAME}.sh
 
 	cat << "EOF" > ${T}/post_install_command
 ${SDK_POST_INSTALL_COMMAND}
@@ -131,6 +131,7 @@ EOF
 		-e 's#@SDKPATH@#${SDKPATH}#g' \
 		-e 's#@REAL_MULTIMACH_TARGET_SYS@#${REAL_MULTIMACH_TARGET_SYS}#g' \
 		-e '/@SDK_POST_INSTALL_COMMAND@/d' \
+		-e 's#@MACHINE@#${MACHINE}#g' \
 		${SDK_DEPLOY}/${TOOLCHAIN_OUTPUTNAME}.sh
 
 	# add execution permission

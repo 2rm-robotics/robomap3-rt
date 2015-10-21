@@ -2,6 +2,7 @@
 
 INST_ARCH=$(uname -m | sed -e "s/i[3-6]86/ix86/" -e "s/x86[-_]64/x86_64/")
 SDK_ARCH=$(echo @SDK_ARCH@ | sed -e "s/i[3-6]86/ix86/" -e "s/x86[-_]64/x86_64/")
+MACHINE=$(echo @MACHINE@)
 
 if [ "$INST_ARCH" != "$SDK_ARCH" ]; then
 	# Allow for installation of ix86 SDK on x86_64 host
@@ -181,32 +182,42 @@ done
 
 echo
 #creation variables d'environement
-#new="export OECORE_CMAKE_CROSS_TOOLCHAIN=$target_sdk_dir/toolchain.cmake"
-#if grep -q "export OECORE_CMAKE_CROSS_TOOLCHAIN=" ~/.bashrc ;then
-#	old=$(cat ~/.bashrc | grep "export OECORE_CMAKE_CROSS_TOOLCHAIN=")	
-#	sed -i "s:$old:$new:g" ~/.bashrc
-#else
-#	echo $new >> ~/.bashrc
-#fi
-#echo "Added $new in ~/.bashrc"
-#
-#new="export OECORE_ENV_SETUP=$env_setup_script"
-#if grep -q "export OECORE_ENV_SETUP=" ~/.bashrc ;then
-#	old=$(cat ~/.bashrc | grep "export OECORE_ENV_SETUP=")
-#	sed -i "s:$old:$new:g" ~/.bashrc
-#else
-#	echo $new >> ~/.bashrc
-#fi
-#echo "Added $new in ~/.bashrc"
-#
-#new=$(cat $env_setup_script | grep "export OECORE_NATIVE_SYSROOT=")
-#if grep -q "export OECORE_NATIVE_SYSROOT=" ~/.bashrc ;then
-#	old=$(cat ~/.bashrc | grep "export OECORE_NATIVE_SYSROOT=")
-#	sed -i "s:$old:$new:g" ~/.bashrc
-#else
-#	echo $new >> ~/.bashrc
-#fi
-#echo "Added $new in ~/.bashrc"
+if [ "$MACHINE" = "genericx86-64" ] || [ "$MACHINE" = "genericx86" ] ; then
+	var="OECORE_CMAKE_HOST_TOOLCHAIN"
+else
+	var="OECORE_CMAKE_CROSS_TOOLCHAIN"
+fi
+new="export $var=$target_sdk_dir/toolchain.cmake"
+if grep -q "export $var=" ~/.bashrc ;then
+	old=$(cat ~/.bashrc | grep "export $var=")	
+	sed -i "s:$old:$new:g" ~/.bashrc
+else
+	echo $new >> ~/.bashrc
+fi
+echo "Added $new in ~/.bashrc"
+
+if [ ! "$MACHINE" = "genericx86-64" ] && [ ! "$MACHINE" = "genericx86" ] ; then
+	new="export OECORE_ENV_SETUP=$env_setup_script"
+	if grep -q "export OECORE_ENV_SETUP=" ~/.bashrc ;then
+		old=$(cat ~/.bashrc | grep "export OECORE_ENV_SETUP=")
+		sed -i "s:$old:$new:g" ~/.bashrc
+	else
+		echo $new >> ~/.bashrc
+	fi
+	echo "Added $new in ~/.bashrc"
+fi
+
+if [ "$MACHINE" = "genericx86-64" ] || [ "$MACHINE" = "genericx86" ] ; then
+	new=$(cat $env_setup_script | grep "export SDKTARGETSYSROOT=")
+	new=$(echo $new | sed "s:SDKTARGETSYSROOT:OECORE_HOST_SYSROOT:g")
+	if grep -q "export OECORE_HOST_SYSROOT=" ~/.bashrc ;then
+		old=$(cat ~/.bashrc | grep "export OECORE_HOST_SYSROOT=")
+		sed -i "s:$old:$new:g" ~/.bashrc
+	else
+		echo $new >> ~/.bashrc
+	fi
+	echo "Added $new in ~/.bashrc"
+fi
 
 echo done
 

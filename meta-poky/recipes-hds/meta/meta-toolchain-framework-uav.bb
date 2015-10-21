@@ -1,30 +1,30 @@
-SUMMARY = "Meta package for building an installable toolchain"
-LICENSE = "MIT"
-
-PR = "r12"
-
-LIC_FILES_CHKSUM = "file://${COREBASE}/LICENSE;md5=4d92cd373abda3937c2bc47fbc49d690 \
-                    file://${COREBASE}/meta/COPYING.MIT;md5=3da9cfbcb788c80a0384361b4de20420"
-
-inherit populate_sdk_framework-uav
-
 QTNAME = "qte"
 QTNAME_genericx86-64 = "qt"
 QTNAME_genericx86 = "qt"
 
 TOOLCHAIN_HOST_TASK = "nativesdk-packagegroup-${QTNAME}-toolchain-host packagegroup-cross-canadian-${MACHINE} nativesdk-cmake nativesdk-pkgconfig"
 
-TOOLCHAIN_TARGET_TASK = "packagegroup-${QTNAME}-toolchain-target packagegroup-core-standalone-sdk-target packagegroup-framework-uav-toolchain-target"
-TOOLCHAIN_TARGET_TASK_genericx86-64 += "qt-mobility-x11-dev qwt-dev irrlicht-dev"
-TOOLCHAIN_TARGET_TASK_genericx86    += "qt-mobility-x11-dev qwt-dev irrlicht-dev"
+TOOLCHAIN_TARGET_TASK_BASE = "packagegroup-${QTNAME}-toolchain-target packagegroup-core-standalone-sdk-target packagegroup-framework-uav-toolchain-target"
+TOOLCHAIN_TARGET_TASK = "${TOOLCHAIN_TARGET_TASK_BASE}"
+TOOLCHAIN_TARGET_TASK_uav = "${TOOLCHAIN_TARGET_TASK_BASE} irrlicht-include-dev"
+TOOLCHAIN_TARGET_TASK_genericx86-64 = "${TOOLCHAIN_TARGET_TASK_BASE} qt-mobility-x11-dev qwt-dev qtserialport-dev irrlicht-dev"
+TOOLCHAIN_TARGET_TASK_genericx86    = "${TOOLCHAIN_TARGET_TASK_BASE} qt-mobility-x11-dev qwt-dev qtserialport-dev irrlicht-dev"
 
 TOOLCHAIN_OUTPUTNAME = "${SDK_NAME}-toolchain-framework-uav-${DISTRO_VERSION}"
+
+require meta-toolchain.bb
 
 QT_DIR_NAME_genericx86 = "qt"
 QT_DIR_NAME_genericx86-64 = "qt"
 QT_DIR_NAME = "qtopia"
 
 QT_TOOLS_PREFIX = "${SDKPATHNATIVE}${bindir_nativesdk}"
+
+SRC_URI = "file://toolchain-shar-template.sh "
+
+create_shar_prepend() {
+	cp ../toolchain-shar-template.sh ./
+}
 
 create_sdk_files_append_genericx86-64() {
     mkdir -p ${SDK_OUTPUT}${SDKPATHNATIVE}/environment-setup.d/

@@ -1,0 +1,68 @@
+#! /bin/sh
+
+if [ -z "$IF_ATH_PLATFORM" ]; then
+  exit 0
+fi
+
+if [ -z "$IF_ATH_FIRMWARE" ]; then
+  echo "must specify the atheros firmware directory in option ath_firmware"
+  exit 1
+fi
+
+pre_up() {
+  # Disabling Atheros Wifi chip
+  echo 0 > /sys/class/gpio/gpio86/value
+  # Atheros Warm reset forced to 0
+  echo 0 > /sys/class/gpio/gpio85/value
+  # enabling 5V power supply
+  echo 0 > /sys/class/gpio/gpio89/value
+  # Enabling Atheros Wifi chip
+  echo 1 > /sys/class/gpio/gpio86/value
+
+  #load atheros module and configure it through bmi(Boot Message Interface)
+  if [ ! -r /etc/mac_address ]; then                                            
+    echo -n 02:BA:BE > /etc/mac_address                                         
+    dd bs=1 count=3 if=/dev/urandom 2>/dev/null | hexdump -v -e '/1 ":%02X"' >> /etc/mac_address
+  fi
+  MAC_ADDR=`cat /etc/mac_address`
+  export ATH_PLATFORM=$IF_ATH_PLATFORM
+  export WORKAREA=$IF_ATH_FIRMWARE
+  loadAR6000.sh -i $IFACE --setmac $MAC_ADDR
+
+  # Waiting 2s for the wifi chip to be ready
+  sleep 2
+
+  AR6K_PID=`ps | grep AR6K |  grep -v grep | awk '{print $1}'`
+  SDIO_PID=`ps | grep ksdioirqd |  grep -v grep | awk '{print $1}'`
+
+  #Changing wifi priority
+  chrt -p -r 25 $SDIO_PID
+  chrt -p -r 24 $AR6K_PID
+
+  # Disabling powersaving
+  wmiconfig -i $IFACE --power maxperf
+  # Disabling 802.11n aggregation
+  wmiconfig -i $IFACE --allow_aggr 0 0
+  # enabling WMM
+  wmiconfig -i $IFACE --setwmm 1
+  # The Wifi connection freezes when in managed mode if there is no keepalive
+  wmiconfig -i $IFACE --setkeepalive 1
+}
+
+post_down() {
+  MAC_ADDR=`cat /etc/mac_address`
+  export ATH_PLATFORM=$IF_ATH_PLATFORM    
+  export WORKAREA=$IF_ATH_FIRMWARE                          
+  loadAR6000.sh unloadall
+}
+
+case "$MODE" in
+  start)
+    pre_up
+    ;;
+  stop)
+    post_down
+    ;;
+esac
+
+exit 0

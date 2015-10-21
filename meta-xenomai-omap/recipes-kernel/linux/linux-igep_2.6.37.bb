@@ -1,4 +1,4 @@
-DESCRIPTION = "2.6 Linux Kernel for IGEP based platforms, kernel is already patched for Xenomai"
+DESCRIPTION = "2.6 Linux Kernel for IGEP based platforms"
 SECTION = "kernel"
 LICENSE = "GPLv2"
 
@@ -15,10 +15,10 @@ COMPATIBLE_MACHINE = "(airbox|uav|overo|pacpus)"
 
 inherit kernel
 
-PR = "r16"
+PR = "r18"
 KV = "${PV}-9"
 
-SRCREV = "369"
+SRCREV = "464"
 SRC_URI = "svn://devel.hds.utc.fr/svn/igep_src/trunk;module=linux-omap-${KV};protocol=https"
 
 do_configure() {

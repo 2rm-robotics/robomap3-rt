@@ -11,16 +11,12 @@ SRC_URI = "svn://ardrone-tool.googlecode.com/svn/projects;module=plftool;protoco
 
 S = "${WORKDIR}/plftool/trunk"
 
-inherit native
-
 BBCLASSEXTEND = "native"
 
-DEPENDS_class-native= "libplf-native"
-
-#export LDFLAGS += " -L${STAGING_LIBDIR} "
+DEPENDS= "libplf"
 
 EXTRA_OEMAKE = "'CC=${CC} -Wno-error=unused-but-set-variable -Wno-error=format= -I${STAGING_INCDIR_NATIVE}/libplf '"
-#-L ${STAGING_LIBDIR_NATIVE}
+
 do_install() {
 	install -d ${D}${bindir}
 	install plftool  ${D}${bindir}

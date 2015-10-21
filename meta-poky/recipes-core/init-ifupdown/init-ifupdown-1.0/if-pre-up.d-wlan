@@ -1,0 +1,18 @@
+#!/bin/sh
+
+WIRELESS_SUP_BIN="/sbin/iwconfig"
+
+if [ -n "$IF_WIRELESS_MODE" ]; then
+  $WIRELESS_SUP_BIN $IFACE mode $IF_WIRELESS_MODE
+fi
+
+if [ -n "$IF_WIRELESS_CHANNEL" ]; then
+  $WIRELESS_SUP_BIN $IFACE channel $IF_WIRELESS_CHANNEL
+fi
+
+if [ -n "$IF_WIRELESS_ESSID" ]; then
+  $WIRELESS_SUP_BIN $IFACE essid $IF_WIRELESS_ESSID
+fi
+
+
+

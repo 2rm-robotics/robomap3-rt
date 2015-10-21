@@ -1,1 +1,1 @@
-QT_WEBKIT ="-no-webkit -nomake demos -nomake examples "
+QT_WEBKIT ="-no-webkit -no-iconv -nomake demos -nomake examples "
