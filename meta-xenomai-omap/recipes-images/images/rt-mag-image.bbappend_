@@ -1,9 +1,9 @@
 
-RTDM_DRIVERS = " \
-    uart-omap \
-    i2c-omap \
-    capture-radio-omap \
+RTDM_DRIVERS = " uart-omap \
+		 i2c-omap i2c-omap-dev \
+		 capture-radio-omap \			   
  "
+# All drivers that can be installed :    capture-radio-omap \ uart-omap \ i2c-omap \ i2c-omap-dev
  
 BENCHMARK_TOOLS = " \
     stress \

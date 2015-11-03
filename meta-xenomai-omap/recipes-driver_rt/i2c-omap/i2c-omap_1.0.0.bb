@@ -33,4 +33,8 @@ do_install () {
 	install -m 0644 ${S}/rti2c.h ${D}/usr/include/xenomai/rtdm
 }
 
+# create different packages
+PACKAGES = "${PN} ${PN}-dev"
+
 FILES_${PN} += "/etc/modules-load.d/*"
+FILES_${PN}-dev += "/usr/include/xenomai/rtdm/rti2c.h"
