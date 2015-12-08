@@ -7,6 +7,7 @@ LIC_FILES_CHKSUM = "file://COPYING;md5=656583178500e0c44c78e42aef9582bf"
 
 DEPENDS = "v4l-utils libtool jpeg glib-2.0 automake tiff"
 DEPENDS_class-nativesdk = "libtool glib-2.0 automake tiff"
+RDEPENDS_${PN}-share= "python"
 
 SRCREV = "648"
 SRC_URI = "svn://devel.hds.utc.fr/svn/uav_lib/trunk;module=opencv-1.1.0;protocol=https"
