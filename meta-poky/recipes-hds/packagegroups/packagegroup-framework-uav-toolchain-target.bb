@@ -18,4 +18,5 @@ RDEPENDS_${PN} = "\
     opencv-dev \
     nmealib-dev \
     tclap-dev \
+    filelib-dev \
     "

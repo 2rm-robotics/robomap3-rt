@@ -6,7 +6,6 @@ TOOLCHAIN_HOST_TASK = "nativesdk-packagegroup-${QTNAME}-toolchain-host packagegr
 
 TOOLCHAIN_TARGET_TASK_BASE = "packagegroup-${QTNAME}-toolchain-target packagegroup-core-standalone-sdk-target packagegroup-framework-uav-toolchain-target"
 TOOLCHAIN_TARGET_TASK = "${TOOLCHAIN_TARGET_TASK_BASE}"
-TOOLCHAIN_TARGET_TASK_uav = "${TOOLCHAIN_TARGET_TASK_BASE} irrlicht-include-dev"
 TOOLCHAIN_TARGET_TASK_genericx86-64 = "${TOOLCHAIN_TARGET_TASK_BASE} qt-mobility-x11-dev qwt-dev qtserialport-dev irrlicht-dev"
 TOOLCHAIN_TARGET_TASK_genericx86    = "${TOOLCHAIN_TARGET_TASK_BASE} qt-mobility-x11-dev qwt-dev qtserialport-dev irrlicht-dev"
 
