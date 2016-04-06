@@ -6,7 +6,9 @@ SECTION = "xenomai"
 HOMEPAGE = "http://www.xenomai.org/"
 PR = "r0"
 
-SRC_URI = "http://download.gna.org/xenomai/stable/xenomai-${PV}.tar.bz2"
+SRC_URI = "http://download.gna.org/xenomai/stable/xenomai-${PV}.tar.bz2 \
+		file://rti2c.h"
+
 SRC_URI[md5sum] = "9f83c39cfb10535df6bf51702714e716"
 SRC_URI[sha256sum] = "4d0d09431f0340cf4c9e2745177f77f15b7b124f89982035d1d3586519d7afe9"
 
@@ -19,6 +21,7 @@ includedir = "/usr/include/xenomai"
 do_install_append() {
 	#remove unused files
 	rm -rf ${D}/dev
+	cp ${WORKDIR}/rti2c.h ${D}/usr/include/xenomai/rtdm/
 }
 
 # create different packages
