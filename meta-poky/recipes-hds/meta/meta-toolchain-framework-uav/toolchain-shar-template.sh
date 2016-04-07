@@ -170,7 +170,7 @@ for l in $($SUDO_EXEC find $native_sysroot -type l); do
 	fi
 done
 
-#fixe le bon chemin dans le fichier toolchain.cmake
+#fixes path in file toolchain.cmake
 sed -e "s:$DEFAULT_INSTALL_DIR:$target_sdk_dir:g" -i $target_sdk_dir/toolchain.cmake
 
 # find out all perl scripts in $native_sysroot and modify them replacing the
@@ -181,42 +181,51 @@ for perl_script in $($SUDO_EXEC find $native_sysroot -type f -exec grep -l "^#!.
 done
 
 echo
-#creation variables d'environement
+
+#environement variable settings
+function comment-and-add {
+  FILE=$1
+  ENVVAR=$2
+  VALUE=$3
+  while read -r LINE; do
+    #if the correct line is already here...
+    if [ Z"$LINE" = Z"export $ENVVAR=$VALUE" ]; then
+      #... mark the line as found
+      LINE_FOUND=1
+    else
+      # else, if not already commented...
+      echo $LINE | grep -q "^[[:space:]]*#"
+      if [ $? -ne 0 ]; then
+        #...comment the line.
+        sed -i "s:$LINE:#$LINE:g" $FILE
+      fi
+    fi
+  done < <(cat $1 | grep "[[:space:]]*export[[:space:]]*$ENVVAR=")
+
+  #if NEW_FOUND is unset...
+  if [ -z "${LINE_FOUND+set}" ]; then
+    #... add it now
+    echo "export $ENVVAR=$VALUE" >> $FILE
+  fi
+}
+
 if [ "$MACHINE" = "genericx86-64" ] || [ "$MACHINE" = "genericx86" ] ; then
 	var="OECORE_CMAKE_HOST_TOOLCHAIN"
 else
 	var="OECORE_CMAKE_CROSS_TOOLCHAIN"
 fi
-new="export $var=$target_sdk_dir/toolchain.cmake"
-if grep -q "export $var=" ~/.bashrc ;then
-	old=$(cat ~/.bashrc | grep "export $var=")	
-	sed -i "s:$old:$new:g" ~/.bashrc
-else
-	echo $new >> ~/.bashrc
-fi
-echo "Added $new in ~/.bashrc"
+comment-and-add ~/.bashrc $var "$target_sdk_dir/toolchain.cmake"
+echo "Added $var in ~/.bashrc"
 
 if [ ! "$MACHINE" = "genericx86-64" ] && [ ! "$MACHINE" = "genericx86" ] ; then
-	new="export OECORE_ENV_SETUP=$env_setup_script"
-	if grep -q "export OECORE_ENV_SETUP=" ~/.bashrc ;then
-		old=$(cat ~/.bashrc | grep "export OECORE_ENV_SETUP=")
-		sed -i "s:$old:$new:g" ~/.bashrc
-	else
-		echo $new >> ~/.bashrc
-	fi
-	echo "Added $new in ~/.bashrc"
+	comment-and-add ~/.bashrc OECORE_ENV_SETUP $env_setup_script
+	echo "Added OECORE_ENV_SETUP in ~/.bashrc"
 fi
 
 if [ "$MACHINE" = "genericx86-64" ] || [ "$MACHINE" = "genericx86" ] ; then
-	new=$(cat $env_setup_script | grep "export SDKTARGETSYSROOT=")
-	new=$(echo $new | sed "s:SDKTARGETSYSROOT:OECORE_HOST_SYSROOT:g")
-	if grep -q "export OECORE_HOST_SYSROOT=" ~/.bashrc ;then
-		old=$(cat ~/.bashrc | grep "export OECORE_HOST_SYSROOT=")
-		sed -i "s:$old:$new:g" ~/.bashrc
-	else
-		echo $new >> ~/.bashrc
-	fi
-	echo "Added $new in ~/.bashrc"
+	VALUE=$(cat $env_setup_script | grep "export SDKTARGETSYSROOT=" | sed 's/.*=\(.*\)/\1/')
+	comment-and-add ~/.bashrc OECORE_HOST_SYSROOT $VALUE
+	echo "Added OECORE_HOST_SYSROOT in ~/.bashrc"
 fi
 
 echo done
