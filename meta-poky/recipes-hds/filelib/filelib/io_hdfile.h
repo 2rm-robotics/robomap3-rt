@@ -241,7 +241,10 @@ typedef int road_timerange_t;
         hdfile_header_t h;	// header of file
     } hdfile_t;
 
-
+	typedef enum {
+		READ_MODE,//0
+		WRITE_MODE //1
+	} mode;
     // Open the file with the mode READ_MODE (0) or WRITE_MODE (1)
     hdfile_t *open_hdfile(char *path,int mode);
 

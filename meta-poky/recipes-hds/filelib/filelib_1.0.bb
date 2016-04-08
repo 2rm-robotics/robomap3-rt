@@ -7,7 +7,6 @@ PR = "r0"
 
 SRC_URI = "file://err.c \
 	file://err.h \
-	file://ioctl.h \
 	file://io_hdfile.c \
 	file://io_hdfile.h \
 	file://CMakeLists.txt"

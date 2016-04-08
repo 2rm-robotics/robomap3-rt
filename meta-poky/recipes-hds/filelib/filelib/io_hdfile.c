@@ -26,7 +26,6 @@
 
 #include <stdlib.h>
 
-#include "ioctl.h"
 #include "io_hdfile.h"
 #include "err.h"
 
@@ -34,6 +33,16 @@ extern int road_err;
 
 #define TIME_DATA_SIZE 	(sizeof(road_time_t) + sizeof(road_timerange_t))
 #define DATA_SIZE_INFO	(sizeof(char))
+
+typedef enum {
+	IMAGE_WIDTH,
+	IMAGE_HEIGHT,
+	DATA_SIZE,
+	HEADER,
+	HEADER_AUX,
+	HEADER_AUX_SIZE,
+	DATA_TYPE,
+} ioctl_type;
 
 /////////////////////////////////////////
 // Forward Declaration
@@ -334,6 +343,7 @@ int test_hdfile(char *path) {
 /////////////////////////////////////////
 // Read
 ////////////////////////////////////////
+
 
 int read_hdfile(hdfile_t *f, void *buffer, road_time_t *time, road_timerange_t *tr) {
 
