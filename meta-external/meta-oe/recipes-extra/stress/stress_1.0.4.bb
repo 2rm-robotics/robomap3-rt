@@ -8,7 +8,7 @@ SRC_URI = "ftp://ftp.hu.debian.org/pub/sunfreeware/SOURCES/stress-1.0.4.tar.gz \
             file://texinfo.patch \
            "
  
-SRC_URI[md5sum] = "4a66a0f8d5c2e8cfaf3b00626d57b2d8"
-SRC_URI[sha256sum] = "59712a6942b5d616788da06fefe162d1f716e8bb2ed810b9f7a3492c6fc34980"
+SRC_URI[md5sum] = "890a4236dd1656792f3ef9a190cf99ef"
+SRC_URI[sha256sum] = "057e4fc2a7706411e1014bf172e4f94b63a12f18412378fca8684ca92408825b"
 
 inherit autotools
