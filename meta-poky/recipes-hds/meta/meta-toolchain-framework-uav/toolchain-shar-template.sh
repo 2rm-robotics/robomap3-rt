@@ -74,7 +74,7 @@ fi
 
 if [ -e "$target_sdk_dir/environment-setup-@REAL_MULTIMACH_TARGET_SYS@" ]; then
 	echo "The directory \"$target_sdk_dir\" already contains a SDK for this architecture."
-	printf "If you continue, existing files will be overwritten! Proceed[y/N]?"
+	printf "If you continue, existing files will be erased! Proceed[y/N]?"
 
 	default_answer="n"
 else
@@ -96,6 +96,7 @@ if [ "$answer" != "Y" -a "$answer" != "y" ]; then
 fi
 
 # Try to create the directory (this will not succeed if user doesn't have rights)
+rm -rf $target_sdk_dir
 mkdir -p $target_sdk_dir >/dev/null 2>&1
 
 # if don't have the right to access dir, gain by sudo 
@@ -111,6 +112,7 @@ if [ ! -x $target_sdk_dir -o ! -w $target_sdk_dir -o ! -r $target_sdk_dir ]; the
 	[ $? -ne 0 ] && echo "Sorry, you are not allowed to execute as root." && exit 1
 
 	# now that we have sudo rights, create the directory
+	rm -rf $target_sdk_dir
 	$SUDO_EXEC mkdir -p $target_sdk_dir >/dev/null 2>&1
 fi
 
@@ -181,6 +183,27 @@ for perl_script in $($SUDO_EXEC find $native_sysroot -type f -exec grep -l "^#!.
 done
 
 echo
+
+#libGL fix for Fl-AIR simulator
+if [ "$MACHINE" = "genericx86-64" ] || [ "$MACHINE" = "genericx86" ] ; then
+	libgl=$(ldconfig -p | grep -m1 libGL.so.1  | awk '{ print $4 }')
+
+	if [ -n "$libgl" ]; then
+		echo libGL.so.1 found in $libgl
+		printf "Copy it to the SDK? (needed for Fl-AIR simulator). Proceed[Y/n]?"
+
+		default_answer="y"
+		read answer
+		[ "$answer" = "" ] && answer="$default_answer"
+		if [ "$answer" = "Y" -o "$answer" = "y" ]; then
+			dest=$(cat $env_setup_script | grep "export SDKTARGETSYSROOT=" | sed 's/.*=\(.*\)/\1/')/usr/lib
+			sudo cp $libgl $dest
+		fi
+	else
+		echo libGL.so.1 not found!
+		echo "Please manually copy it to ... (needed for Fl-AIR simulator)."
+	fi
+fi
 
 #environement variable settings
 function comment-and-add {
