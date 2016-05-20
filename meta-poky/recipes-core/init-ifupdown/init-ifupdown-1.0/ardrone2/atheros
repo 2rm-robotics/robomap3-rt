@@ -21,8 +21,9 @@ pre_up() {
 
   #load atheros module and configure it through bmi(Boot Message Interface)
   if [ ! -r /etc/mac_address ]; then                                            
-    echo -n 02:BA:BE > /etc/mac_address                                         
-    dd bs=1 count=3 if=/dev/urandom 2>/dev/null | hexdump -v -e '/1 ":%02X"' >> /etc/mac_address
+#    echo -n 02:BA:BE: > /etc/mac_address                                         
+#    dd bs=1 count=3 if=/dev/urandom 2>/dev/null | hexdump -v -e '/1 ":%02X"' >> /etc/mac_address
+	echo -n 02:DE:AD:BA:BE:2F > /etc/mac_address   
   fi
   MAC_ADDR=`cat /etc/mac_address`
   export ATH_PLATFORM=$IF_ATH_PLATFORM

@@ -21,6 +21,7 @@ function receive ()
 		echo md5 ok
 	else
 		echo md5 ko
+		exit 1
 	fi
 }
 
@@ -30,7 +31,7 @@ receive $KERNEL
 echo partitionning, formatting and updating rootfs
 ubiformat /dev/mtd3 > /dev/null
 ubiattach -p /dev/mtd3
-ubimkvol /dev/ubi0 --type=dynamic -N "rootfs" -n 0 --size=70MiB
+ubimkvol /dev/ubi0 --type=dynamic -N "rootfs" -n 0 --size=60MiB
 ubimkvol /dev/ubi0 --type=dynamic -N "home" -n 1 -m
 mkdir rootfs
 mount -t ubifs /dev/ubi0_0 rootfs -o compr=none

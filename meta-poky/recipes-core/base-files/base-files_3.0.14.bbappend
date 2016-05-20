@@ -3,6 +3,7 @@ require conf/distro/release_robomap3.inc
 PR := "${PR}.${ROBOMAP3_VERSION}"
 
 BASEFILESISSUEINSTALL = "do_basefilesissue"
+FILESEXTRAPATHS_prepend := "${THISDIR}/${PN}:"
 
 do_basefilesissue () {
 	if [ -n "${MACHINE}" -a "${hostname}" = "openembedded" ]; then
