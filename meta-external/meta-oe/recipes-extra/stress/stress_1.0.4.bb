@@ -2,7 +2,7 @@ DESCRIPTION = "Deliberately simple workload generator for POSIX systems. It \
 imposes a configurable amount of CPU, memory, I/O, and disk stress on the system."
 HOMEPAGE = "http://weather.ou.edu/~apw/projects/stress/"
 LICENSE = "GPLv2"
-LIC_FILES_CHKSUM = "file://COPYING;md5=d32239bcb673463ab874e80d47fae504"
+LIC_FILES_CHKSUM = "file://COPYING;md5=b234ee4d69f5fce4486a80fdaf4a4263"
  
 SRC_URI = "ftp://ftp.hu.debian.org/pub/sunfreeware/SOURCES/stress-1.0.4.tar.gz \
             file://texinfo.patch \
