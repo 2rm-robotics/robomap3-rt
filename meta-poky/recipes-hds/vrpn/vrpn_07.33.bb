@@ -3,7 +3,7 @@ LICENSE = "BSL-1.0"
 LIC_FILES_CHKSUM = "file://README.Legal;md5=a346ececf6ce1f9b8f6342a42ea115b7"
 PR = "r0"
 
-SRC_URI = "http://www.cs.unc.edu/Research/vrpn/downloads/vrpn_07_33.zip \
+SRC_URI = "https://github.com/vrpn/vrpn/releases/download/v07.33/vrpn_07_33.zip \
 		file://lib.patch \
 		file://no_python.patch \
 		file://version.patch \
