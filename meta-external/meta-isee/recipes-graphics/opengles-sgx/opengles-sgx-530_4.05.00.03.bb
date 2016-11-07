@@ -8,7 +8,7 @@ RDEPENDS_${PN} = "devmem2 powervr-sgx-530 fbset"
 
 PR = "r2"
 
-SRC_URI = "http://meta-igep.googlecode.com/files/${PN}-${PV}.tar.gz \
+SRC_URI = "https://storage.googleapis.com/google-code-archive-downloads/v2/code.google.com/meta-igep/${PN}-${PV}.tar.gz \
 	file://init \
 	"
 
