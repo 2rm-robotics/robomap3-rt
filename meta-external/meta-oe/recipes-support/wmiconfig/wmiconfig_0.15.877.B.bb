@@ -4,14 +4,15 @@ LIC_FILES_CHKSUM = "file://wmiconfig.c;endline=19;md5=c86f3e019e6b6b0f47b6418a54
 
 SECTION = "console/network"
 
-SRC_URI = "git://chromium.googlesource.com/chromiumos/third_party/atheros;protocol=http;branch=0.15.877.B \
+SRC_URI[md5sum] = "ad5896389412100177710466ffc0b547"
+SRC_URI[sha256sum] = "407f4629ca3c1166e56f9476b394865adad14070536882defcaffd39b8f376ba"
+
+SRC_URI = "https://chromium.googlesource.com/chromiumos/third_party/atheros/+archive/0.15.877.B.tar.gz \
     file://disable_pal.patch \
 "
 
-S = "${WORKDIR}/git/files/host/tools/wmiconfig/"
+S = "${WORKDIR}/files/host/tools/wmiconfig/"
 
-#The following source revision corresponds to the most recent branch
-SRCREV = "81b519cdad02b3afe43cbf59977f0d546b237aee"
 PR = "r0"
 
 TARGET_CC_ARCH += "${LDFLAGS}"

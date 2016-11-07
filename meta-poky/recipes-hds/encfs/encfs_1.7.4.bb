@@ -6,11 +6,12 @@ LIC_FILES_CHKSUM = "file://COPYING;md5=d32239bcb673463ab874e80d47fae504"
 
 DEPENDS = "libtool automake boost fuse rlog"
 
-SRC_URI = "http://encfs.googlecode.com/files/encfs-1.7.4.tgz \
+SRC_URI = "https://github.com/vgough/encfs/archive/v1.7.4.tar.gz \
 	file://fuse.patch"
 
-SRC_URI[sha256sum] = "282ef0f04f2dd7ba3527b45621fab485b7cc510c2ceee116600d0348dc2170a8"
-SRC_URI[md5sum] = "ac90cc10b2e9fc7e72765de88321d617"
+SRC_URI[md5sum] = "9c69266004419502e69b2da6138ced35"
+SRC_URI[sha256sum] = "bc4ea171111e7f1e2e34e6fd64cd5dc0100e6a41c0157288602e663441b36f0a"
+
 
 EXTRA_OECONF = "--with-boost-libdir=${STAGING_LIBDIR} --with-boost=${STAGING_DIR_TARGET}"
 

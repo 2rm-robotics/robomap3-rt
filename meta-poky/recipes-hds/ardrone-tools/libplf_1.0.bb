@@ -4,13 +4,14 @@ PR = "r1"
 LICENSE = "GPLv3"
 LIC_FILES_CHKSUM = "file://${COMMON_LICENSE_DIR}/GPL-3.0;md5=c79ff39f19dfec6d293b95dea7b07891"
 
-SRCREV = "29"
-SRC_URI = "svn://ardrone-tool.googlecode.com/svn/projects;module=libplf;protocol=http \
+SRC_URI[md5sum] = "b6b859c59a738fde659032fbae8c4d6d"
+SRC_URI[sha256sum] = "df9137ef37202676ba94b58f6f8a36ae61e32ace2692f72401b4cdd9dd303df1"
+SRC_URI = "https://storage.googleapis.com/google-code-archive-source/v2/code.google.com/ardrone-tool/source-archive.zip \
 	file://plf.patch;pnum=0 \
 	file://Makefile.patch;pnum=0 \
 "
 
-S = "${WORKDIR}/libplf/trunk"
+S = "${WORKDIR}/ardrone-tool/projects/libplf/trunk"
 
 inherit autotools-brokensep
 
