@@ -189,27 +189,24 @@ if [ "$MACHINE" = "genericx86-64" ] || [ "$MACHINE" = "genericx86" ] ; then
 	libgl=$(ldconfig -p | grep -m1 libGL.so.1  | awk '{ print $4 }')
 
 	if [ -n "$libgl" ]; then
-		echo libGL.so.1 found in $libgl
-		printf "Copy it to the SDK? (needed for Fl-AIR simulator). Proceed[Y/n]?"
-
-		default_answer="y"
-		read answer
-		[ "$answer" = "" ] && answer="$default_answer"
-		if [ "$answer" = "Y" -o "$answer" = "y" ]; then
-			dest=$(cat $env_setup_script | grep "export SDKTARGETSYSROOT=" | sed 's/.*=\(.*\)/\1/')/usr/lib
-			sudo cp $libgl $dest
-		fi
+		libgl_path=`dirname $libgl`
+		echo libGL.so.1 found in $libgl_path
+		echo adding it to $target_sdk_dir/toolchain.cmake
 	else
 		echo libGL.so.1 not found!
-		echo "Please manually copy it to ... (needed for Fl-AIR simulator)."
+		echo "You will not be able to use proprietary graphic drivers"
 	fi
 fi
+
+sed -e "s:<libgl_path>:$libgl_path:g" -i $target_sdk_dir/toolchain.cmake
 
 #environement variable settings
 function comment-and-add {
   FILE=$1
   ENVVAR=$2
   VALUE=$3
+  unset LINE_FOUND
+
   while read -r LINE; do
     #if the correct line is already here...
     if [ Z"$LINE" = Z"export $ENVVAR=$VALUE" ]; then
@@ -223,9 +220,9 @@ function comment-and-add {
         sed -i "s:$LINE:#$LINE:g" $FILE
       fi
     fi
-  done < <(cat $1 | grep "[[:space:]]*export[[:space:]]*$ENVVAR=")
+  done < <(cat $FILE | grep "[[:space:]]*export[[:space:]]*$ENVVAR=")
 
-  #if NEW_FOUND is unset...
+  #if LINE_FOUND is unset...
   if [ -z "${LINE_FOUND+set}" ]; then
     #... add it now
     echo "export $ENVVAR=$VALUE" >> $FILE
@@ -249,6 +246,10 @@ if [ "$MACHINE" = "genericx86-64" ] || [ "$MACHINE" = "genericx86" ] ; then
 	VALUE=$(cat $env_setup_script | grep "export SDKTARGETSYSROOT=" | sed 's/.*=\(.*\)/\1/')
 	comment-and-add ~/.bashrc OECORE_HOST_SYSROOT $VALUE
 	echo "Added OECORE_HOST_SYSROOT in ~/.bashrc"
+
+	VALUE=$(cat $env_setup_script | grep "export OECORE_NATIVE_SYSROOT=" | sed 's/.*=\(.*\)/\1/')
+	comment-and-add ~/.bashrc OECORE_HOST_NATIVE_SYSROOT $VALUE
+	echo "Added OECORE_HOST_NATIVE_SYSROOT in ~/.bashrc"
 fi
 
 echo done

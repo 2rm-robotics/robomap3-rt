@@ -8,13 +8,13 @@ function receive ()
 {
 	echo receiving $1
 
-	HEXSIZE=$(dd if=/dev/ttyGS0 iflag=count_bytes count=10 status=none)
+	HEXSIZE=$(dd if=$TTY iflag=count_bytes count=10 status=none)
 	SIZE=$(printf "%i\n" $HEXSIZE)
 	echo size: $SIZE
 
-	MD5=$(dd if=/dev/ttyGS0 iflag=count_bytes count=32 status=none)
+	MD5=$(dd if=$TTY iflag=count_bytes count=32 status=none)
 
-	dd if=$TTY of=$1 iflag=count_bytes count=$SIZE
+	dd if=$TTY of=$1 iflag=count_bytes,fullblock count=$SIZE
 	echo md5: $MD5
 
 	if [ "$MD5" = "$(md5sum < $1 | head -c -4)" ]; then

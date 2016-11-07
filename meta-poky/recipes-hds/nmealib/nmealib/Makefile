@@ -1,7 +1,7 @@
 .PHONY : clean
 
 CFLAGS= -fPIC -g
-LDFLAGS= -shared
+LDFLAGS= -shared -Wl,-soname,libnmea.so.1
 INCS = -I include 
 
 SOURCES = $(shell echo src/*.c)
@@ -15,7 +15,7 @@ clean:
 	rm -f $(OBJECTS) $(TARGET)
 
 $(TARGET) : $(OBJECTS)
-	$(CC) $(INCS) $(CFLAGS) $(OBJECTS) -o $@ $(LDFLAGS)
+	$(CC) $(INCS) $(CFLAGS) $(OBJECTS)  $(LDFLAGS) -o $@
 
 install:
 	install -d $(DESTDIR)/$(libdir)

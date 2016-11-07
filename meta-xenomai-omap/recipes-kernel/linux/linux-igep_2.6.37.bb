@@ -18,7 +18,7 @@ inherit kernel
 PR = "r18"
 KV = "${PV}-9"
 
-SRCREV = "464"
+SRCREV = "487"
 SRC_URI = "svn://devel.hds.utc.fr/svn/igep_src/trunk;module=linux-omap-${KV};protocol=https"
 
 do_configure() {

@@ -2,12 +2,15 @@ SUMMARY = "Media controller control application"
 LICENSE = "LGPLv2+"
 LIC_FILES_CHKSUM = "file://COPYING.LIB;md5=d749e86a105281d7a44c2328acebc4b0"
 
-DEPENDS = "linux-libc-headers"
+#DEPENDS = "linux-libc-headers"
+RDEPENDS_${PN} = "kernel"
+DEPENDS = "virtual/kernel"
 
 SRC_URI = "git://git.ideasonboard.org/media-ctl.git;protocol=git \
 	 file://configure.patch \
 "
 
+COMPATIBLE_MACHINE = "ardrone2"
 #git rev is choosen to fit with ardrone2 parallel-stream.sh script
 SRCREV = "b5a1c3048a028965efe5af46801b9c14959703a2"
 

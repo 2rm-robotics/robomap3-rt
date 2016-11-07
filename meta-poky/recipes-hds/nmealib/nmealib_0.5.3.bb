@@ -18,7 +18,7 @@ do_compile_prepend() {
 	cp ../Makefile ./
 }
 
-BBCLASSEXTEND = "nativesdk"
+#BBCLASSEXTEND = "nativesdk"
 
 PACKAGES = "${PN}-dbg ${PN}-dev ${PN}"
 FILES_${PN} += "/usr/lib/*.so*"
