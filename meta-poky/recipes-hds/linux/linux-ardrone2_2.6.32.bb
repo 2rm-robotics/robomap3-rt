@@ -18,7 +18,7 @@ inherit kernel
 PR = "r9"
 KV = "${PV}-9"
 
-SRCREV = "32"
+SRCREV = "33"
 SRC_URI = "svn://devel.hds.utc.fr/svn/ardrone2_src/trunk;module=${PN}-${KV};protocol=https"
 S = "${WORKDIR}/${PN}-${KV}"
 

@@ -6,7 +6,7 @@ RDEPENDS_${PN} = "kernel"
 DEPENDS = "virtual/kernel"
 PR = "r4"
 
-SRCREV = "40"
+SRCREV = "43"
 SRC_URI = "svn://devel.hds.utc.fr/svn/igep_dsp/;module=trunk;protocol=https \
 	file://dsp.conf"
 
