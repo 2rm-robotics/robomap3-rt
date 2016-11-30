@@ -1,0 +1,26 @@
+# /etc/network/interfaces -- configuration file for ifup(8), ifdown(8)
+ 
+# The loopback interface
+auto lo
+iface lo inet loopback
+
+# Wireless interfaces
+auto ath0
+iface ath0 inet static
+	address 192.168.6.1
+	netmask 255.255.255.0
+	network 192.168.6.0
+	gateway 192.168.6.254
+	wireless_mode ad-hoc
+        wireless_essid ARDRONE2
+	ath_platform parrot-omap-sdio
+	ath_firmware /lib/firmware
+	
+# Ethernet/RNDIS gadget (g_ether)
+# ... or on host side, usbnet and random hwaddr
+#iface usb0 inet static
+#	address 192.168.7.2
+#	netmask 255.255.255.0
+#	network 192.168.7.0
+#	gateway 192.168.7.1
+
