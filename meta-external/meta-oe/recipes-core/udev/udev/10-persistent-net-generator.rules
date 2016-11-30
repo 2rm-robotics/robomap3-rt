@@ -2,3 +2,4 @@
 #on attribue un nom, et la regle 75-persistent-net-generator.rules sera passee
 KERNEL=="wlan0", NAME="wlan0"
 KERNEL=="eth0", NAME="eth0"
+KERNEL=="ath0", NAME="wlan0"
