@@ -1,0 +1,283 @@
+diff -u "../T\303\251l\303\251chargements/cmake-3.7.1/Source/cmExtraCodeLiteGenerator.cxx" ./Source/cmExtraCodeLiteGenerator.cxx
+--- "../T\303\251l\303\251chargements/cmake-3.7.1/Source/cmExtraCodeLiteGenerator.cxx"	2016-11-30 16:14:32.000000000 +0100
++++ ./Source/cmExtraCodeLiteGenerator.cxx	2016-12-21 14:09:34.145182487 +0100
+@@ -130,7 +130,6 @@
+       cmState::TargetType type = (*lt)->GetType();
+       std::string outputDir = (*lg)->GetCurrentBinaryDirectory();
+       std::string filename = outputDir + "/" + (*lt)->GetName() + ".project";
+-      retval.push_back((*lt)->GetName());
+       // Make the project file relative to the workspace
+       std::string relafilename = cmSystemTools::RelativePath(
+         this->WorkspacePath.c_str(), filename.c_str());
+@@ -152,6 +151,7 @@
+         default:
+           break;
+       }
++      retval.push_back(visualname);
+     }
+   }
+   return retval;
+@@ -202,6 +202,7 @@
+ std::string cmExtraCodeLiteGenerator::CollectSourceFiles(
+   const cmMakefile* makefile, const cmGeneratorTarget* gt,
+   std::map<std::string, cmSourceFile*>& cFiles,
++  std::set<std::string>& generatedFiles,
+   std::set<std::string>& otherFiles)
+ {
+   const std::vector<std::string>& srcExts =
+@@ -249,11 +250,15 @@
+           }
+         }
+ 
+-        // then put it accordingly into one of the two containers
+-        if (isCFile) {
+-          cFiles[(*si)->GetFullPath()] = *si;
++        // then put it accordingly into one of the 3 containers
++        if((*si)->GetPropertyAsBool("GENERATED")) {
++          generatedFiles.insert((*si)->GetFullPath());
+         } else {
+-          otherFiles.insert((*si)->GetFullPath());
++          if (isCFile) {
++            cFiles[(*si)->GetFullPath()] = *si;
++          } else {
++            otherFiles.insert((*si)->GetFullPath());
++          }
+         }
+       }
+     }
+@@ -282,10 +287,10 @@
+   std::string projectType;
+ 
+   // Collect all used source files in the project
+-  // Sort them into two containers, one for C/C++ implementation files
+-  // which may have an acompanying header, one for all other files
++  // Sort them into 3 containers, one for C/C++ implementation files
++  // which may have an acompanying header, one for generated files, one for all other files
+   std::map<std::string, cmSourceFile*> cFiles;
+-  std::set<std::string> otherFiles;
++  std::set<std::string> generatedFiles,otherFiles;
+ 
+   for (std::vector<cmLocalGenerator*>::const_iterator lg = lgs.begin();
+        lg != lgs.end(); lg++) {
+@@ -293,7 +298,7 @@
+     std::vector<cmGeneratorTarget*> targets = (*lg)->GetGeneratorTargets();
+     for (std::vector<cmGeneratorTarget*>::iterator ti = targets.begin();
+          ti != targets.end(); ti++) {
+-      projectType = CollectSourceFiles(makefile, *ti, cFiles, otherFiles);
++      projectType = CollectSourceFiles(makefile, *ti, cFiles, generatedFiles,otherFiles);
+     }
+   }
+ 
+@@ -301,7 +306,7 @@
+   // their relative path)
+   std::string projectPath = cmSystemTools::GetFilenamePath(filename);
+ 
+-  CreateProjectSourceEntries(cFiles, otherFiles, &xml, projectPath, mf,
++  CreateProjectSourceEntries(cFiles, generatedFiles,otherFiles, &xml, projectPath,lgs[0]->GetGeneratorTargets()[0], mf,
+                              projectType);
+ 
+   xml.EndElement(); // CodeLite_Project
+@@ -350,16 +355,17 @@
+ 
+ void cmExtraCodeLiteGenerator::CreateProjectSourceEntries(
+   std::map<std::string, cmSourceFile*>& cFiles,
++  std::set<std::string>& generatedFiles,
+   std::set<std::string>& otherFiles, cmXMLWriter* _xml,
+-  const std::string& projectPath, const cmMakefile* mf,
++  const std::string& projectPath,const cmGeneratorTarget* gt, const cmMakefile* mf,
+   const std::string& projectType)
+ {
+ 
+   cmXMLWriter& xml(*_xml);
+   FindMatchingHeaderfiles(cFiles, otherFiles);
+-  // Create 2 virtual folders: src and include
++  // Create 3 virtual folders: src, include and others
+   // and place all the implementation files into the src
+-  // folder, the rest goes to the include folder
++  // folder, all generated files in the others folder, the rest goes to the include folder
+   xml.StartElement("VirtualDirectory");
+   xml.Attribute("Name", "src");
+ 
+@@ -386,6 +392,18 @@
+     xml.EndElement();
+   }
+   xml.EndElement(); // VirtualDirectory
++  if(!generatedFiles.empty()) {
++    xml.StartElement("VirtualDirectory");
++    xml.Attribute("Name", "others");
++    for (std::set<std::string>::const_iterator sit = generatedFiles.begin();
++         sit != generatedFiles.end(); ++sit) {
++      xml.StartElement("File");
++      xml.Attribute(
++        "Name", cmSystemTools::RelativePath(projectPath.c_str(), sit->c_str()));
++      xml.EndElement();
++    }
++    xml.EndElement(); // VirtualDirectory
++  }
+ 
+   // Get the number of CPUs. We use this information for the make -jN
+   // command
+@@ -458,14 +476,82 @@
+ 
+   xml.StartElement("CustomBuild");
+   xml.Attribute("Enabled", "yes");
+-  xml.Element("RebuildCommand", GetRebuildCommand(mf));
+-  xml.Element("CleanCommand", GetCleanCommand(mf));
+-  xml.Element("BuildCommand", GetBuildCommand(mf));
+-  xml.Element("SingleFileCommand", GetSingleFileBuildCommand(mf));
+-  xml.Element("PreprocessFileCommand");
+-  xml.Element("WorkingDirectory", "$(WorkspacePath)");
++  cmTargets targets=mf->GetTargets();
++  for (cmTargets::iterator ti = targets.begin();ti != targets.end(); ti++) {
++    cmTarget* t = &ti->second;
++    if(t->GetType()==cmState::TargetType::EXECUTABLE 
++        || t->GetType()==cmState::TargetType::SHARED_LIBRARY
++        || t->GetType()==cmState::TargetType::STATIC_LIBRARY
++        || t->GetType()==cmState::TargetType::MODULE_LIBRARY) {
++      xml.Element("RebuildCommand", GetRebuildCommand(mf));
++      xml.Element("CleanCommand", GetCleanCommand(mf));
++      xml.Element("BuildCommand", GetBuildCommand(mf));
++      xml.Element("SingleFileCommand", GetSingleFileBuildCommand(mf));
++      xml.Element("PreprocessFileCommand");
++      xml.Element("WorkingDirectory", "$(WorkspacePath)");
++    }
++    if(t->GetType()==cmState::TargetType::GLOBAL_TARGET) {
++      xml.StartElement("Target");
++      xml.Attribute("Name", t->GetName());
++      xml.Content(GetBuildCommand(mf) + std::string(" ") + t->GetName());
++      xml.EndElement(); // Target
++    }
++    if(t->GetType()==cmState::TargetType::UTILITY) {
++      xml.StartElement("Target");
++      xml.Attribute("Name", t->GetName());
++      xml.Content(GetBuildCommand(mf) + std::string(" ") + t->GetName());
++      xml.EndElement(); // Target
++    }
++  }
+   xml.EndElement(); // CustomBuild
+ 
++  xml.StartElement("Completion");
++  xml.Attribute("EnableCpp11", "yes");
++  xml.Attribute("EnableCpp14", "yes");
++  for (cmTargets::iterator ti = targets.begin();ti != targets.end(); ti++) {
++    cmTarget* t = &ti->second;
++     if(t->GetType()==cmState::TargetType::EXECUTABLE 
++        || t->GetType()==cmState::TargetType::SHARED_LIBRARY
++        || t->GetType()==cmState::TargetType::STATIC_LIBRARY
++        || t->GetType()==cmState::TargetType::MODULE_LIBRARY) {
++	    std::vector<std::string> allIncludeDirs;
++      std::string buildType = mf->GetSafeDefinition("CMAKE_BUILD_TYPE");
++	    std::vector<std::string> includes;
++	    gt->GetLocalGenerator()->GetIncludeDirectories(includes, gt, "C", buildType);
++
++	    allIncludeDirs.insert(allIncludeDirs.end(), includes.begin(),
++			          includes.end());
++
++	    std::string systemIncludeDirs = mf->GetSafeDefinition(
++	      "CMAKE_EXTRA_GENERATOR_CXX_SYSTEM_INCLUDE_DIRS");
++	    if (!systemIncludeDirs.empty()) {
++	      std::vector<std::string> dirs;
++	      cmSystemTools::ExpandListArgument(systemIncludeDirs, dirs);
++	      allIncludeDirs.insert(allIncludeDirs.end(), dirs.begin(), dirs.end());
++	    }
++
++	    systemIncludeDirs = mf->GetSafeDefinition(
++	      "CMAKE_EXTRA_GENERATOR_C_SYSTEM_INCLUDE_DIRS");
++	    if (!systemIncludeDirs.empty()) {
++	      std::vector<std::string> dirs;
++	      cmSystemTools::ExpandListArgument(systemIncludeDirs, dirs);
++	      allIncludeDirs.insert(allIncludeDirs.end(), dirs.begin(), dirs.end());
++	    }
++
++		  std::vector<std::string>::const_iterator end =
++	      cmRemoveDuplicates(allIncludeDirs);
++
++      std::string out;
++	    for (std::vector<std::string>::const_iterator i = allIncludeDirs.begin(); i != end; ++i) {
++//std::string const& entry = *i;
++        out+=*i+"\n";
++	    }
++      xml.Element("SearchPaths",out);
++    }
++  }
++ 
++  xml.EndElement(); // Completion
++
+   xml.StartElement("AdditionalRules");
+   xml.Element("CustomPostBuild");
+   xml.Element("CustomPreBuild");
+@@ -522,23 +608,23 @@
+   xml.Attribute("InternalType", "");
+ 
+   // Collect all used source files in the project
+-  // Sort them into two containers, one for C/C++ implementation files
+-  // which may have an acompanying header, one for all other files
++  // Sort them into 3 containers, one for C/C++ implementation files
++  // which may have an acompanying header, one for generated files, one for all other files
+   std::string projectType;
+ 
+   std::vector<std::string> headerExts =
+     this->GlobalGenerator->GetCMakeInstance()->GetHeaderExtensions();
+ 
+   std::map<std::string, cmSourceFile*> cFiles;
+-  std::set<std::string> otherFiles;
++  std::set<std::string> generatedFiles,otherFiles;
+ 
+-  projectType = CollectSourceFiles(mf, gt, cFiles, otherFiles);
++  projectType = CollectSourceFiles(mf, gt, cFiles,generatedFiles, otherFiles);
+ 
+   // Get the project path ( we need it later to convert files to
+   // their relative path)
+   std::string projectPath = cmSystemTools::GetFilenamePath(filename);
+ 
+-  CreateProjectSourceEntries(cFiles, otherFiles, &xml, projectPath, mf,
++  CreateProjectSourceEntries(cFiles,generatedFiles, otherFiles, &xml, projectPath, gt,mf,
+                              projectType);
+ 
+   xml.EndElement(); // CodeLite_Project
+diff -u "../T\303\251l\303\251chargements/cmake-3.7.1/Source/cmExtraCodeLiteGenerator.h" ./Source/cmExtraCodeLiteGenerator.h
+--- "../T\303\251l\303\251chargements/cmake-3.7.1/Source/cmExtraCodeLiteGenerator.h"	2016-11-30 16:14:32.000000000 +0100
++++ ./Source/cmExtraCodeLiteGenerator.h	2016-12-20 09:25:34.302095486 +0100
+@@ -37,13 +37,16 @@
+   std::string CollectSourceFiles(const cmMakefile* makefile,
+                                  const cmGeneratorTarget* gt,
+                                  std::map<std::string, cmSourceFile*>& cFiles,
++                                 std::set<std::string>& generatedFiles,
+                                  std::set<std::string>& otherFiles);
+   void FindMatchingHeaderfiles(std::map<std::string, cmSourceFile*>& cFiles,
+                                std::set<std::string>& otherFiles);
+   void CreateProjectSourceEntries(std::map<std::string, cmSourceFile*>& cFiles,
++                                  std::set<std::string>& generatedFiles,
+                                   std::set<std::string>& otherFiles,
+                                   cmXMLWriter* xml,
+                                   const std::string& projectPath,
++                                  const cmGeneratorTarget* gt,
+                                   const cmMakefile* mf,
+                                   const std::string& projectType);
+ 
+diff -u --new-file "../T\303\251l\303\251chargements/cmake-3.7.1/Modules/CMakeExtraGeneratorDetermineCompilerMacrosAndIncludeDirs.cmake" Modules/CMakeExtraGeneratorDetermineCompilerMacrosAndIncludeDirs.cmake
+--- "../T\303\251l\303\251chargements/cmake-3.7.1/Modules/CMakeExtraGeneratorDetermineCompilerMacrosAndIncludeDirs.cmake"	2016-11-30 16:14:32.000000000 +0100
++++ ./Modules/CMakeExtraGeneratorDetermineCompilerMacrosAndIncludeDirs.cmake	2016-12-19 12:45:24.915358968 +0100
+@@ -2,7 +2,7 @@
+ # file Copyright.txt or https://cmake.org/licensing for details.
+ 
+ 
+-# This file is included by CMakeFindEclipseCDT4.cmake and CMakeFindCodeBlocks.cmake
++# This file is included by CMakeFindCodeLite.cmake, CMakeFindEclipseCDT4.cmake and CMakeFindCodeBlocks.cmake
+ 
+ # The Eclipse and the CodeBlocks generators need to know the standard include path
+ # so that they can find the headers at runtime and parsing etc. works better
+diff -u --new-file "../T\303\251l\303\251chargements/cmake-3.7.1/Modules/CMakeFindCodeLite.cmake" Modules/CMakeFindCodeLite.cmake
+--- "../T\303\251l\303\251chargements/cmake-3.7.1/Modules/CMakeFindCodeLite.cmake"	1970-01-01 01:00:00.000000000 +0100
++++ ./Modules/CMakeFindCodeLite.cmake	2016-12-19 12:43:03.567361901 +0100
+@@ -0,0 +1,9 @@
++# Distributed under the OSI-approved BSD 3-Clause License.  See accompanying
++# file Copyright.txt or https://cmake.org/licensing for details.
++
++
++# This file is included in CMakeSystemSpecificInformation.cmake if
++# the CodeLite extra generator has been selected.
++
++# Determine builtin macros and include dirs:
++include(${CMAKE_CURRENT_LIST_DIR}/CMakeExtraGeneratorDetermineCompilerMacrosAndIncludeDirs.cmake)
+
