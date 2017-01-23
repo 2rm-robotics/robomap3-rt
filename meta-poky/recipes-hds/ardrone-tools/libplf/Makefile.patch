@@ -1,60 +1,35 @@
-*** Makefile	2013-12-17 09:10:17.886431071 +0100
---- Makefile	2015-04-20 09:31:58.047445614 +0200
-***************
-*** 1,13 ****
-! CC      := gcc
-  TARGET  := libplf.so
-  SRCS    := plf.c crc32.c gzip.c
-  OBJS    := ${SRCS:.c=.o} 
-  DEPS    := ${SRCS:.c=.dep} 
-  XDEPS   := $(wildcard ${DEPS}) 
-  
-! CCFLAGS = -std=gnu99 -O2 -Wall -Werror
-  #CCFLAGS+= -ggdb 
-! LDFLAGS = -shared
-  LIBS    = -lz
-  
-  .PHONY: all clean distclean 
---- 1,13 ----
-! CC      ?= gcc
-  TARGET  := libplf.so
-  SRCS    := plf.c crc32.c gzip.c
-  OBJS    := ${SRCS:.c=.o} 
-  DEPS    := ${SRCS:.c=.dep} 
-  XDEPS   := $(wildcard ${DEPS}) 
-  
-! CFLAGS += -std=gnu99 -O2 -Wall -Werror -fPIC
-  #CCFLAGS+= -ggdb 
-! LDFLAGS += -shared
-  LIBS    = -lz
-  
-  .PHONY: all clean distclean 
-***************
-*** 19,31 ****
-  
-  ${TARGET}: ${OBJS} 
-  	${CC} ${LDFLAGS} -o $@ $^ ${LIBS} 
-! 	strip $@
-  
-  ${OBJS}: %.o: %.c %.dep 
-! 	${CC} ${CCFLAGS} -o $@ -c $< 
-  
-  ${DEPS}: %.dep: %.c Makefile 
-! 	${CC} ${CCFLAGS} -MM $< > $@ 
-  
-  clean:: 
-  	-rm -f *~ *.o ${TARGET} 
---- 19,31 ----
-  
-  ${TARGET}: ${OBJS} 
-  	${CC} ${LDFLAGS} -o $@ $^ ${LIBS} 
-! 	${STRIP} $@
-  
-  ${OBJS}: %.o: %.c %.dep 
-! 	${CC} ${CFLAGS} -o $@ -c $< 
-  
-  ${DEPS}: %.dep: %.c Makefile 
-! 	${CC} ${CFLAGS} -MM $< > $@ 
-  
-  clean:: 
-  	-rm -f *~ *.o ${TARGET} 
+--- /home/gsanahuj/Bureau/Makefile	2016-03-18 02:43:40.000000000 +0100
++++ Makefile	2017-01-18 17:09:18.976056842 +0100
+@@ -1,13 +1,13 @@
+-CC      := gcc
++CC      ?= gcc
+ TARGET  := libplf.so
+ SRCS    := plf.c crc32.c gzip.c
+ OBJS    := ${SRCS:.c=.o} 
+ DEPS    := ${SRCS:.c=.dep} 
+ XDEPS   := $(wildcard ${DEPS}) 
+ 
+-CCFLAGS = -std=gnu99 -O2 -Wall -Werror
++CFLAGS += -std=gnu99 -O2 -Wall -Werror -fPIC
+ #CCFLAGS+= -ggdb 
+-LDFLAGS = -shared
++LDFLAGS += -shared -Wl,-soname,libplf.so.1.0
+ LIBS    = -lz
+ 
+ .PHONY: all clean distclean 
+@@ -19,13 +19,12 @@
+ 
+ ${TARGET}: ${OBJS} 
+ 	${CC} ${LDFLAGS} -o $@ $^ ${LIBS} 
+-	strip $@
+ 
+ ${OBJS}: %.o: %.c %.dep 
+-	${CC} ${CCFLAGS} -o $@ -c $< 
++	${CC} ${CFLAGS} -o $@ -c $< 
+ 
+ ${DEPS}: %.dep: %.c Makefile 
+-	${CC} ${CCFLAGS} -MM $< > $@ 
++	${CC} ${CFLAGS} -MM $< > $@ 
+ 
+ clean:: 
+ 	-rm -f *~ *.o ${TARGET} 

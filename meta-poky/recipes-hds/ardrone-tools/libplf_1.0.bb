@@ -15,13 +15,16 @@ S = "${WORKDIR}/ardrone-tool/projects/libplf/trunk"
 
 inherit autotools-brokensep
 
-BBCLASSEXTEND = "native"
+BBCLASSEXTEND = "native nativesdk"
 
 DEPENDS ="zlib"
 
 do_install() {
 	install -d ${D}${libdir}
 	install -d ${D}${includedir}/libplf
-	install libplf.so  ${D}${libdir}
+	mv libplf.so libplf.so.${PV}
+	install -m 0755 libplf.so*  ${D}${libdir}
 	install *.h ${D}${includedir}/libplf
+	cd ${D}${libdir}/
+	ln -s libplf.so.${PV} libplf.so
 }

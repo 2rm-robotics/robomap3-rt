@@ -12,13 +12,18 @@ SRC_URI = "https://storage.googleapis.com/google-code-archive-source/v2/code.goo
 
 S = "${WORKDIR}/ardrone-tool/projects/plftool/trunk"
 
-BBCLASSEXTEND = "native"
+BBCLASSEXTEND = "native nativesdk"
 
 DEPENDS= "libplf"
+RDEPENDS_nativesdk-${PN}= "libplf"
 
-EXTRA_OEMAKE = "'CC=${CC} -Wno-error=unused-but-set-variable -Wno-error=format= -I${STAGING_INCDIR_NATIVE}/libplf '"
+#EXTRA_OEMAKE = "'CC=${CC} -Wno-error=unused-but-set-variable -Wno-error=format= -I${STAGING_INCDIR_NATIVE}/libplf '"
+EXTRA_OEMAKE = "'CC=${CC} -Wno-error=unused-but-set-variable -Wno-error=format= -I${STAGING_DIR_HOST}/${includedir}/libplf '"
 
 do_install() {
 	install -d ${D}${bindir}
 	install plftool  ${D}${bindir}
 }
+
+INHIBIT_PACKAGE_DEBUG_SPLIT = "1"
+
