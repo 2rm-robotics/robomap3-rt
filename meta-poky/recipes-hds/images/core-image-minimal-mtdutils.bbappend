@@ -1,4 +1,5 @@
-IMAGE_INSTALL += "mtd-utils-ubifs bash coreutils-minimal init-ardrone2-installer"
+#IMAGE_INSTALL += "mtd-utils-ubifs coreutils-minimal init-ardrone2-installer"
+IMAGE_INSTALL += "mtd-utils-ubifs init-ardrone2-installer"
 DEPENDS +="plftool-native virtual/kernel"
 
 BOOT_PARAMS="mtdparts=omap2-nand.0:512K(Pbootloader),8M(Pmain_boot),8M(Pfactory),114176K(Psystem) console=ttyO3,115200 loglevel=8 parrot_force_usbd g_serial.use_acm=0 "

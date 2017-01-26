@@ -28,6 +28,7 @@ function receive ()
 receive $ROOTFS
 receive $KERNEL
 
+#a revoir, ne pas formater le /home!!
 echo partitionning, formatting and updating rootfs
 ubiformat /dev/mtd3 > /dev/null
 ubiattach -p /dev/mtd3
