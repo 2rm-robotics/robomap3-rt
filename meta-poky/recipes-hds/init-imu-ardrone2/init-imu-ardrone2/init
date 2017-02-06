@@ -1,0 +1,33 @@
+#!/bin/sh -e
+### BEGIN INIT INFO
+# Provides:          ardrone2_imu
+# Default-Start:     S
+# Default-Stop:      0 6
+# Short-Description: launch imu acquisition, to avoid bug when reading from program
+### END INIT INFO
+
+PATH="/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin"
+
+case "$1" in
+start)
+	echo -"Starting ardrone2 imu... "
+	stty -F /dev/ttyO1  460800
+  echo -e -n "\x01" > /dev/ttyO1
+	echo "done."
+	;;
+
+stop)
+	echo "Stopping ardrone2 imu... "
+	stty -F /dev/ttyO1  460800
+  echo -e -n "\x02" > /dev/ttyO1
+	echo "done."
+	;;
+
+*)
+	echo "Usage: /etc/init.d/init-imu-ardrone2 {start|stop}"
+	exit 1
+	;;
+esac
+
+exit 0
+
