@@ -17,7 +17,7 @@ DEPENDS +="plftool-native"
 PR = "r10"
 KV = "${PV}-9"
 
-SRCREV = "36"
+SRCREV = "37"
 SRC_URI = "svn://devel.hds.utc.fr/svn/ardrone2_src/trunk;module=${PN}-${KV};protocol=https"
 S = "${WORKDIR}/${PN}-${KV}"
 
