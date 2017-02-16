@@ -1,0 +1,31 @@
+#!/bin/sh -e
+### BEGIN INIT INFO
+# Provides:          ardrone2 updater
+# Default-Start:     S
+# Default-Stop:      0 6
+# Short-Description: start update.
+### END INIT INFO
+
+PATH="/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin"
+
+case "$1" in
+start)
+	echo -"Starting updater... "
+	update.sh
+	echo "done."
+	;;
+
+stop)
+	echo "Stopping updater... "
+	# nothing to do!
+	echo "done."
+	;;
+
+*)
+	echo "Usage: /etc/init.d/init-ardrone2-installer {start|stop}"
+	exit 1
+	;;
+esac
+
+exit 0
+
