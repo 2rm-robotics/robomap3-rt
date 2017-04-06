@@ -11,7 +11,9 @@ inherit autotools gettext pkgconfig
 # libv4l was absorbed into this, let OE know that
 PROVIDES = "libv4l"
 
-SRC_URI = "http://linuxtv.org/downloads/v4l-utils/v4l-utils-${PV}.tar.bz2"
+SRC_URI = "http://linuxtv.org/downloads/v4l-utils/v4l-utils-${PV}.tar.bz2 \
+		   file://fix_libjpeg_build_issue.patch \
+		  "
 SRC_URI[md5sum] = "9cb3c178f937954e65bf30920af433ef"
 SRC_URI[sha256sum] = "d3d6eb1f0204fb11f3d318bfca35d5f73cc077f88fac7665a47856a16496be7d"
 
