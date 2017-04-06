@@ -1,0 +1,33 @@
+diff --git a/meta-oe/recipes-multimedia/v4l2apps/v4l-utils/0002-correct-jpeg-memsrcdest-support.patch b/meta-oe/recipes-multimedia/v4l2apps/v4l-utils/0002-correct-jpeg-memsrcdest-support.patch
+new file mode 100644
+index 0000000..d3aa1bd
+--- /dev/null
++++ b/meta-oe/recipes-multimedia/v4l2apps/v4l-utils/0002-correct-jpeg-memsrcdest-support.patch
+@@ -0,0 +1,27 @@ 
++--- v4l-utils-1.6.2/lib/libv4lconvert/jpeg_memsrcdest.h.orig	2016-06-15 09:22:29.765751407 -0400
+++++ v4l-utils-1.6.2/lib/libv4lconvert/jpeg_memsrcdest.h	2016-06-15 09:22:47.153751055 -0400
++@@ -1,5 +1,7 @@
++ #include <jpeglib.h>
++ 
+++#if JPEG_LIB_VERSION < 80 && !defined(MEM_SRCDST_SUPPORTED)
+++
++ void
++ jpeg_mem_src (j_decompress_ptr cinfo, unsigned char * buffer,
++ 	unsigned long bufsize);
++@@ -7,3 +9,5 @@
++ void
++ jpeg_mem_dest (j_compress_ptr cinfo, unsigned char ** outbuffer,
++ 	unsigned long * outsize);
+++
+++#endif
++--- v4l-utils-1.6.2/lib/libv4lconvert/jpeg_memsrcdest.c.orig	2016-06-15 09:23:03.825750717 -0400
+++++ v4l-utils-1.6.2/lib/libv4lconvert/jpeg_memsrcdest.c	2016-06-15 09:23:12.817750535 -0400
++@@ -27,7 +27,7 @@
++ 
++ /* libjpeg8 and later come with their own (API compatible) memory source
++    and dest */
++-#if JPEG_LIB_VERSION < 80
+++#if JPEG_LIB_VERSION < 80 && !defined(MEM_SRCDST_SUPPORTED)
++ 
++ /* Expanded data source object for memory input */
++ 
