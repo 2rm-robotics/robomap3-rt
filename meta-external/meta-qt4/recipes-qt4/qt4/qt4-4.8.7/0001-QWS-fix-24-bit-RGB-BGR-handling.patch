@@ -1,0 +1,36 @@
+From 9722a85dd2b4a7210af66e2a135fe7aded5075c7 Mon Sep 17 00:00:00 2001
+From: Stefan Agner <stefan.agner@toradex.com>
+Date: Tue, 25 Oct 2016 14:37:02 -0700
+Subject: [PATCH] QWS: fix 24 bit RGB/BGR handling
+
+Use blit_24 for default 24-bit RGB case. This makes sure Qt works
+well with frame buffer using [23:0] R:G:B (little endian) pixel
+format. See also:
+https://bugreports.qt.io/browse/QTBUG-56740
+
+Upstream-Status: Submitted
+
+Signed-off-by: Stefan Agner <stefan.agner@toradex.com>
+---
+ src/gui/embedded/qscreen_qws.cpp | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/src/gui/embedded/qscreen_qws.cpp b/src/gui/embedded/qscreen_qws.cpp
+index 407366c..a4ece07 100644
+--- a/src/gui/embedded/qscreen_qws.cpp
++++ b/src/gui/embedded/qscreen_qws.cpp
+@@ -1208,9 +1208,9 @@ void qt_blit_setup(QScreen *screen, const QImage &image,
+ #ifdef QT_QWS_DEPTH_24
+     case 24:
+         if (screen->pixelType() == QScreen::NormalPixel)
+-            screen->d_ptr->blit = blit_qrgb888;
+-        else
+             screen->d_ptr->blit = blit_24;
++        else
++            screen->d_ptr->blit = blit_qrgb888;
+         break;
+ #endif
+ #ifdef QT_QWS_DEPTH_18
+-- 
+2.10.0
+

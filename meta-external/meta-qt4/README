@@ -1,0 +1,49 @@
+meta-qt4
+========
+
+This layer provides Qt 4.x libraries. Its intended use is for passing LSB tests
+as Qt4 is a requirement for LSB; however the libraries may also be used for any
+other purpose requiring Qt4.
+
+Usage
+-----
+
+Please refer to the README file in meta-qt3 for instructions, replacing qt3 references
+with qt4 as appropriate:
+
+http://git.yoctoproject.org/cgit/cgit.cgi/meta-qt3/about/
+
+Dependencies
+------------
+
+This layer depends on:
+
+URI: git://github.com/openembedded/oe-core.git
+subdirectory: meta
+branch: master
+revision: HEAD
+
+If you want to build python-pyqt you will also need meta-oe:
+
+URI: git://github.com/openembedded/meta-openembedded
+subdirectory: meta-oe
+branch: master
+revision: HEAD
+
+
+Maintenance
+-----------
+
+Send patches / pull requests to yocto@yoctoproject.org with
+'[meta-qt4]' in the subject.
+
+Layer maintainer: Paul Eggleton <paul.eggleton@linux.intel.com>
+
+
+License
+-------
+
+All metadata is MIT licensed unless otherwise stated. Source code included
+in tree for individual recipes is under the LICENSE stated in each recipe
+(.bb file) unless otherwise stated.
+

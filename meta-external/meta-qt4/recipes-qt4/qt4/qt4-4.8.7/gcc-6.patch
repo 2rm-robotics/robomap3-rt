@@ -1,0 +1,19 @@
+Allow gcc v6 to build webkit. Without this, webkit isn't built
+when gcc v6 is used (silently but then python-pyqt fails to build).
+
+Upstream-Status: Inappropriate [no development on qt4 now]
+RP 2016/5/26
+
+Index: qt-everywhere-opensource-src-4.8.7/configure
+===================================================================
+--- qt-everywhere-opensource-src-4.8.7.orig/configure
++++ qt-everywhere-opensource-src-4.8.7/configure
+@@ -7756,7 +7756,7 @@ case "$XPLATFORM" in
+     *-g++*)
+ 	# Check gcc's version
+ 	case "$(${QMAKE_CONF_COMPILER} -dumpversion)" in
+-	    5*|4*|3.4*)
++	    6*|5*|4*|3.4*)
+ 		;;
+             3.3*)
+                 canBuildWebKit="no"

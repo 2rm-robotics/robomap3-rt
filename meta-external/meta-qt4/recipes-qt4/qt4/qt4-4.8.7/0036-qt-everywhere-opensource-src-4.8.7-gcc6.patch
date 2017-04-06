@@ -1,0 +1,24 @@
+Avoid implicit conversions, which are now flagged by gcc6
+
+| api/qcoloroutput_p.h:74:60: error: shift expression '(1048575 << 20)' overflows [-fpermissive]
+| api/qcoloroutput_p.h:74:63: error: enumerator value for 'BackgroundMask' is not an integer constant
+|              BackgroundMask  = ((1 << BackgroundShift) - 1) << BackgroundShift
+
+
+Upstream-Status: Inappropriate [Frozen upstream]
+Signed-off-by: Khem Raj <raj.khem@gmail.com>
+
+diff -up qt-everywhere-opensource-src-4.8.7/src/xmlpatterns/api/qcoloroutput_p.h.than qt-everywhere-opensource-src-4.8.7/src/xmlpatterns/api/qcoloroutput_p.h
+--- qt-everywhere-opensource-src-4.8.7/src/xmlpatterns/api/qcoloroutput_p.h.than	2016-02-03 11:43:04.567757448 +0100
++++ qt-everywhere-opensource-src-4.8.7/src/xmlpatterns/api/qcoloroutput_p.h	2016-02-04 13:12:26.394350271 +0100
+@@ -70,8 +70,8 @@ namespace QPatternist
+             ForegroundShift = 10,
+             BackgroundShift = 20,
+             SpecialShift    = 20,
+-            ForegroundMask  = ((1 << ForegroundShift) - 1) << ForegroundShift,
+-            BackgroundMask  = ((1 << BackgroundShift) - 1) << BackgroundShift
++            ForegroundMask  = 0x1f << ForegroundShift,
++            BackgroundMask  = 0x7 << BackgroundShift
+         };
+ 
+     public:
