@@ -1,7 +1,7 @@
 .PHONY : clean
 
 CFLAGS= -fPIC -g
-LDFLAGS= -shared -Wl,-soname,libnmea.so.1
+LDFLAGS= -shared -Wl,-soname,libnmea.so.1 -Wl,--hash-style=gnu
 INCS = -I include 
 
 SOURCES = $(shell echo src/*.c)
