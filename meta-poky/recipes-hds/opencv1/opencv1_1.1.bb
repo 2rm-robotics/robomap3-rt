@@ -1,5 +1,5 @@
-DESCRIPTION = "opencv"
-PN= "opencv"
+DESCRIPTION = "opencv1"
+PN= "opencv1"
 PR = "r8"
 
 LICENSE = "GPLv2"
