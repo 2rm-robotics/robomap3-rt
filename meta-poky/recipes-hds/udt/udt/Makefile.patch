@@ -52,7 +52,7 @@
   
 !	libudt.so.4.11: $(OBJS)
   ifneq ($(os), OSX)
-! 	$(CXX) -shared -Wl,-soname,libudt.so.4.11 -o $@ $^
+! 	$(CXX) -shared -Wl,-soname,libudt.so.4.11 -Wl,--hash-style=gnu -o $@ $^
   else
   	$(C++) -dynamiclib -o libudt.dylib -lstdc++ -lpthread -lm $^
   endif
