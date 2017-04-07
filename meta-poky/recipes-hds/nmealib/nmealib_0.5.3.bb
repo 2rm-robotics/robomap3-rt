@@ -12,6 +12,7 @@ SRC_URI[sha256sum] = "41e9fbb8fd5cb1836ff727355b3debe98662b39beb7493af9b78bc4bd4
 
 DEPENDS = "automake"
 inherit autotools-brokensep
+
 S = "${WORKDIR}/nmealib"
 
 do_compile_prepend() {
@@ -19,10 +20,6 @@ do_compile_prepend() {
 }
 
 #BBCLASSEXTEND = "nativesdk"
-
-# Avoid QA Issue: No GNU_HASH in the elf binary
-#INSANE_SKIP_${PN} = "ldflags"
-#INSANE_SKIP_${PN}-dev = "ldflags"
 
 PACKAGES = "${PN}-dbg ${PN}-dev ${PN}"
 FILES_${PN} += "{libdir}/*.so*"
