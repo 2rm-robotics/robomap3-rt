@@ -20,7 +20,11 @@ do_compile_prepend() {
 
 #BBCLASSEXTEND = "nativesdk"
 
+# Avoid QA Issue: No GNU_HASH in the elf binary
+INSANE_SKIP_${PN} = "ldflags"
+INSANE_SKIP_${PN}-dev = "ldflags"
+
 PACKAGES = "${PN}-dbg ${PN}-dev ${PN}"
-FILES_${PN} += "/usr/lib/*.so*"
-FILES_${PN}-dev += "/usr/lib/*.so /usr/include/*"
+FILES_${PN} += "{libdir}/*.so*"
+FILES_${PN}-dev += "{libdir}/*.so {includedir}/*"
 FILES_${PN}-dbg += "/usr/src/debug/* /usr/lib/.debug/*"
