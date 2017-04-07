@@ -1,0 +1,13 @@
+--- vrpn/vrpn_Connection.C	2015-01-17 17:24:38.000000000 +0100
++++ vrpn/vrpn_Connection.C	2015-01-17 17:24:38.000000000 +0100
+@@ -2489,7 +2489,9 @@
+ #if defined(sparc) || defined(FreeBSD) || defined(_AIX) || defined(__ANDROID__)
+             int status; // doesn't exist on sparc_solaris or FreeBSD
+ #else
+-            union wait status;
++	    //union wait type is no more used in glibc > 2.4
++            //union wait status;
++	    int status;
+ #endif
+ 
+             /* Check to see if they called back yet. */

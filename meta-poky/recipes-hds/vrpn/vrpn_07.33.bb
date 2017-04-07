@@ -7,7 +7,9 @@ SRC_URI = "https://github.com/vrpn/vrpn/releases/download/v07.33/vrpn_07_33.zip 
 		file://lib.patch \
 		file://no_python.patch \
 		file://version.patch \
-		file://install.patch"
+		file://install.patch \
+		file://fix_glibc_union_wait_removal.patch \
+"
 
 SRC_URI[md5sum] = "634ea3d80504d6b861c5e7758ba21a52"
 SRC_URI[sha256sum] = "3cb9e71f17eb756fbcf738e6d5084d47b3b122b68b66d42d6769105cb18a79be"
