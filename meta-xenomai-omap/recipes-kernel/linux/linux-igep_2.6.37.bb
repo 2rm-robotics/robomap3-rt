@@ -14,15 +14,16 @@ DEFAULT_PREFERENCE_pacpus = "1"
 COMPATIBLE_MACHINE = "(airbox|uav|overo|pacpus)"
 
 inherit kernel autotools-brokensep
+#require recipes-kernel/linux/linux.inc
+#do_configure[depends] += "virtual/kernel:do_shared_workdir"
 
 PR = "r18"
 KV = "${PV}-9"
 
-SRCREV = "491"
+SRCREV = "505"
 SRC_URI = "svn://devel.hds.utc.fr/svn/igep_src/trunk;module=linux-omap-${KV};protocol=https"
 
 do_configure() {
-
 	rm -f ${S}/.config || true
 
 	if [ "${MACHINE}" = "uav" ];then
@@ -35,5 +36,13 @@ do_configure() {
 		oe_runmake igep00x0_airbox_defconfig
 	fi
 }
-           
+
+do_compile_prepend() {
+	unset CFLAGS CPPFLAGS CXXFLAGS LDFLAGS
+}
+
+do_install_prepend() {
+        unset CFLAGS CPPFLAGS CXXFLAGS LDFLAGS
+}
+
 S = "${WORKDIR}/linux-omap-${KV}"
