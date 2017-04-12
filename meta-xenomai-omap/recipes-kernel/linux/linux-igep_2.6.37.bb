@@ -13,7 +13,7 @@ DEFAULT_PREFERENCE_pacpus = "1"
 
 COMPATIBLE_MACHINE = "(airbox|uav|overo|pacpus)"
 
-inherit kernel
+inherit kernel autotools-brokensep
 
 PR = "r18"
 KV = "${PV}-9"
