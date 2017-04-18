@@ -1,55 +1,84 @@
-DESCRIPTION = "Provides userspace xenomai support and libraries needed to for \
-real-time applications using the xenomai RTOS implementation"
+SUMMARY = "Xenomai is a real-time development framework cooperating with the Linux \
+	    kernel, in order to provide a pervasive, interface-agnostic, hard \
+	    real-time support to user-space applications, seamlessly integrated \
+	    into the GNU/Linux environment."
+
+HOMEPAGE = "http://www.xenomai.org"
+SECTION = "tools/realtime"
+
 LICENSE = "MIT"
-LIC_FILES_CHKSUM = "file://include/COPYING;md5=60faa041c8d4a75ab87e115a9469d94d"
-SECTION = "xenomai"
-HOMEPAGE = "http://www.xenomai.org/"
+LIC_FILES_CHKSUM = "file://${COREBASE}/LICENSE;md5=4d92cd373abda3937c2bc47fbc49d690 \
+                    file://${COREBASE}/meta/COPYING.MIT;md5=3da9cfbcb788c80a0384361b4de20420"
 PR = "r0"
 
 SRC_URI = "http://download.gna.org/xenomai/stable/xenomai-${PV}.tar.bz2 \
-		file://rti2c.h"
+	   file://0001-ipipe-kernel-3.10.patch \
+	   "
 
 SRC_URI[md5sum] = "9f83c39cfb10535df6bf51702714e716"
 SRC_URI[sha256sum] = "4d0d09431f0340cf4c9e2745177f77f15b7b124f89982035d1d3586519d7afe9"
 
-S = "${WORKDIR}/xenomai-${PV}"
-
 inherit autotools
+#inherit add_machine_symlinks
 
-includedir = "/usr/include/xenomai"
+INSANE_SKIP_${PN}-dev += " libdir "
+INSANE_SKIP_${PN}-dbg += " libdir "
+INSANE_SKIP_${PN} += " libdir "
 
-do_install_append() {
-	#remove unused files
-	rm -rf ${D}/dev
-	cp ${WORKDIR}/rti2c.h ${D}/usr/include/xenomai/rtdm/
+XENOMAI_SRC_PATH = "/usr/src/xenomai"
+
+TARGET_CC_ARCH += "${LDFLAGS}"
+
+prefix_x = "${prefix}/xenomai"
+
+FILES_${PN} += "${prefix_x}/bin/* ${prefix_x}/sbin/* \
+		 ${prefix_x}/bin/regression/native/* \
+		 ${prefix_x}/bin/regression/native+posix/* \
+		 ${prefix_x}/bin/regression/posix/* \
+		 ${prefix_x}/lib/*.so.* ${prefix_x}/lib/pkgconfig ${prefix_x}/lib/posix.wrappers"
+FILES_${PN}-doc += "${prefix_x}/share/*"
+FILES_${PN}-dev += "${prefix_x}/include/* ${prefix_x}/lib/*.la ${prefix_x}/lib/*.so ${XENOMAI_SRC_PATH}"
+FILES_${PN}-staticdev += "${prefix_x}/include/* ${prefix_x}/lib/*.a"
+FILES_${PN}-dbg += "${prefix_x}/bin/.debug/* ${prefix_x}/sbin/.debug/* \
+		${prefix_x}/bin/regression/native/.debug/* \
+		 ${prefix_x}/bin/regression/native+posix/.debug/* \
+		 ${prefix_x}/bin/regression/posix/.debug/* \
+		 ${prefix_x}/lib/.debug/* \
+		"
+
+do_configure() {
+	cd ${S}
+
+	# install xenomai source first to the temp folder - original source code of xenomai
+	xenomaitmpdir=${WORKDIR}/xensrc
+	if [ ! -e $xenomaitmpdir ] ; then
+		install -d $xenomaitmpdir
+		cp -fR * $xenomaitmpdir
+	fi
+
+        ${S}/configure --build=${BUILD_SYS} --host=${HOST_SYS} --target=${TARGET_SYS}
 }
 
-# create different packages
-PACKAGES = "${PN}-dbg ${PN}-dev ${PN}-staticdev ${PN}-doc ${PN}"
+do_compile () {
+	cd ${S}
+	make
+}
 
-FILES_${PN}-dbg += "/usr/bin/regression/posix/.debug \
- 	/usr/bin/regression/native/.debug \
- 	/usr/bin/regression/native+posix/.debug \
- "
+do_install () {
+	cd ${S}
+	make DESTDIR=${D} install
+	
+	# remove /dev entry - it will be created later in image
+	rm -fR ${D}/dev
 
-FILES_${PN} += "/usr/bin/* \
-	/usr/lib/*.so \
-	/usr/sbin/* \
-	/usr/share/doc/* \
-	/usr/share/man/* \
- "
- 
-FILES_${PN}-dev += "/usr/include/* \
-	/usr/lib/*.so \
-	/usr/lib/posix.wrappers \
- "
- 
-FILES_${PN}-staticdev += "/usr/lib/*.a"
+	# install sources of xenomai from temp folder created at configure stage
+	cd ${WORKDIR}/xensrc
+	xenomaidir=${D}${XENOMAI_SRC_PATH}
+	install -d $xenomaidir
+	cp -fR * $xenomaidir
+}
 
-FILES_${PN}-doc += "/usr/share/doc/* \
-	/usr/share/man/* \
- "
-
-# add the files to the SDK machine
-BBCLASSEXTEND = "nativesdk"
+sysroot_stage_all_append() {
+        sysroot_stage_dir ${D}${XENOMAI_SRC_PATH} ${SYSROOT_DESTDIR}${XENOMAI_SRC_PATH}
+}
 
