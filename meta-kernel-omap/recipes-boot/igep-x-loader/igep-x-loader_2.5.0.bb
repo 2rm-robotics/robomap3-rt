@@ -15,6 +15,9 @@ SRC_URI = "svn://devel.hds.utc.fr/svn/igep_src/trunk;module=igep-x-loader;protoc
 
 inherit deploy
 
+# Solve compile issues with yocto 2.1 (6.9.4. Makefile Environment Changes)
+EXTRA_OEMAKE = "-e MAKEFLAGS="
+
 do_compile() {
 	unset LDFLAGS
 	unset CFLAGS
@@ -48,6 +51,11 @@ XLOADER_IMAGE_SYMLINK_NAME ?= "MLO"
 
 INI_BASE_NAME ?= "igep-${PV}-${PR}-${MACHINE}-${DATETIME}.ini"
 INI_SYMLINK_NAME ?= "igep.ini"
+
+# Exclude DATETIME from the checksum to avoid bitbake errors
+do_deploy[vardepsexclude] += "DATETIME"
+XLOADER_IMAGE_BASE_NAME[vardepsexclude] += "DATETIME"
+INI_BASE_NAME[vardepsexclude]	+= "DATETIME"
 
 do_deploy() {
 	install -m 0644 ${S}/x-load.bin.ift ${DEPLOYDIR}/${XLOADER_IMAGE_BASE_NAME}
