@@ -12,27 +12,17 @@
 export TZ=/etc/localtime
 
 [ -r /proc/mounts ] || exit 1
-[ -x @UDEVD@ ] || exit 1
+[ -x /sbin/udevd ] || exit 1
 [ -d /sys/class ] || exit 1
 
-[ -f /etc/default/rcS ] && . /etc/default/rcS
-DEVCACHE_TMP="/dev/shm/udev-cache-tmp.tar"
-SYSCONF_CACHED="/etc/udev/cache.data"
-SYSCONF_TMP="/dev/shm/udev.cache"
 [ -f /etc/default/udev-cache ] && . /etc/default/udev-cache
 
-if [ "$ROOTFS_READ_ONLY" = "yes" ]; then
-    [ "$VERBOSE" != "no" ] && echo "udev-cache: read-only rootfs, skip generating udev-cache"
-    exit 0
-fi
-
-if [ "$DEVCACHE" != "" -a -e "$SYSCONF_TMP" ]; then
+if [ "$DEVCACHE" != "" ]; then
 	echo "Populating dev cache"
-	find /dev -xdev \( -type b -o -type c -o -type l \) | cut -c 2- \
-		| xargs tar cf "${DEVCACHE_TMP}" -T-
-	gzip < "${DEVCACHE_TMP}" > "$DEVCACHE"
-	rm -f "${DEVCACHE_TMP}"
-	mv "$SYSCONF_TMP" "$SYSCONF_CACHED"
+	(cd /; tar cf "$DEVCACHE" dev)
+	mv /dev/shm/udev.cache /etc/udev/cache.data
+else
+	rm -f /dev/shm/udev.cache
 fi
 
 exit 0
