@@ -20,8 +20,10 @@ inherit kernel autotools-brokensep
 PR = "r18"
 KV = "${PV}-9"
 
-SRCREV = "505"
-SRC_URI = "svn://devel.hds.utc.fr/svn/igep_src/trunk;module=linux-omap-${KV};protocol=https"
+SRCREV = "507"
+SRC_URI = "svn://devel.hds.utc.fr/svn/igep_src/trunk;module=linux-omap-${KV};protocol=https \
+	   file://disable-gcc5-sra-optimization.patch \
+"
 
 do_configure() {
 	rm -f ${S}/.config || true

@@ -9,7 +9,7 @@ COMPATIBLE_MACHINE = "(airbox|uav|overo|pacpus)"
 VER = "${PV}-2"
 PR = "r6"
 
-SRCREV = "502"
+SRCREV = "507"
 SRC_URI = "svn://devel.hds.utc.fr/svn/igep_src/trunk;module=igep-x-loader;protocol=https \
             file://igep.ini"
 
