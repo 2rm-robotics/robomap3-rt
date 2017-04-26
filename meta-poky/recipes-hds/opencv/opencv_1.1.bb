@@ -17,7 +17,8 @@ S = "${WORKDIR}/opencv-1.1.0"
 
 inherit autotools
 
-EXTRA_OECONF = "--disable-debug --without-gthread --without-python --without-swig --disable-apps --without-gtk --prefix=${S}"
+#EXTRA_OECONF = "--disable-debug --without-gthread --without-python --without-swig --disable-apps --without-gtk --prefix=${S}"
+EXTRA_OECONF = "--disable-debug --without-gthread --without-python --without-swig --disable-apps --without-gtk"
 EXTRA_OECONF_virtclass-nativesdk = "--disable-debug --without-gthread --without-python --without-swig --disable-apps --without-gtk --without-v4l"
 
 export BUILD_SYS
@@ -32,12 +33,11 @@ do_install() {
 	oe_runmake 'DESTDIR=${D}' 'SUDO=/bin/true' install
 }
 
-
 PACKAGES = "${PN}-dev ${PN} ${PN}-share ${PN}-dbg"
 # Fixes QA Error - Non -dev package contains symlink .so
 FILES_${PN}-share += "${datadir}/opencv/*"
-FILES_${PN}-dev += "/usr/lib/*.so"
 FILES_${PN}-dbg += "/usr/lib/.debug/* /usr/src/debug/opencv/*"
+FILES_${PN}-dev += "/usr/lib/*.so"
 FILES_${PN} = "${libdir}/*.so*"
 
 BBCLASSEXTEND = "nativesdk"
