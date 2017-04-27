@@ -11,7 +11,7 @@ DEFAULT_PREFERENCE_ardrone2-updater = "1"
 
 COMPATIBLE_MACHINE = "(ardrone2|ardrone2-installer|ardrone2-updater)"
 
-inherit kernel
+inherit kernel autotools-brokensep
 DEPENDS +="plftool-native"
 
 PR = "r10"
