@@ -16,6 +16,10 @@ S = "${WORKDIR}/git/files/host/tools/wmiconfig/"
 
 PR = "r0"
 
+# Adds in poky 2.1 migration
+CLEANBROKEN = "1"
+EXTRA_OEMAKE = "-e MAKEFLAGS="
+
 TARGET_CC_ARCH += "${LDFLAGS}"
 
 do_install() {
