@@ -12,9 +12,15 @@ SRC_URI[md5sum] = "3d1a5c26bef358c10a3894f356a69fbc"
 SRC_URI[sha256sum] = "d4ab6e28d4d45d8956cad17470aade3fbe2356e8f64b92167e738c1887feccec"
 
 PR = "r1"
+
+# Avoid compile problems when --disable-static does not exists
+DISABLE_STATIC = ""
+
 EXTRA_OECONF = "--prefix ${prefix}"
 
 do_configure () {
+	echo "prefix = ${prefix}"
+	echo "extra = ${EXTRA_OECONF}"
 	./configure ${EXTRA_OECONF}
 
 	# TODO on rebuilds will repeatedly append.  Change logic to include a
