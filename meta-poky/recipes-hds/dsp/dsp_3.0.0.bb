@@ -18,6 +18,9 @@ S = "${WORKDIR}/trunk"
 
 inherit module
 
+# Poky migration makes modules build in another directory, so force to use the kernel one
+KBUILD_OUTPUT = "${STAGING_KERNEL_DIR}"
+
 do_compile () {
 	export TI_TOOLS_BASE_DIR=${S}
 	export DSPLINK=${TI_TOOLS_BASE_DIR}/dsplink/dsplink
