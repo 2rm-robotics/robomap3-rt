@@ -11,7 +11,7 @@ RDEPENDS_${PN} = "\
     cmake-dev \
     xenomai-dev \
     tcl-dev \
-    bluez4-dev \
+    bluez5-dev \
     iir-dev \
     udt-dev \
     vrpn-dev \
