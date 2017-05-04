@@ -43,7 +43,7 @@ do_install_append() {
 		${D}${libdir}/xmultiegltest \
 		${D}${libdir}/eglinfo_x \
 		${D}${libdir}/pvr_drv.so \
-		${D}${libdir}/useasm \
+		${D}${libdir}/useasm
 }
 
 
