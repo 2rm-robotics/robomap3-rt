@@ -21,6 +21,9 @@ do_install() {
 
 PACKAGES = "${PN}-dbg ${PN} ${PN}-dev ${PN}-doc"
 
+# Otherwise an error of QA Check in poky Krogoth
+INSANE_SKIP_${PN}-dev += "dev-elf"
+
 FILES_${PN}-dbg += "/usr/local/qwt-6.1.2/lib/.debug/* /usr/local/qwt-6.1.2/plugins/designer/.debug/"
 FILES_${PN} +="/usr/local/qwt-6.1.2/features/*"
 FILES_${PN}-dev += "/usr/local/qwt-6.1.2/plugins/designer/libqwt_designer_plugin.so"
