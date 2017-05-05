@@ -15,7 +15,6 @@ RDEPENDS_${PN} += " \
         packagegroup-core-standalone-sdk-target \
         qt4${QTLIBPREFIX}-mkspecs \
         libqt${QTLIBPREFIX}multimedia4-dev \
-        libqt${QTLIBPREFIX}phonon4-dev \
         libqt${QTLIBPREFIX}3support4-dev \
         libqt${QTLIBPREFIX}clucene4-dev \
         libqt${QTLIBPREFIX}core4-dev \
@@ -40,6 +39,10 @@ RDEPENDS_${PN} += " \
 
 #removed: (causes a compilation problem)
 #libqt${QTLIBPREFIX}webkit4-dev
+
+#removed: (causes do_populate_sdk problem)
+#libqt${QTLIBPREFIX}phonon4-dev
+
 
 RDEPENDS_${PN} += " \
         qt4-x11-free-dev \
