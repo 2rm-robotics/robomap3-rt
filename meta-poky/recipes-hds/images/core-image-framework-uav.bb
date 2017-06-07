@@ -7,7 +7,7 @@ inherit core-image
 
 
 IMAGE_FEATURES += "package-management"
-IMAGE_INSTALL += "${CORE_IMAGE_BASE_EXTRA_INSTALL}"
+IMAGE_INSTALL += "${CORE_IMAGE_BASE_EXTRA_INSTALL} packagegroup-ros-mavlink"
 
 # Set the default Window System for integration with Qt/Embedded
 rootfs_update_powervr_windowsystem () {
