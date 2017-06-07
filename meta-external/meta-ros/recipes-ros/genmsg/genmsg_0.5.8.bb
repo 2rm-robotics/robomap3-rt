@@ -11,3 +11,5 @@ inherit catkin
 
 RDEPENDS_${PN} = "${PYTHON_PN}-stringold ${PYTHON_PN}-pprint"
 RDEPENDS_${PN}_class-native = ""
+
+BBCLASSEXTEND = "nativesdk"

@@ -12,4 +12,4 @@ S = "${WORKDIR}/${SRCNAME}-${PV}"
 
 RDEPENDS_${PN} += "${PYTHON_PN}-xml"
 
-BBCLASSEXTEND = "native"
+BBCLASSEXTEND = "native nativesdk"

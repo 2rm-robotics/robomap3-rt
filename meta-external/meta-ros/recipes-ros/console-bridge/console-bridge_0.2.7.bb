@@ -17,3 +17,5 @@ SRC_URI[sha256sum] = "9145f0f97337fc87b4c062a4bab6874e383dad3a303486b635d31af69e
 S = "${WORKDIR}/${ROS_SP}"
 
 inherit cmake ros faulty-solibs
+
+BBCLASSEXTEND = "nativesdk"

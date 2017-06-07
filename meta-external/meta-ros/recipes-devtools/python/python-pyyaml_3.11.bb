@@ -15,4 +15,4 @@ RDEPENDS_${PN} = "python-datetime"
 
 inherit distutils
 
-BBCLASSEXTEND = "native"
+BBCLASSEXTEND = "native nativesdk"

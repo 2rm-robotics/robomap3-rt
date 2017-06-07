@@ -1,4 +1,4 @@
-DESCRIPTION = "ros-world package group"
+DESCRIPTION = "ros-mavlink package group"
 LICENSE = "MIT"
 
 inherit packagegroup
@@ -7,8 +7,6 @@ PACKAGES = "${PN}"
 
 RDEPENDS_${PN} = "\
     packagegroup-ros-comm \
-    packagegroup-ros-kobuki \
-    packagegroup-ros-industrial-core \
     actionlib \
     bond \
     bondcpp \
@@ -39,7 +37,6 @@ RDEPENDS_${PN} = "\
     tf2-msgs \
     tf2-py \
     tf2-ros \
-    tf2-sensor-msgs \
     tf2-tools \
     eigen-conversions \
     kdl-conversions \
@@ -68,8 +65,6 @@ RDEPENDS_${PN} = "\
     hardware-interface \
     joint-limits-interface \
     transmission-interface \
-    collada-parser \
-    collada-urdf \
     kdl-parser \
     resource-retriever \
     urdf-parser-plugin \
@@ -101,6 +96,7 @@ RDEPENDS_${PN} = "\
     image-rotate \
     stereo-image-proc \
     random-numbers \
+    shape-tools \
     octomap-msgs \
     pcl-msgs \
     laser-geometry \
@@ -176,28 +172,21 @@ RDEPENDS_${PN} = "\
     rosbridge-server \
     rosbridge-suite \
     ar-track-alvar \
-    ar-track-alvar-msgs \
-    moveit-core \
-    moveit-kinematics \
-    moveit-msgs \
-    moveit-planners-ompl \
-    moveit-ros-manipulation \
-    moveit-ros-move-group \
-    moveit-ros-perception \
-    moveit-ros-planning \
-    moveit-simple-controller-manager \
-    mavros-msgs \
-    cv-camera \
-    object-recognition-msgs \
-    srdfdom \
-    libmavconn \
     mavros \
+    mavros-msgs \
     mavros-extras \
-    mavlink \
+    libmavconn \
+    python-empy \
+    python-catkin-pkg \
+    util-linux \
+    roscpp \
+    rosconsole \
+    roslang \
+    xmlrpcpp \
 "
 
-# urdfdom-headers is an empty deploy package.
+# collada-parser and collada-urdf require collada-dom, which does not compile with gcc6.
 # image-view requires gtk+, but it cannot be found by cmake for some reason.
 # sound-play requires python-gst (which is not available in any layers' master branch)
-# joint-state-publisher requires opengl distro feature and has further issues building.
+# joint-state-publisher still has some issues.
 # freenect-camera and freenect-launch requires opengl distro feature.

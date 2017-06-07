@@ -17,4 +17,4 @@ do_install_append() {
     rmdir ${D}${ros_libdir}/${PYTHON_DIR}
 }
 
-BBCLASSEXTEND += "native"
+BBCLASSEXTEND += "native nativesdk"

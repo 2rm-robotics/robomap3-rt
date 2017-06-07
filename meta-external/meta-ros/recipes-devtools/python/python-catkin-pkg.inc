@@ -10,4 +10,4 @@ SRC_URI[sha256sum] = "d4d069eaeb29d6a9ee71773b20c41515b6e0feb9ea2765ebaf3e599d0c
 
 S = "${WORKDIR}/${SRCNAME}-${PV}"
 
-BBCLASSEXTEND = "native"
+BBCLASSEXTEND = "native nativesdk"
