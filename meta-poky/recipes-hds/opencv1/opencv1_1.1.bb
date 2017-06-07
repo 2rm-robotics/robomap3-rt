@@ -1,5 +1,5 @@
-DESCRIPTION = "opencv"
-PN= "opencv"
+DESCRIPTION = "opencv1"
+PN= "opencv1"
 PR = "r8"
 
 LICENSE = "GPLv2"
@@ -17,7 +17,11 @@ S = "${WORKDIR}/opencv-1.1.0"
 
 inherit autotools
 
-#EXTRA_OECONF = "--disable-debug --without-gthread --without-python --without-swig --disable-apps --without-gtk --prefix=${S}"
+prefix = "/usr/opencv1"
+libdir = "${prefix}/lib"
+includedir = "${prefix}/include"
+
+#EXTRA_OECONF = "--disable-debug --without-gthread --without-python --without-swig --disable-apps --without-gtk --prefix=/usr/opencv1"
 EXTRA_OECONF = "--disable-debug --without-gthread --without-python --without-swig --disable-apps --without-gtk"
 EXTRA_OECONF_virtclass-nativesdk = "--disable-debug --without-gthread --without-python --without-swig --disable-apps --without-gtk --without-v4l"
 
@@ -36,8 +40,8 @@ do_install() {
 PACKAGES = "${PN}-dev ${PN} ${PN}-share ${PN}-dbg"
 # Fixes QA Error - Non -dev package contains symlink .so
 FILES_${PN}-share += "${datadir}/opencv/*"
-FILES_${PN}-dbg += "/usr/lib/.debug/* /usr/src/debug/opencv/*"
-FILES_${PN}-dev += "/usr/lib/*.so"
+FILES_${PN}-dbg += "${libdir}/.debug/* /usr/src/debug/opencv/*"
+FILES_${PN}-dev += "${libdir}/*.so"
 FILES_${PN} = "${libdir}/*.so*"
 
 BBCLASSEXTEND = "nativesdk"
