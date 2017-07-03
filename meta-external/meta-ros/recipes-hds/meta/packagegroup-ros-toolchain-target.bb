@@ -34,4 +34,5 @@ RDEPENDS_${PN} = "\
     tf2-msgs-dev \
     tf2-py-dev \
     tf2-tools-dev \
+    python-empy \
     "

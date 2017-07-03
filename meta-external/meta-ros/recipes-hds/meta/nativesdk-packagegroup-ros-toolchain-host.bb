@@ -26,6 +26,8 @@ RDEPENDS_${PN} = "\
     nativesdk-python-rosdistro \
     nativesdk-python-rospkg \
     nativesdk-python-netifaces \
+    nativesdk-python-nose \
+    nativesdk-python-modules \
     nativesdk-rosbag \
     nativesdk-rosconsole \
     nativesdk-rosgraph \
