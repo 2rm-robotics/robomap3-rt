@@ -173,7 +173,19 @@ for l in $($SUDO_EXEC find $native_sysroot -type l); do
 done
 
 #fixes path in file toolchain.cmake
-sed -e "s:$DEFAULT_INSTALL_DIR:$target_sdk_dir:g" -i $target_sdk_dir/toolchain.cmake
+$SUDO_EXEC sed -e "s:$DEFAULT_INSTALL_DIR:$target_sdk_dir:g" -i $target_sdk_dir/toolchain.cmake
+
+#ROS CROSS-COMPILATION STUFF
+# fix path in all ros .cmake files
+for file in $($SUDO_EXEC find $target_sdk_dir/sysroots/armv7a-neon-poky-linux-gnueabi/opt/ros/indigo -name "*.cmake" ); do
+	$SUDO_EXEC sed -i "s:.*/usr/lib.*:foreach(path $target_sdk_dir/sysroots/armv7a-neon-poky-linux-gnueabi/opt/ros/indigo/lib;$target_sdk_dir/sysroots/armv7a-neon-poky-linux-gnueabi/usr/lib):g" $file
+done
+# add the .catkin file with correct path for cross-compilation
+echo "$target_sdk_dir/sysroots/armv7a-neon-poky-linux-gnueabi/opt/ros/indigo/share/;" | $SUDO_EXEC tee $target_sdk_dir/sysroots/armv7a-neon-poky-linux-gnueabi/opt/ros/indigo/.catkin > /dev/null
+# fix python path in header files
+$SUDO_EXEC sed -i "s:#!/usr/bin/env.*:#!/usr/bin/env $target_sdk_dir/sysroots/x86_64-pokysdk-linux/usr/bin/python:g" $target_sdk_dir/sysroots/armv7a-neon-poky-linux-gnueabi/opt/ros/indigo/share/catkin/cmake/templates/_setup_util.py.in
+# fix python native path in ros profile
+$SUDO_EXEC sed -i "s:/var/opt/hds_builder/poky/migration/build/tmp/sysroots/x86_64-linux/usr/bin/python-native/python:/opt/robomap3/2.1.2/armv7a-neon/sysroots/x86_64-pokysdk-linux/usr/bin/python:g" $target_sdk_dir/sysroots/armv7a-neon-poky-linux-gnueabi/opt/ros/indigo/etc/catkin/profile.d/10.ros.sh $target_sdk_dir/sysroots/x86_64-pokysdk-linux/opt/ros/indigo/etc/catkin/profile.d/10.ros.sh
 
 # find out all perl scripts in $native_sysroot and modify them replacing the
 # host perl with SDK perl.
