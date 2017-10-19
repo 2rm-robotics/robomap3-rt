@@ -1,22 +1,35 @@
-This is a layer to provide ROS Indigo Igloo in an OpenEmbedded Linux system.
+This is a layer to provide ROS Kinetic Kame in an OpenEmbedded Linux system.
 It provides a stable cross-compilation build system for many common ROS packages. 
 Currently, this layer is still under continuous development.
+
+This is an experimental local branch for the kinetic distribution at:
+
+    https://github.com/bulwahn/meta-ros/tree/kinetic-experimental
+
+I, Lukas Bulwahn, have tested to build it, and currently, most packages build
+without issues. The packages that fail on kinetic have already failed to build
+(with indigo) on the current master.
+
+Still please remember that this is an experimental local branch:
+
+  - First, do not expect that this branch has been tested with many different build
+    configurations, so possibly, your build configuration could cause build failure
+    we are unaware of.
+  - Second, this branch is work in progress, and hence, the commits of this branch
+    will be rebased and modified, and the git history will change in a non-monotonic
+    way in the future.
+
+Nevertheless, go ahead and try this branch and report issues if you encounter them.
 
 ## IMPORTANT RESOURCES ##
 
   * Source Code Repository: https://github.com/bmwcarit/meta-ros.git
   * Issue Tracker: https://github.com/bmwcarit/meta-ros/issues
-  * Discussion Forum: http://discourse.ros.org/c/openembedded
+  * Mailing List: https://groups.google.com/forum/#!forum/meta-ros
   * Installation Guide: http://wiki.ros.org/hydro/Installation/OpenEmbedded
   * Development Guides:
     * https://github.com/bmwcarit/meta-ros/wiki/Guidelines-for-ROS-recipes
     * https://github.com/bmwcarit/meta-ros/wiki/Developer-Guidelines
-
-Note: In October 2016, the mailing list at
-https://groups.google.com/forum/#!forum/meta-ros has been discontinued and
-discussion has moved to http://discourse.ros.org/c/openembedded.
-However, the mailing list is still a good resource on issues that have been
-resolved in the past.
 
 
 ## MAINTAINERS ##
@@ -24,7 +37,6 @@ resolved in the past.
   * Lukas Bulwahn, BMW Car IT GmbH <lukas.bulwahn@oss.bmw-carit.de>
   * Stefan Herbrechtsmeier, Bielefeld University <stefan@herbrechtsmeier.net>
   * Kristof Robot <krirobo@gmail.com>
-  * Dmitry Rozhkov, Intel <dmitry.rozhkov@linux.intel.com>
 
 
 ## CONTRIBUTORS ##
@@ -48,7 +60,6 @@ resolved in the past.
   * Gauthier Monserand <simkim@simkim.net>
   * Timo Mueller <timo.mueller@bmw-carit.de>
   * Andreas Baak <andreas.baak@bmw-carit.de>
-  * Dmitry Rozhkov, Intel <dmitry.rozhkov@linux.intel.com>
 
 
 ## HOW TO CONTRIBUTE ##
@@ -88,12 +99,6 @@ resolved in the past.
   branch: master  
   revision: HEAD  
 
-  **meta-intel-realsense** (since 4a5ba0f20094dd3d07c0a0c1dede2ba40e9d6abf)
-  URI: https://github.com/IntelRealSense/meta-intel-realsense
-  branch: master
-  revision: HEAD
-  This layer is required only if you need to build realsense-camera driver.
-
   **bitbake** > 1.20
 
 
@@ -129,9 +134,6 @@ resolved in the past.
   recipes relying on opencv need to activate the DISTRO\_FEATURE
   opengl.
 
-  rosbridge-library depends on python-six, which is provided in meta-python
-  since a36869c700bed940f7f0aa4b9703ae630dc84eac@meta-openembedded.
-
 ## INSTALLATION ##
 
   The repository contains a layer for ROS that builds on top of the
@@ -163,11 +165,6 @@ resolved in the past.
     /home/me/devel/meta-ros \
     "
 
-  By default meta-ros uses python2 in all its recipes. If you want ROS packages
-  to use python3 then add the following line in your `./conf/local.conf` file:
-
-    ROS_USE_PYTHON3 = "yes"
-
   Compile package:
 
     bitbake <package-name>
@@ -189,7 +186,7 @@ resolved in the past.
 
   to the /etc/hosts file, and set up the environment with
 
-    export ROS_ROOT=/opt/ros
+    export ROS_ROOT=/opt/ros/indigo
     export ROS_DISTRO=indigo
     export ROS_PACKAGE_PATH=/opt/ros/indigo/share
     export PATH=$PATH:/opt/ros/indigo/bin
@@ -202,20 +199,6 @@ resolved in the past.
   Finally, you can start roscore with
 
     roscore
-
-  If you want to use the roswtf utility for diagnostics and experience an
-  exception like
-
-    rospkg.os_detect.OsNotDetected: Could not detect OS, tried ['windows', 'ubuntu', 'slackware', 'rhel', 'qnx', 'osx', 'opensuse', 'opensuse', 'mint', 'linaro', 'gentoo', 'funtoo', 'freebsd', 'fedora', 'elementary', 'debian', 'cygwin', 'centos', 'arch']
-
-  then you need to set `ROS_OS_OVERRIDE` to one of the listed OS names, e.g.
-
-    export ROS_OS_OVERRIDE=ubuntu
-
-  And since Yocto-based distributions are not supported by the `rospkg`
-  library you have to interpret roswtf's output by translating Ubuntu
-  package names manually to their corresponding package/recipe names that
-  were chosen in the meta-ros layer.
 
 
 ## CROSS-COMPILING ALL ROS PACKAGES IN meta-ros
@@ -257,6 +240,10 @@ resolved in the past.
 
   The yaml-cpp recipe originated from the recipe in Kartik Mohta's OpenEmbedded layer
   (cf. https://github.com/kartikmohta/meta-km/blob/master/recipes-devtools/yaml-cpp/yaml-cpp_0.3.0.bb)
+  licensed with the MIT License.
+
+  The libpoco recipe originated from the recipe in digitalSTROM's OpenEmbedded layer
+  (cf. https://gitorious.digitalstrom.org/dss-oe/dss-oe/blobs/master/dS/meta-dss11-production/recipes-support/poco/poco_1.3.6p2.bb)
   licensed with the MIT License.
 
   The core-image-ros-* recipes originated from the core-image-minimal recipe in OpenEmbedded Core

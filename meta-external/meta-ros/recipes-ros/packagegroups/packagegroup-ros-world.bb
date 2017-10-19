@@ -7,8 +7,6 @@ PACKAGES = "${PN}"
 
 RDEPENDS_${PN} = "\
     packagegroup-ros-comm \
-    packagegroup-ros-kobuki \
-    packagegroup-ros-industrial-core \
     actionlib \
     bond \
     bondcpp \
@@ -39,7 +37,6 @@ RDEPENDS_${PN} = "\
     tf2-msgs \
     tf2-py \
     tf2-ros \
-    tf2-sensor-msgs \
     tf2-tools \
     eigen-conversions \
     kdl-conversions \
@@ -96,11 +93,11 @@ RDEPENDS_${PN} = "\
     ivcon \
     convex-decomposition \
     camera-calibration \
-    image-publisher \
     image-proc \
     image-rotate \
     stereo-image-proc \
     random-numbers \
+    shape-tools \
     octomap-msgs \
     pcl-msgs \
     laser-geometry \
@@ -175,29 +172,10 @@ RDEPENDS_${PN} = "\
     rosbridge-library \
     rosbridge-server \
     rosbridge-suite \
-    ar-track-alvar \
-    ar-track-alvar-msgs \
-    moveit-core \
-    moveit-kinematics \
-    moveit-msgs \
-    moveit-planners-ompl \
-    moveit-ros-manipulation \
-    moveit-ros-move-group \
-    moveit-ros-perception \
-    moveit-ros-planning \
-    moveit-simple-controller-manager \
-    mavros-msgs \
-    cv-camera \
-    object-recognition-msgs \
-    srdfdom \
-    libmavconn \
-    mavros \
-    mavros-extras \
-    mavlink \
-"
+    "
 
-# urdfdom-headers is an empty deploy package.
+# ar-track-alvar does not compile due to unknown opencv identifiers.
 # image-view requires gtk+, but it cannot be found by cmake for some reason.
 # sound-play requires python-gst (which is not available in any layers' master branch)
-# joint-state-publisher requires opengl distro feature and has further issues building.
+# joint-state-publisher still has some issues.
 # freenect-camera and freenect-launch requires opengl distro feature.

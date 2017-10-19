@@ -149,7 +149,6 @@ RDEPENDS_${PN} = "\
     move-base \
     robot-pose-ekf \
     roslint \
-    ros-pocketsphinx \
     rt-tests-support \
     communication-tests \
     cyclic-timer-tests \
@@ -171,7 +170,6 @@ RDEPENDS_${PN} = "\
     rosbridge-library \
     rosbridge-server \
     rosbridge-suite \
-    ar-track-alvar \
     mavros \
     mavros-msgs \
     mavros-extras \
@@ -182,8 +180,15 @@ RDEPENDS_${PN} = "\
     roscpp \
     rosconsole \
     roslang \
+    rosout \
     xmlrpcpp \
+    python-json \
+    ros-workspace \
 "
+
+#    ros-pocketsphinx
+#    ar-track-alvar
+
 
 # collada-parser and collada-urdf require collada-dom, which does not compile with gcc6.
 # image-view requires gtk+, but it cannot be found by cmake for some reason.

@@ -1,0 +1,54 @@
+From 17e4bdeb546c63230a7279117e1e0e015c28f9ab Mon Sep 17 00:00:00 2001
+From: Lukas Bulwahn <lukas.bulwahn@oss.bmw-carit.de>
+Date: Mon, 5 Sep 2016 10:04:45 +0200
+Subject: [PATCH] Find correct Eigen3
+
+This patch resolves the issue #408 [1]. I created this patch by copying the
+minimal changes that are suggested in a commit of an open pull request from
+mryellow [2, 3].
+
+The ROS maintainers are aware of the issue [4] and it is possibly resolved
+by other means soon. Until then, the patch here remains appropriate.
+
+Upstream-Status: Pending
+
+[1] https://github.com/bmwcarit/meta-ros/issues/408
+[2] https://github.com/mryellow/robot_model/commit/4255db012213e4f2c31f470d0a345a424c6844a7
+[3] https://github.com/ros/robot_model/pull/143
+[4] https://github.com/ros/robot_model/issues/149
+
+Signed-off-by: Lukas Bulwahn <lukas.bulwahn@oss.bmw-carit.de>
+---
+ collada_urdf/CMakeLists.txt | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
+
+diff --git a/collada_urdf/CMakeLists.txt b/collada_urdf/CMakeLists.txt
+index 113dee0..325a0be 100644
+--- a/collada_urdf/CMakeLists.txt
++++ b/collada_urdf/CMakeLists.txt
+@@ -5,10 +5,13 @@ find_package(catkin REQUIRED COMPONENTS angles collada_parser resource_retriever
+ 
+ find_package(TinyXML REQUIRED)
+ 
++find_package(Eigen3 REQUIRED)
++
+ catkin_package(
+   LIBRARIES ${PROJECT_NAME}
+   INCLUDE_DIRS include
+-  DEPENDS angles collada_parser resource_retriever urdf geometric_shapes tf)
++  CATKIN_DEPENDS angles collada_parser resource_retriever urdf geometric_shapes tf
++  DEPENDS EIGEN3)
+ 
+ include(CheckCXXCompilerFlag)
+ check_cxx_compiler_flag(-std=c++11 HAS_STD_CPP11_FLAG)
+@@ -17,6 +20,7 @@ if(HAS_STD_CPP11_FLAG)
+ endif()
+ 
+ include_directories(include)
++include_directories(${EIGEN3_INCLUDE_DIR})
+ 
+ find_package(assimp QUIET)
+ if ( NOT ASSIMP_FOUND )
+-- 
+2.5.5
+

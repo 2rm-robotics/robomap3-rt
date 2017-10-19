@@ -9,7 +9,6 @@ RDEPENDS_${PN} = "\
     rosconsole \
     rosparam \
     catkin \
-    catkin-runtime \
     genmsg \
     rosgraph \
     genpy \
@@ -51,5 +50,4 @@ RDEPENDS_${PN} = "\
     message-runtime \
     rostime \
     gencpp \
-    roslz4 \
-"
+    "

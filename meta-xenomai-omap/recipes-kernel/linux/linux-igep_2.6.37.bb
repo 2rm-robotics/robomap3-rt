@@ -40,11 +40,12 @@ do_configure() {
 }
 
 do_compile_prepend() {
-	unset CFLAGS CPPFLAGS CXXFLAGS LDFLAGS
+#	unset CFLAGS CPPFLAGS CXXFLAGS LDFLAGS
+	unset LDFLAGS
 }
 
-do_install_prepend() {
-        unset CFLAGS CPPFLAGS CXXFLAGS LDFLAGS
-}
+#do_install_prepend() {
+#        unset CFLAGS CPPFLAGS CXXFLAGS LDFLAGS
+#}
 
 S = "${WORKDIR}/linux-omap-${KV}"
