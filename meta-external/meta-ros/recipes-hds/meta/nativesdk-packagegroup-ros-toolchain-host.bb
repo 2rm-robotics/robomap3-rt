@@ -6,8 +6,11 @@ inherit packagegroup nativesdk
 
 #PACKAGEGROUP_DISABLE_COMPLEMENTARY = "1"
 
+DEPENDS = "\
+    nativesdk-catkin\
+"
+
 RDEPENDS_${PN} = "\
-    nativesdk-catkin \
     nativesdk-rosbash \
     nativesdk-rosboost-cfg \
     nativesdk-rosbuild \
