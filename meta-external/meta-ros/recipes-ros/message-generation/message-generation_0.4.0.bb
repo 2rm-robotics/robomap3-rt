@@ -12,3 +12,5 @@ SRC_URI[sha256sum] = "e47304c394acd6594403f10cfd52930cab6fb436213839e91bedad5b90
 S = "${WORKDIR}/${ROS_SP}"
 
 inherit catkin
+
+BBCLASSEXTEND = "nativesdk"

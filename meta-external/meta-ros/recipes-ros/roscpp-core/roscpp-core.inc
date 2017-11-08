@@ -7,3 +7,5 @@ S = "${WORKDIR}/${ROS_SP}/${ROS_BPN}"
 inherit catkin
 
 ROS_SPN = "roscpp_core"
+
+BBCLASSEXTEND += "nativesdk"

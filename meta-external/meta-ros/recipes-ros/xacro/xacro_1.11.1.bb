@@ -10,3 +10,5 @@ SRC_URI[md5sum] = "c1e7027ca11dbadd1a19a9af4846e5ae"
 SRC_URI[sha256sum] = "eb60c2590e2a8efc6b3d5321ca38755dbf6ddd951bc567afc307d5de3214df1b"
 
 inherit catkin
+
+BBCLASSEXTEND = "nativesdk"

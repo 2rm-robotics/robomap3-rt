@@ -23,4 +23,4 @@ do_install_append() {
     rm -rf ${D}${ros_libdir}/pkgconfig
 }
 
-BBCLASSEXTEND += "native"
+BBCLASSEXTEND += "native nativesdk"

@@ -13,3 +13,5 @@ inherit catkin
 
 RDEPENDS_${PN} = "python-math genmsg python-shell"
 RDEPENDS_${PN}_class-native = ""
+
+BBCLASSEXTEND = "nativesdk"

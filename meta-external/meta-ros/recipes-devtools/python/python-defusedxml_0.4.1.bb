@@ -11,3 +11,5 @@ SRC_URI[sha256sum] = "cd551d5a518b745407635bb85116eb813818ecaf182e773c35b36239fc
 S = "${WORKDIR}/${SRCNAME}-${PV}"
 
 inherit setuptools
+
+BBCLASSEXTEND = "nativesdk"

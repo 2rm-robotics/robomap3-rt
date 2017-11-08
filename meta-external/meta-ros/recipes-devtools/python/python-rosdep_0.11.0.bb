@@ -16,4 +16,4 @@ RDEPENDS_${PN} += "python-catkin-pkg python-rospkg python-pyyaml python-netclien
 
 inherit setuptools
 
-BBCLASSEXTEND += "native"
+BBCLASSEXTEND += "native nativesdk"

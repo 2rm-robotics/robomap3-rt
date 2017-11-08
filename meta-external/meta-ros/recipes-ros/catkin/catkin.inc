@@ -13,9 +13,13 @@ SRC_URI += "\
     file://0001-CATKIN_WORKSPACES-Don-t-require-.catkin-file.patch \
     file://0002-PKG_CONFIG_LIB_PATHS-use-cmake-root-path.patch \
     file://0001-use-python-provided-by-environment-instead-of-the-ge.patch \
+    file://0001-avoid-using-host-s-paths-when-cross-compiling.patch \
+    file://0001-relocate-dependency-s-headers-to-current-sysroot.patch \
     "
 
 inherit catkin
+
+BBCLASSEXTEND = "nativesdk"
 
 FILES_${PN}-dev += "\
     ${ros_datadir}/eigen/cmake \

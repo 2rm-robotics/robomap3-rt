@@ -12,3 +12,5 @@ SRC_URI[sha256sum] = "d54bf2f82cea3273a34c11d99fed5bb1d78a8e5c86046af425d646ebc9
 inherit catkin
 
 RDEPENDS_${PN} = "python-rosdep python-subprocess"
+
+BBCLASSEXTEND = "nativesdk"

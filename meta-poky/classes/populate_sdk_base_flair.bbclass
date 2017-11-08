@@ -132,6 +132,8 @@ EOF
 		-e 's#@REAL_MULTIMACH_TARGET_SYS@#${REAL_MULTIMACH_TARGET_SYS}#g' \
 		-e '/@SDK_POST_INSTALL_COMMAND@/d' \
 		-e 's#@MACHINE@#${MACHINE}#g' \
+        -e 's#@ROSDISTRO@#${ROSDISTRO}#g' \
+        -e 's#@STAGING_BINDIR_NATIVE@#${STAGING_BINDIR_NATIVE}#g' \
 		${SDK_DEPLOY}/${TOOLCHAIN_OUTPUTNAME}.sh
 
 	# add execution permission

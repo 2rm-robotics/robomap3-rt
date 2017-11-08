@@ -12,4 +12,4 @@ S = "${WORKDIR}/incubator/log4cxx/trunk"
 
 inherit autotools-brokensep pkgconfig
 
-BBCLASSEXTEND += "native"
+BBCLASSEXTEND += "native nativesdk"

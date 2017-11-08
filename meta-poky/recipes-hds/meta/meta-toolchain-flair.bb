@@ -3,7 +3,8 @@ QTNAME_genericx86-64 = "qt"
 QTNAME_genericx86 = "qt"
 
 TOOLCHAIN_HOST_TASK = "nativesdk-packagegroup-${QTNAME}-toolchain-host packagegroup-cross-canadian-${MACHINE} nativesdk-cmake nativesdk-pkgconfig nativesdk-doxygen"
-TOOLCHAIN_HOST_TASK_uav = "nativesdk-packagegroup-${QTNAME}-toolchain-host packagegroup-cross-canadian-${MACHINE} nativesdk-cmake nativesdk-pkgconfig nativesdk-doxygen nativesdk-plftool nativesdk-packagegroup-ros-toolchain-host"
+TOOLCHAIN_HOST_TASK_uav = "nativesdk-packagegroup-${QTNAME}-toolchain-host packagegroup-cross-canadian-${MACHINE} nativesdk-cmake nativesdk-pkgconfig nativesdk-doxygen nativesdk-plftool"
+TOOLCHAIN_HOST_TASK_rpi-hds = "nativesdk-packagegroup-${QTNAME}-toolchain-host packagegroup-cross-canadian-${MACHINE} nativesdk-cmake nativesdk-pkgconfig nativesdk-doxygen nativesdk-packagegroup-ros-toolchain-host"
 
 #TOOLCHAIN_TARGET_TASK_BASE = "packagegroup-${QTNAME}-toolchain-target packagegroup-core-standalone-sdk-target packagegroup-framework-uav-toolchain-target packagegroup-ros-mavlink packagegroup-ros-toolchain-target"
 TOOLCHAIN_TARGET_TASK_BASE = "packagegroup-${QTNAME}-toolchain-target packagegroup-core-standalone-sdk-target packagegroup-flair-toolchain-target packagegroup-ros-toolchain-target"
