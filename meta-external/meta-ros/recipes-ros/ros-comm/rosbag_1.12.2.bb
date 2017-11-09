@@ -6,6 +6,8 @@ LIC_FILES_CHKSUM = "file://package.xml;beginline=10;endline=10;md5=d566ef916e9de
 
 DEPENDS = "boost cpp-common python-imaging rosbag-storage rosconsole roscpp roscpp-serialization \
     topic-tools xmlrpcpp"
+DEPENDS_class-nativesdk += "nativesdk-boost nativesdk-cpp-common nativesdk-python-imaging nativesdk-rosbag-storage nativesdk-rosconsole nativesdk-roscpp nativesdk-roscpp-serialization \
+    nativesdk-topic-tools nativesdk-xmlrpcpp"
 
 require ros-comm.inc
 

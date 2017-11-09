@@ -14,6 +14,6 @@ S = "${WORKDIR}/${ROS_SP}"
 
 inherit catkin
 
-DEPENDS_class-nativesdk += "nativesdk-catkin"
+DEPENDS_class-nativesdk += "nativesdk-catkin nativesdk-message-generation nativesdk-message-runtime"
 
 BBCLASSEXTEND = "nativesdk"

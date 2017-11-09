@@ -6,7 +6,9 @@ LICENSE = "BSD"
 LIC_FILES_CHKSUM = "file://package.xml;beginline=16;endline=16;md5=d566ef916e9dedc494f5f793a6690ba5"
 
 DEPENDS = "cpp-common message-generation rosconsole roscpp-serialization roscpp-traits \
-    rosgraph-msgs roslang rostime std-msgs xmlrpcpp"
+    rosgraph-msgs roslang rostime std-msgs xmlrpcpp gencpp"
+DEPENDS_class-nativesdk += "nativesdk-cpp-common nativesdk-message-generation nativesdk-rosconsole nativesdk-roscpp-serialization nativesdk-roscpp-traits \
+	nativesdk-rosgraph-msgs nativesdk-roslang nativesdk-rostime nativesdk-std-msgs nativesdk-xmlrpcpp nativesdk-gencpp"
 
 require ros-comm.inc
 
