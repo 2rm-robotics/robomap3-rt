@@ -12,5 +12,6 @@ S = "${WORKDIR}/${ROS_SP}"
 inherit catkin
 
 RDEPENDS_${PN} += "bash"
+DEPENDS_class-nativesdk += "nativesdk-catkin"
 
 BBCLASSEXTEND = "nativesdk"

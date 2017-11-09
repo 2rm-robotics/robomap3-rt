@@ -8,4 +8,6 @@ inherit catkin
 
 ROS_SPN = "roscpp_core"
 
+DEPENDS_class-nativesdk += "nativesdk-catkin"
+
 BBCLASSEXTEND += "nativesdk"

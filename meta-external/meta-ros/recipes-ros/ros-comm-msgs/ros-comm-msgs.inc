@@ -8,4 +8,6 @@ inherit catkin
 
 ROS_SPN = "ros_comm_msgs"
 
+DEPENDS_class-nativesdk += "nativesdk-catkin"
+
 BBCLASSEXTEND = "nativesdk"

@@ -11,4 +11,6 @@ SRC_URI[sha256sum] = "1340928931d873e2d43801b663a4a8d87402b88173adb01e21e58037d4
 
 inherit catkin
 
+DEPENDS_class-nativesdk += "nativesdk-catkin"
+
 BBCLASSEXTEND += "nativesdk"
