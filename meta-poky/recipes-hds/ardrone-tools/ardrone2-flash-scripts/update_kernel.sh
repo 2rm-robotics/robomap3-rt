@@ -34,7 +34,7 @@ echo updating kernel with $1
 for UBI_SUBPART in ${UBI_PART}_0 ${UBI_PART}_1; do
   NAME=$(ubinfo $UBI_SUBPART | grep Name |  sed 's/ \+/ /g' | cut -d ' ' -f2-)
 	if [ "$NAME" = "$UBI_NAME" ]; then
-	  echo "found $UBI_NAME in $UBI_SUBPART, writting new kernel"
+	  echo "found $UBI_NAME in $UBI_SUBPART, writing new kernel"
 	  ubiupdatevol $UBI_SUBPART $1
 	  echo "done"
     break

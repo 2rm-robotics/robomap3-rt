@@ -47,7 +47,8 @@ local MTD_PART=/dev/mtd$1
 UBI_PART=not_found
 
   #search if mtd already attached
-  for i in `seq 0 9`; do
+  #for i in `seq 0 9`; do # seq does not work in original ardrone2's busybox
+  for i in 0 1 2 3 4 5 6 7 8 9; do
 	  if [ -d /sys/devices/virtual/ubi/ubi$i/ ];then
 		  if [[ $(cat /sys/devices/virtual/ubi/ubi$i/mtd_num) = $1 ]]; then
 			  UBI_PART=/dev/ubi$i
