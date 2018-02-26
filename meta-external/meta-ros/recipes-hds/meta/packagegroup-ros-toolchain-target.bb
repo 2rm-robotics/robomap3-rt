@@ -35,4 +35,7 @@ RDEPENDS_${PN} = "\
     tf2-py-dev \
     tf2-tools-dev \
     python-empy \
+    dynamic-reconfigure-dev \
+    nodelet-dev \
+    roslint-dev \
     "

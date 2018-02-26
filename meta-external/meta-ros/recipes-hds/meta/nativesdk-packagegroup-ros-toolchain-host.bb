@@ -57,4 +57,5 @@ RDEPENDS_${PN} = "\
     nativesdk-message-runtime \
     nativesdk-std-msgs \
     nativesdk-console-bridge \
+    nativesdk-dynamic-reconfigure-dev \
     "
