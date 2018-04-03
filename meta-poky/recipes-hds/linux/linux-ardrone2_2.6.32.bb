@@ -17,9 +17,12 @@ DEPENDS +="plftool-native"
 PR = "r10"
 KV = "${PV}-9"
 
-SRCREV = "41"
+SRCREV = "46"
 SRC_URI = "svn://devel.hds.utc.fr/svn/ardrone2_src/trunk;module=${PN}-${KV};protocol=https"
 S = "${WORKDIR}/${PN}-${KV}"
+
+#test to use different cc
+#KERNEL_CC ="/opt/robomap3/1.7.3/armv7a-neon/sysroots/x86_64-pokysdk-linux/usr/bin/arm-poky-linux-gnueabi/arm-poky-linux-gnueabi-gcc"
 
 do_configure() {
 	unset CFLAGS
@@ -31,10 +34,10 @@ do_configure() {
         oe_runmake ardrone2_defconfig
 	if [ "${MACHINE}" = "ardrone2" ];then
 		oe_runmake ardrone2_defconfig
-	elif [ "${MACHINE}" = "ardrone2-installer" ];then
+    elif [ "${MACHINE}" = "ardrone2-installer" ];then
 		oe_runmake ardrone2_installer_defconfig
 	elif [ "${MACHINE}" = "ardrone2-updater" ];then
-		oe_runmake ardrone2_installer_defconfig
+		oe_runmake ardrone2_updater_defconfig
 	fi
 }
 

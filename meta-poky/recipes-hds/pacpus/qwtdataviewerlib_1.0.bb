@@ -5,8 +5,8 @@ LIC_FILES_CHKSUM = "file://${COMMON_LICENSE_DIR}/CECILL-C;md5=de61e8e359a18f44ef
 
 DEPENDS = "qwt"
 
-PR = "r9"
-SRCREV = "18"
+PR = "r10"
+SRCREV = "22"
 SRC_URI = "svn://devel.hds.utc.fr/svn/pacpushmi;module=trunk;protocol=https "
 
 S = "${WORKDIR}/build"

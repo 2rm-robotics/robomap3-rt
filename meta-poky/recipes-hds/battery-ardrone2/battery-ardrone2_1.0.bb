@@ -9,7 +9,7 @@ SRC_URI = "file://main.c"
  
 S = "${WORKDIR}"
 
-COMPATIBLE_MACHINE = "(ardrone2|parrot_chroot)"
+COMPATIBLE_MACHINE = "ardrone2"
 
 PR = "r0"
 

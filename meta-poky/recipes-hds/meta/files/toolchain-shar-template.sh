@@ -3,6 +3,8 @@
 INST_ARCH=$(uname -m | sed -e "s/i[3-6]86/ix86/" -e "s/x86[-_]64/x86_64/")
 SDK_ARCH=$(echo @SDK_ARCH@ | sed -e "s/i[3-6]86/ix86/" -e "s/x86[-_]64/x86_64/")
 MACHINE=$(echo @MACHINE@)
+DEFAULTTUNE=$(echo @DEFAULTTUNE@)
+ROS_TOOLCHAIN=$(echo @ROS_TOOLCHAIN@)
 
 if [ "$INST_ARCH" != "$SDK_ARCH" ]; then
 	# Allow for installation of ix86 SDK on x86_64 host
@@ -176,18 +178,21 @@ done
 $SUDO_EXEC sed -e "s:$DEFAULT_INSTALL_DIR:$target_sdk_dir:g" -i $target_sdk_dir/toolchain.cmake
 
 #ROS CROSS-COMPILATION STUFF
-SDKTARGETSYSROOT=$(cat $env_setup_script | grep "export SDKTARGETSYSROOT=" | sed 's/.*=\(.*\)/\1/')
+if [ "$ROS_TOOLCHAIN" = "true" ]; then
+    SDKTARGETSYSROOT=$(cat $env_setup_script | grep "export SDKTARGETSYSROOT=" | sed 's/.*=\(.*\)/\1/')
 
-# fix path in all ros .cmake files
-for file in $($SUDO_EXEC find $SDKTARGETSYSROOT/opt/ros/@ROSDISTRO@ -name "*.cmake" ); do
-	$SUDO_EXEC sed -i "s:.*/usr/lib.*:foreach(path $SDKTARGETSYSROOT/opt/ros/@ROSDISTRO@/lib;$SDKTARGETSYSROOT/usr/lib):g" $file
-done
-# add the .catkin file with correct path for cross-compilation
-echo "$SDKTARGETSYSROOT/opt/ros/@ROSDISTRO@/share/;" | $SUDO_EXEC tee $SDKTARGETSYSROOT/opt/ros/@ROSDISTRO@/.catkin > /dev/null
-# fix python path in header files
-$SUDO_EXEC sed -i "s:#!/usr/bin/env.*:#!/usr/bin/env $native_sysroot/usr/bin/python:g" $SDKTARGETSYSROOT/opt/ros/@ROSDISTRO@/share/catkin/cmake/templates/_setup_util.py.in
-# fix python native path in ros profile
-$SUDO_EXEC sed -i "s:@STAGING_BINDIR_NATIVE@/python-native/python:$native_sysroot/usr/bin/python:g" $SDKTARGETSYSROOT/opt/ros/@ROSDISTRO@/etc/catkin/profile.d/10.ros.sh $native_sysroot/opt/ros/@ROSDISTRO@/etc/catkin/profile.d/10.ros.sh
+    # fix path in all ros .cmake files
+    for file in $($SUDO_EXEC find $SDKTARGETSYSROOT/opt/ros/@ROSDISTRO@ -name "*.cmake" ); do
+	    $SUDO_EXEC sed -i "s:.*/usr/lib.*:foreach(path $SDKTARGETSYSROOT/opt/ros/@ROSDISTRO@/lib;$SDKTARGETSYSROOT/usr/lib):g" $file
+    done
+    # add the .catkin file with correct path for cross-compilation
+    echo "$SDKTARGETSYSROOT/opt/ros/@ROSDISTRO@/share/;" | $SUDO_EXEC tee $SDKTARGETSYSROOT/opt/ros/@ROSDISTRO@/.catkin > /dev/null
+    # fix python path in header files
+    $SUDO_EXEC sed -i "s:#!/usr/bin/env.*:#!/usr/bin/env $native_sysroot/usr/bin/python:g" $SDKTARGETSYSROOT/opt/ros/@ROSDISTRO@/share/catkin/cmake/templates/_setup_util.py.in
+    # fix python native path in ros profile
+    $SUDO_EXEC sed -i "s:@STAGING_BINDIR_NATIVE@/python-native/python:$native_sysroot/usr/bin/python:g" $SDKTARGETSYSROOT/opt/ros/@ROSDISTRO@/etc/catkin/profile.d/10.ros.sh $native_sysroot/opt/ros/@ROSDISTRO@/etc/catkin/profile.d/10.ros.sh
+fi
+#end ROS STUFF
 
 # find out all perl scripts in $native_sysroot and modify them replacing the
 # host perl with SDK perl.
@@ -200,19 +205,11 @@ echo
 
 #libGL fix for Fl-AIR simulator
 if [ "$MACHINE" = "genericx86-64" ] || [ "$MACHINE" = "genericx86" ] ; then
-	libgl=$(ldconfig -p | grep -m1 libGL.so.1  | awk '{ print $4 }')
-
-	if [ -n "$libgl" ]; then
-		libgl_path=`dirname $libgl`
-		echo libGL.so.1 found in $libgl_path
-		echo adding it to $target_sdk_dir/toolchain.cmake
-	else
-		echo libGL.so.1 not found!
-		echo "You will not be able to use proprietary graphic drivers"
-	fi
+	SDKTARGETSYSROOT=$(cat $env_setup_script | grep "export SDKTARGETSYSROOT=" | sed 's/.*=\(.*\)/\1/')
+    mkdir $SDKTARGETSYSROOT/usr/lib/GL
+    mv $SDKTARGETSYSROOT/usr/lib/libGL* $SDKTARGETSYSROOT/usr/lib/GL
+    mv $SDKTARGETSYSROOT/usr/lib/libdrm* $SDKTARGETSYSROOT/usr/lib/GL
 fi
-
-sed -e "s:<libgl_path>:$libgl_path:g" -i $target_sdk_dir/toolchain.cmake
 
 #environement variable settings
 function comment-and-add {
@@ -243,18 +240,41 @@ function comment-and-add {
   fi
 }
 
-if [ "$MACHINE" = "genericx86-64" ] || [ "$MACHINE" = "genericx86" ] ; then
-	var="OECORE_CMAKE_HOST_TOOLCHAIN"
-else
-	var="OECORE_CMAKE_CROSS_TOOLCHAIN"
-fi
+function add-value {
+  FILE=$1
+  ENVVAR=$2
+  VALUE=$3
+  unset VALUE_FOUND
+  unset LINE_FOUND
+
+  while read -r LINE; do
+    #if the correct line is already here...
+    LINE_FOUND=$LINE
+    TOOLCHAINS=($(echo $LINE | sed -e 's/export .*="\(.*\)"/\1/'))
+    for ARCH in ${TOOLCHAINS[@]}; do
+        if [ $ARCH = $VALUE ]; then
+            VALUE_FOUND=1
+        fi
+    done
+  done < <(cat $FILE | grep "^export[[:space:]]*$ENVVAR=")
+
+
+  if [ -z "${LINE_FOUND+set}" ]; then
+    echo "export $ENVVAR=\"$VALUE\"" >> $FILE
+  elif [ -z "${VALUE_FOUND+set}" ]; then
+    TOOLCHAINS=("${TOOLCHAINS[@]}" "$VALUE")
+    NEW_LINE="export $ENVVAR=\"${TOOLCHAINS[@]}\""
+    sed -i "s:$LINE_FOUND:$NEW_LINE:g" $FILE
+  fi
+}
+
+add-value ~/.bashrc OECORE_CMAKE_TOOLCHAINS ${DEFAULTTUNE//-/_}
+
+var=OECORE_CMAKE_${DEFAULTTUNE^^}_TOOLCHAIN
+var=${var//-/_} # replace - by _
 comment-and-add ~/.bashrc $var "$target_sdk_dir/toolchain.cmake"
 echo "Added $var in ~/.bashrc"
 
-if [ ! "$MACHINE" = "genericx86-64" ] && [ ! "$MACHINE" = "genericx86" ] ; then
-	comment-and-add ~/.bashrc OECORE_ENV_SETUP $env_setup_script
-	echo "Added OECORE_ENV_SETUP in ~/.bashrc"
-fi
 
 if [ "$MACHINE" = "genericx86-64" ] || [ "$MACHINE" = "genericx86" ] ; then
 	VALUE=$(cat $env_setup_script | grep "export SDKTARGETSYSROOT=" | sed 's/.*=\(.*\)/\1/')

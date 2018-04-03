@@ -44,8 +44,26 @@ do_compile_prepend() {
 	unset LDFLAGS
 }
 
-#do_install_prepend() {
-#        unset CFLAGS CPPFLAGS CXXFLAGS LDFLAGS
-#}
+# Override the do_install of kernel because of compilation problems with poky migration
+# Indeed, the installation directories use the wrong paths and this works whithout it
+do_install() {
+	#
+        # First install the modules
+        #
+        unset CFLAGS CPPFLAGS CXXFLAGS LDFLAGS MACHINE
+        if (grep -q -i -e '^CONFIG_MODULES=y$' .config); then
+                oe_runmake DEPMOD=echo INSTALL_MOD_PATH="${D}" modules_install
+                rm "${D}/lib/modules/${KERNEL_VERSION}/build"
+                rm "${D}/lib/modules/${KERNEL_VERSION}/source"
+                # If the kernel/ directory is empty remove it to prevent QA issues
+                rmdir --ignore-fail-on-non-empty "${D}/lib/modules/${KERNEL_VERSION}/kernel"
+        else
+                bbnote "no modules to install"
+        fi
+}
+
+do_install_prepend() {
+        unset LDFLAGS
+}
 
 S = "${WORKDIR}/linux-omap-${KV}"

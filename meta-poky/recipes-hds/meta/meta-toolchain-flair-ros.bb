@@ -24,6 +24,9 @@ QT_TOOLS_PREFIX = "${SDKPATHNATIVE}${bindir_nativesdk}"
 
 SRC_URI = "file://toolchain-shar-template.sh "
 
+#add a flag caught by toolchain-shar-template.sh in case of ros
+ROS_TOOLCHAIN="true"
+
 DEPENDS = "\
     nativesdk-catkin\
 "

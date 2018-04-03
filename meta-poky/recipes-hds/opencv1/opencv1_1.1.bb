@@ -17,16 +17,14 @@ S = "${WORKDIR}/opencv-1.1.0"
 
 inherit autotools
 
-prefix = "/usr/opencv1"
-libdir = "${prefix}/lib"
-includedir = "${prefix}/include"
+#prefix = "/usr/"
+#libdir = "${prefix}/lib"
+#includedir = "${prefix}/include/opencv1"
 
-#EXTRA_OECONF = "--disable-debug --without-gthread --without-python --without-swig --disable-apps --without-gtk --prefix=/usr/opencv1"
 EXTRA_OECONF = "--disable-debug --without-gthread --without-python --without-swig --disable-apps --without-gtk"
 EXTRA_OECONF_virtclass-nativesdk = "--disable-debug --without-gthread --without-python --without-swig --disable-apps --without-gtk --without-v4l"
 
 export BUILD_SYS
-
 export HOST_SYS
 
 do_compile() {
@@ -35,6 +33,9 @@ do_compile() {
 
 do_install() {
 	oe_runmake 'DESTDIR=${D}' 'SUDO=/bin/true' install
+    #avoid problems with opencv2 or 3
+    mv ${D}/usr/lib/pkgconfig/opencv.pc ${D}/usr/lib/pkgconfig/opencv1.pc 
+    mv ${D}/usr/include/opencv ${D}/usr/include/opencv1
 }
 
 PACKAGES = "${PN}-dev ${PN} ${PN}-share ${PN}-dbg"

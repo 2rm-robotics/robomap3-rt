@@ -8,6 +8,7 @@ INITSCRIPT_PARAMS = "start 80 S . stop 40 0 6 1 ."
 SRC_URI += " \
 	file://if-pre-up.d-wlan \
 	file://if-up.d-wlan \
+    file://if-up.d-resolv-conf \
 "
 
 SRC_URI_append_ardrone2 = "\ 

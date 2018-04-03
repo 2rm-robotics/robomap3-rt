@@ -15,7 +15,7 @@ RDEPENDS_${PN} = "\
     iir-dev \
     udt-dev \
     vrpn-dev \
-    opencv-dev \
+    opencv1-dev \
     nmealib-dev \
     tclap-dev \
     filelib-dev \

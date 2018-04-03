@@ -1,5 +1,28 @@
 *** src/api.cpp	2013-02-20 17:35:26.000000000 +0100
---- src/api.cpp	2015-10-01 13:43:13.335243243 +0200
+--- src/api.cpp	2018-01-30 16:41:56.989307666 +0100
+***************
+*** 178,186 ****
+     delete m_pCache;
+  }
+  
+! int CUDTUnited::startup()
+  {
+     CGuard gcinit(m_InitLock);
+  
+     if (m_iInstanceCount++ > 0)
+        return 0;
+--- 178,188 ----
+     delete m_pCache;
+  }
+  
+! int CUDTUnited::startup(uint32_t garbageCollectorStackSize,uint32_t sndQueueStackSize,uint32_t rcvQueueStackSize)
+  {
+     CGuard gcinit(m_InitLock);
++    this->sndQueueStackSize=sndQueueStackSize;
++    this->rcvQueueStackSize=rcvQueueStackSize;
+  
+     if (m_iInstanceCount++ > 0)
+        return 0;
 ***************
 *** 204,210 ****
      #ifndef WIN32
@@ -9,20 +32,148 @@
      #else
         m_GCStopLock = CreateMutex(NULL, false, NULL);
         m_GCStopCond = CreateEvent(NULL, false, false, NULL);
---- 204,214 ----
+--- 206,216 ----
      #ifndef WIN32
         pthread_mutex_init(&m_GCStopLock, NULL);
         pthread_cond_init(&m_GCStopCond, NULL);
-! 	pthread_attr_t attr;
-! 	pthread_attr_init(&attr);
-! 	pthread_attr_setstacksize(&attr, 1024*1024*2);
+!       pthread_attr_t attr;
+!       pthread_attr_init(&attr);
+!       pthread_attr_setstacksize(&attr,garbageCollectorStackSize);
 !       pthread_create(&m_GCThread, &attr, garbageCollect, this);
-! 	pthread_attr_destroy(&attr);
+!       pthread_attr_destroy(&attr);
      #else
         m_GCStopLock = CreateMutex(NULL, false, NULL);
         m_GCStopCond = CreateEvent(NULL, false, false, NULL);
+***************
+*** 1431,1439 ****
+     m.m_pTimer = new CTimer;
+  
+     m.m_pSndQueue = new CSndQueue;
+!    m.m_pSndQueue->init(m.m_pChannel, m.m_pTimer);
+     m.m_pRcvQueue = new CRcvQueue;
+!    m.m_pRcvQueue->init(32, s->m_pUDT->m_iPayloadSize, m.m_iIPversion, 1024, m.m_pChannel, m.m_pTimer);
+  
+     m_mMultiplexer[m.m_iID] = m;
+  
+--- 1437,1445 ----
+     m.m_pTimer = new CTimer;
+  
+     m.m_pSndQueue = new CSndQueue;
+!    m.m_pSndQueue->init(m.m_pChannel, m.m_pTimer,sndQueueStackSize);
+     m.m_pRcvQueue = new CRcvQueue;
+!    m.m_pRcvQueue->init(32, s->m_pUDT->m_iPayloadSize, m.m_iIPversion, 1024, m.m_pChannel, m.m_pTimer,rcvQueueStackSize);
+  
+     m_mMultiplexer[m.m_iID] = m;
+  
+***************
+*** 1549,1557 ****
+  
+  ////////////////////////////////////////////////////////////////////////////////
+  
+! int CUDT::startup()
+  {
+!    return s_UDTUnited.startup();
+  }
+  
+  int CUDT::cleanup()
+--- 1555,1563 ----
+  
+  ////////////////////////////////////////////////////////////////////////////////
+  
+! int CUDT::startup(uint32_t garbageCollectorStackSize,uint32_t sndQueueStackSize,uint32_t rcvQueueStackSize)
+  {
+!    return s_UDTUnited.startup(garbageCollectorStackSize,sndQueueStackSize,rcvQueueStackSize);
+  }
+  
+  int CUDT::cleanup()
+***************
+*** 2158,2166 ****
+  namespace UDT
+  {
+  
+! int startup()
+  {
+!    return CUDT::startup();
+  }
+  
+  int cleanup()
+--- 2164,2172 ----
+  namespace UDT
+  {
+  
+! int startup(uint32_t garbageCollectorStackSize,uint32_t sndQueueStackSize,uint32_t rcvQueueStackSize)
+  {
+!    return CUDT::startup(garbageCollectorStackSize,sndQueueStackSize,rcvQueueStackSize);
+  }
+  
+  int cleanup()
+*** src/api.h	2013-02-20 17:35:26.000000000 +0100
+--- src/api.h	2018-01-30 16:41:15.909326501 +0100
+***************
+*** 111,117 ****
+        // Returned value:
+        //    0 if success, otherwise -1 is returned.
+  
+!    int startup();
+  
+        // Functionality:
+        //    release the UDT library.
+--- 111,117 ----
+        // Returned value:
+        //    0 if success, otherwise -1 is returned.
+  
+!    int startup(uint32_t garbageCollectorStackSize=1024*1024*2,uint32_t sndQueueStackSize=1024*1024*2,uint32_t rcvQueueStackSize=1024*1024*2);
+  
+        // Functionality:
+        //    release the UDT library.
+***************
+*** 228,233 ****
+--- 228,234 ----
+     CUDTSocket* locate(const sockaddr* peer, const UDTSOCKET id, int32_t isn);
+     void updateMux(CUDTSocket* s, const sockaddr* addr = NULL, const UDPSOCKET* = NULL);
+     void updateMux(CUDTSocket* s, const CUDTSocket* ls);
++    uint32_t sndQueueStackSize,rcvQueueStackSize;
+  
+  private:
+     std::map<int, CMultiplexer> m_mMultiplexer;		// UDP multiplexer
+*** src/core.h	2013-02-20 17:35:26.000000000 +0100
+--- src/core.h	2018-01-30 16:37:00.257445696 +0100
+***************
+*** 76,82 ****
+     ~CUDT();
+  
+  public: //API
+!    static int startup();
+     static int cleanup();
+     static UDTSOCKET socket(int af, int type = SOCK_STREAM, int protocol = 0);
+     static int bind(UDTSOCKET u, const sockaddr* name, int namelen);
+--- 76,82 ----
+     ~CUDT();
+  
+  public: //API
+!    static int startup(uint32_t garbageCollectorStackSize,uint32_t sndQueueStackSize,uint32_t rcvQueueStackSize);
+     static int cleanup();
+     static UDTSOCKET socket(int af, int type = SOCK_STREAM, int protocol = 0);
+     static int bind(UDTSOCKET u, const sockaddr* name, int namelen);
 *** src/queue.cpp	2013-02-20 17:35:26.000000000 +0100
---- src/queue.cpp	2015-10-01 17:55:09.255635209 +0200
+--- src/queue.cpp	2018-01-30 16:28:35.517698626 +0100
+***************
+*** 487,493 ****
+     delete m_pSndUList;
+  }
+  
+! void CSndQueue::init(CChannel* c, CTimer* t)
+  {
+     m_pChannel = c;
+     m_pTimer = t;
+--- 487,493 ----
+     delete m_pSndUList;
+  }
+  
+! void CSndQueue::init(CChannel* c, CTimer* t,uint32_t stackSize)
+  {
+     m_pChannel = c;
+     m_pTimer = t;
 ***************
 *** 497,507 ****
      m_pSndUList->m_pTimer = m_pTimer;
@@ -40,18 +191,35 @@
      m_pSndUList->m_pTimer = m_pTimer;
   
      #ifndef WIN32
-! 	pthread_attr_t attr;
-! 	pthread_attr_init(&attr);
-! 	pthread_attr_setstacksize(&attr, 1024*1024*2);
+!       pthread_attr_t attr;
+!       pthread_attr_init(&attr);
+!       pthread_attr_setstacksize(&attr,stackSize);
 !       if (0 != pthread_create(&m_WorkerThread, &attr, CSndQueue::worker, this))
         {
            m_WorkerThread = 0;
            throw CUDTException(3, 1);
         }
-+ 	pthread_attr_destroy(&attr);
++       pthread_attr_destroy(&attr);
      #else
         DWORD threadID;
         m_WorkerThread = CreateThread(NULL, 0, CSndQueue::worker, this, 0, &threadID);
+***************
+*** 937,943 ****
+     }
+  }
+  
+! void CRcvQueue::init(int qsize, int payload, int version, int hsize, CChannel* cc, CTimer* t)
+  {
+     m_iPayloadSize = payload;
+  
+--- 941,947 ----
+     }
+  }
+  
+! void CRcvQueue::init(int qsize, int payload, int version, int hsize, CChannel* cc, CTimer* t,uint32_t stackSize)
+  {
+     m_iPayloadSize = payload;
+  
 ***************
 *** 953,963 ****
      m_pRendezvousQueue = new CRendezvousQueue;
@@ -69,15 +237,70 @@
      m_pRendezvousQueue = new CRendezvousQueue;
   
      #ifndef WIN32
-! 	pthread_attr_t attr;
-! 	pthread_attr_init(&attr);
-! 	pthread_attr_setstacksize(&attr, 1024*1024*2);
+!       pthread_attr_t attr;
+!       pthread_attr_init(&attr);
+!       pthread_attr_setstacksize(&attr,stackSize);
 !       if (0 != pthread_create(&m_WorkerThread, &attr, CRcvQueue::worker, this))
         {
            m_WorkerThread = 0;
            throw CUDTException(3, 1);
         }
-+ 	pthread_attr_destroy(&attr);
++       pthread_attr_destroy(&attr);
      #else
         DWORD threadID;
         m_WorkerThread = CreateThread(NULL, 0, CRcvQueue::worker, this, 0, &threadID);
+*** src/queue.h	2013-02-20 17:35:26.000000000 +0100
+--- src/queue.h	2018-01-30 16:27:28.557735132 +0100
+***************
+*** 384,390 ****
+        // Returned value:
+        //    None.
+  
+!    void init(CChannel* c, CTimer* t);
+  
+        // Functionality:
+        //    Send out a packet to a given address.
+--- 384,390 ----
+        // Returned value:
+        //    None.
+  
+!    void init(CChannel* c, CTimer* t,uint32_t stackSize);
+  
+        // Functionality:
+        //    Send out a packet to a given address.
+***************
+*** 444,450 ****
+        // Returned value:
+        //    None.
+  
+!    void init(int size, int payload, int version, int hsize, CChannel* c, CTimer* t);
+  
+        // Functionality:
+        //    Read a packet for a specific UDT socket id.
+--- 444,450 ----
+        // Returned value:
+        //    None.
+  
+!    void init(int size, int payload, int version, int hsize, CChannel* c, CTimer* t,uint32_t stackSize);
+  
+        // Functionality:
+        //    Read a packet for a specific UDT socket id.
+*** src/udt.h	2013-02-20 17:35:26.000000000 +0100
+--- src/udt.h	2018-01-30 16:38:56.185391171 +0100
+***************
+*** 309,315 ****
+  #undef ERROR
+  UDT_API extern const int ERROR;
+  
+! UDT_API int startup();
+  UDT_API int cleanup();
+  UDT_API UDTSOCKET socket(int af, int type, int protocol);
+  UDT_API int bind(UDTSOCKET u, const struct sockaddr* name, int namelen);
+--- 309,315 ----
+  #undef ERROR
+  UDT_API extern const int ERROR;
+  
+! UDT_API int startup(uint32_t garbageCollectorStackSize=1024*1024*2,uint32_t sndQueueStackSize=1024*1024*2,uint32_t rcvQueueStackSize=1024*1024*2);
+  UDT_API int cleanup();
+  UDT_API UDTSOCKET socket(int af, int type, int protocol);
+  UDT_API int bind(UDTSOCKET u, const struct sockaddr* name, int namelen);

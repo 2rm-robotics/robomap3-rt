@@ -1,7 +1,7 @@
 DESCRIPTION = "udt"
 SECTION = "libs"
 PN ="udt"
-PR = "r7"
+PR = "r8"
 
 LICENSE = "BSD"
 LIC_FILES_CHKSUM = "file://../LICENSE.txt;md5=567e8c8da655afbe9ad8ec73696cc31e"
@@ -24,6 +24,8 @@ do_install_append () {
 	install -d ${D}${includedir}/udt
  	install -m 0755 ${S}/libudt.so* ${D}${libdir}/
 	install -m 0644 ${S}/udt.h ${D}${includedir}/udt/
+    install -m 0644 ${S}/ccc.h ${D}${includedir}/udt/
+    install -m 0644 ${S}/packet.h ${D}${includedir}/udt/
 	cd ${D}${libdir}/
 	ln -s libudt.so.${PV} libudt.so
 }

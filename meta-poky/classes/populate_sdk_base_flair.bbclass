@@ -134,6 +134,8 @@ EOF
 		-e 's#@MACHINE@#${MACHINE}#g' \
         -e 's#@ROSDISTRO@#${ROSDISTRO}#g' \
         -e 's#@STAGING_BINDIR_NATIVE@#${STAGING_BINDIR_NATIVE}#g' \
+        -e 's#@DEFAULTTUNE@#${DEFAULTTUNE}#g' \
+        -e 's#@ROS_TOOLCHAIN@#${ROS_TOOLCHAIN}#g' \
 		${SDK_DEPLOY}/${TOOLCHAIN_OUTPUTNAME}.sh
 
 	# add execution permission

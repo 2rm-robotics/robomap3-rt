@@ -6,7 +6,7 @@
  add_library(quat ${QUATLIB_SOURCES} ${QUATLIB_HEADER})
  set_property(TARGET quat PROPERTY PUBLIC_HEADER ${QUATLIB_HEADER})
  set_target_properties(quat PROPERTIES FOLDER Library)
-+set_target_properties(quat PROPERTIES VERSION 7.31)
++set_target_properties(quat PROPERTIES VERSION 7.33)
  if(VRPN_INSTALL)
  	install(TARGETS
   		quat
@@ -18,7 +18,7 @@
   
   if(VRPN_BUILD_CLIENT_LIBRARY)
   	add_library(vrpn ${VRPN_CLIENT_SOURCES} ${VRPN_CLIENT_PUBLIC_HEADERS})
-+ 	set_target_properties(vrpn PROPERTIES VERSION 7.31)
++ 	set_target_properties(vrpn PROPERTIES VERSION 7.33)
   	target_link_libraries(vrpn ${EXTRA_LIBS})
   	set(VRPN_CLIENT_LIBRARY vrpn)
 
