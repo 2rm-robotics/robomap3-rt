@@ -191,6 +191,8 @@ if [ "$ROS_TOOLCHAIN" = "true" ]; then
     $SUDO_EXEC sed -i "s:#!/usr/bin/env.*:#!/usr/bin/env $native_sysroot/usr/bin/python:g" $SDKTARGETSYSROOT/opt/ros/@ROSDISTRO@/share/catkin/cmake/templates/_setup_util.py.in
     # fix python native path in ros profile
     $SUDO_EXEC sed -i "s:@STAGING_BINDIR_NATIVE@/python-native/python:$native_sysroot/usr/bin/python:g" $SDKTARGETSYSROOT/opt/ros/@ROSDISTRO@/etc/catkin/profile.d/10.ros.sh $native_sysroot/opt/ros/@ROSDISTRO@/etc/catkin/profile.d/10.ros.sh
+    # fix missing rospack depend in roslibConfig.cmake
+    $SUDO_EXEC sed -i "s:set(depends \"\"):set(depends \"rospack\"):g" $SDKTARGETSYSROOT/opt/ros/@ROSDISTRO@/share/roslib/cmake/roslibConfig.cmake
 fi
 #end ROS STUFF
 
