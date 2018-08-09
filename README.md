@@ -61,39 +61,46 @@ If you don't have an OpenEmbedded system installed, [please consult this documen
 
 **Important** : all the recipes have been tested with **Poky 2.1.3 (Krogoth-15.0.3)**. You can find the download links [here](https://lists.yoctoproject.org/pipermail/yocto-announce/2017-July/000117.html). A recent version will not work because we use the toolchain to compile ardrone uav kernel which is a 2.6.x version and starting from Poky Morty, it supports only 3.x kernel versions.
 
+We suppose that all your developments are located in the same place and we will use the variable ${YOUR_SRC_PATH} to refer to this path. 
+
 Once you get the Poky recipes, just clone this repository in order to get all recipes. You won't need more recipes in order to compile.
 
-Next step, source your environment :
+```
+cd ${YOUR_SRC_PATH}
+git clone https://github.com/2rm-robotics/robomap3-rt.git
+```
+
+Next step, source your environment (among other features, it will permit you to use the bitbake command):
 
 ```
-source your_path/poky-krogoth-15.0.3/oe-init-build-env
+source ${YOUR_SRC_PATH}/poky-krogoth-15.0.3/oe-init-build-env
 ```
 
 We don't use a system to generate automatically all stuff to launch bitbake from here. You have to add the layers and some config in build/conf files.
 
-#### Setup the layers
+#### Setup the layers for the Raspberry Pi target
 
-Modify the build/conf/bblayers.conf to add all the layers. Don't forget to replace "your_path" by the path you clone Poky and robomap3-rt. 
+Modify the build/conf/bblayers.conf to add all the layers. Don't forget to replace ${YOUR_SRC_PATH} by the path you clone Poky and robomap3-rt. 
 
 ```
 BBLAYERS ?= " \
-  your_path/poky-krogoth-15.0.3/meta \
-  your_path/poky-krogoth-15.0.3/meta-poky \
-  your_path/poky-krogoth-15.0.3/meta-yocto-bsp \
-  your_path/robomap3-rt/meta-external/meta-oe \
-  your_path/robomap3-rt/meta-external/meta-qt4 \
-  your_path/robomap3-rt/meta-external/meta-python \
-  your_path/robomap3-rt/meta-external/meta-ros \
-  your_path/robomap3-rt/meta-external/meta-isee \
-  your_path/robomap3-rt/meta-xenomai-omap \
-  your_path/robomap3-rt/meta-kernel-omap \
-  your_path/robomap3-rt/meta-poky \
-  your_path/robomap3-rt/meta-external/meta-raspberrypi \
-  your_path/robomap3-rt/meta-external/meta-rpi \
+  ${YOUR_SRC_PATH}/poky-krogoth-15.0.3/meta \
+  ${YOUR_SRC_PATH}/poky-krogoth-15.0.3/meta-poky \
+  ${YOUR_SRC_PATH}/poky-krogoth-15.0.3/meta-yocto-bsp \
+  ${YOUR_SRC_PATH}/robomap3-rt/meta-external/meta-oe \
+  ${YOUR_SRC_PATH}/robomap3-rt/meta-external/meta-qt4 \
+  ${YOUR_SRC_PATH}/robomap3-rt/meta-external/meta-python \
+  ${YOUR_SRC_PATH}/robomap3-rt/meta-external/meta-ros \
+  ${YOUR_SRC_PATH}/robomap3-rt/meta-external/meta-isee \
+  ${YOUR_SRC_PATH}/robomap3-rt/meta-xenomai-omap \
+  ${YOUR_SRC_PATH}/robomap3-rt/meta-kernel-omap \
+  ${YOUR_SRC_PATH}/robomap3-rt/meta-poky \
+  ${YOUR_SRC_PATH}/robomap3-rt/meta-external/meta-raspberrypi \
+  ${YOUR_SRC_PATH}/robomap3-rt/meta-external/meta-rpi \
   "
 ```
 
-#### Setup the compilation configuration
+#### Setup the compilation configuration for the Raspberry Pi target
 
 Edit the build/conf/local.conf file to adjust some configuration parameters.
 
