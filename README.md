@@ -57,9 +57,9 @@ For more information, see the section [below](#ros-nodes-cross-compilation).
 
 ### Installation
 
-If you don't have an OpenEmbedded system installed, [please install it first](https://www.yoctoproject.org/docs/2.4.2/yocto-project-qs/yocto-project-qs.html).
+If you don't have an OpenEmbedded system installed, [please consult this documentation to setup your system first](https://www.yoctoproject.org/docs/2.4.2/yocto-project-qs/yocto-project-qs.html).
 
-**Important** : all the recipes have been tested with **Poky Krogoth 2.1.3**. A recent version will not work because we use the toolchain to compile ardrone uav kernel which is a 2.6.x version and starting from Poky Morty, it supports only 3.x kernel versions.
+**Important** : all the recipes have been tested with **Poky 2.1.3 (Krogoth-15.0.3)**. You can find the download links [here](https://lists.yoctoproject.org/pipermail/yocto-announce/2017-July/000117.html). A recent version will not work because we use the toolchain to compile ardrone uav kernel which is a 2.6.x version and starting from Poky Morty, it supports only 3.x kernel versions.
 
 Once you get the Poky recipes, just clone this repository in order to get all recipes. You won't need more recipes in order to compile.
 
