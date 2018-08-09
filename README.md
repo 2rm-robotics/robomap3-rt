@@ -39,7 +39,7 @@ Finally the last folder, meta-poky, contains all the extra recipes to build a Po
 
 As said in introduction, the initial project was very specific and used to fly ardrone2 uavs and other stuff using IGEPv2 boards.
 
-What we wall "flair" is in fact the name of a framework developed by the Heudiasyc laboratory to fly uavs (more information [here](https://devel.hds.utc.fr/software/flair/wiki)).
+What we call "flair" is in fact the name of a framework developed by the Heudiasyc laboratory to fly uavs (more information [here](https://devel.hds.utc.fr/software/flair/wiki)).
 
 "hds" names the Heudiasyc laboratory. You will find a lot of "recipes-hds" folders which contains recipes developed for the needs of the Heudiasyc platforms.
 
