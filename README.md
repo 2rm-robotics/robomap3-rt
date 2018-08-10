@@ -14,6 +14,7 @@ Summary :
   * Thomas Fuhrmann (@furmi), Heudiasyc Laboratory : tomesman@gmail.com
   * Guillaume Sanahuja, Heudiasyc Laboratory
   * Gildas Bayard, Heudiasyc Laboratory
+  * Gerald Dherbomez (@gdherbom), CRIStAL Laboratory: gerald.dherbomez@univ-lille.fr
 
 ## Introduction
 
@@ -51,7 +52,7 @@ For now the project just uses other layers from the community to build a specifi
 
 Indeed the cross-compilation folder contains the packages to let you cross-compile ROS nodes, using a generated toolchain instead of the whole system (no bitbake here !) and the correct stuff to make your cross-compiled nodes work on your target.
 
-For more information, see the section [below](#ros-nodes-cross-compilation). 
+For more information, see the section [below](#ros-nodes-cross-compilation).
 
 ## Quick start
 
@@ -73,7 +74,7 @@ We don't use a system to generate automatically all stuff to launch bitbake from
 
 #### Setup the layers
 
-Modify the build/conf/bblayers.conf to add all the layers. Don't forget to replace "your_path" by the path you clone Poky and robomap3-rt. 
+Modify the build/conf/bblayers.conf to add all the layers. Don't forget to replace "your_path" by the path you clone Poky and robomap3-rt.
 
 ```
 BBLAYERS ?= " \
@@ -124,7 +125,7 @@ Once everything is installed and setup just launch bitbake.
 
 ##### Image
 
-To generate the Raspberry Pi image, which includes ROS : 
+To generate the Raspberry Pi image, which includes ROS :
 
 ```
 bitbake core-image-flair-ros
@@ -237,7 +238,7 @@ The file you have to modify is : **robomap3-rt/meta-external/meta-ros/recipes-hd
 
 In this file you can see a list of ROS components, just add yours at the end of the file.
 
-Don't forget the "-dev" suffix, as the packages in the target toolchain will be used for the cross-compilation. So if you want to cross-compile a node depending on an other ROS package, you have to install this other package in your target toolchain (with "-dev") in order to have all the stuff for compilation (like cmake files). 
+Don't forget the "-dev" suffix, as the packages in the target toolchain will be used for the cross-compilation. So if you want to cross-compile a node depending on an other ROS package, you have to install this other package in your target toolchain (with "-dev") in order to have all the stuff for compilation (like cmake files).
 
 #### Add Things in Raspberry Pi image
 
@@ -254,4 +255,3 @@ The second problem comes from ROS Python build tools which don't source the corr
 
 We resolve all these problems when the toolchain is installed and not directly by changing ROS recipes (or ROS source). See the shar file : robomap3-rt/meta-poky/recipes-hds/meta/files/toolchain-shar-template.sh.
 Somewhere you can find a comment like that : #ROS CROSS-COMPILATION STUFF. Below this comment you have some bash stuff to replace wrong paths and resolve the problems for cross-compilation.
-  
