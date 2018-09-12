@@ -1,5 +1,5 @@
 *** src/api.cpp	2013-02-20 17:35:26.000000000 +0100
---- src/api.cpp	2018-01-30 16:41:56.989307666 +0100
+--- src/api.cpp	2018-09-06 11:14:01.964426618 +0200
 ***************
 *** 178,186 ****
      delete m_pCache;
@@ -87,30 +87,36 @@
   
   int CUDT::cleanup()
 ***************
-*** 2158,2166 ****
-  namespace UDT
-  {
+*** 2160,2166 ****
   
-! int startup()
+  int startup()
   {
 !    return CUDT::startup();
   }
   
   int cleanup()
---- 2164,2172 ----
-  namespace UDT
-  {
+--- 2166,2178 ----
   
-! int startup(uint32_t garbageCollectorStackSize,uint32_t sndQueueStackSize,uint32_t rcvQueueStackSize)
+  int startup()
   {
+!    return startup2();
+! }
+! 
+! 
+! int startup2(uint32_t garbageCollectorStackSize,uint32_t sndQueueStackSize,uint32_t rcvQueueStackSize)
+! {
 !    return CUDT::startup(garbageCollectorStackSize,sndQueueStackSize,rcvQueueStackSize);
   }
   
   int cleanup()
 *** src/api.h	2013-02-20 17:35:26.000000000 +0100
---- src/api.h	2018-01-30 16:41:15.909326501 +0100
+--- src/api.h	2018-09-06 11:13:31.508991681 +0200
 ***************
-*** 111,117 ****
+*** 107,117 ****
+        // Functionality:
+        //    initialize the UDT library.
+        // Parameters:
+!       //    None.
         // Returned value:
         //    0 if success, otherwise -1 is returned.
   
@@ -118,7 +124,13 @@
   
         // Functionality:
         //    release the UDT library.
---- 111,117 ----
+--- 107,119 ----
+        // Functionality:
+        //    initialize the UDT library.
+        // Parameters:
+!       //    0) [in] garbageCollectorStackSize: stack size of garbage collector.
+!       //    1) [in] sndQueueStackSize: stack size of send queue.
+!       //    2) [in] rcvQueueStackSize: stack size of receive queue.
         // Returned value:
         //    0 if success, otherwise -1 is returned.
   
@@ -128,7 +140,7 @@
         //    release the UDT library.
 ***************
 *** 228,233 ****
---- 228,234 ----
+--- 230,236 ----
      CUDTSocket* locate(const sockaddr* peer, const UDTSOCKET id, int32_t isn);
      void updateMux(CUDTSocket* s, const sockaddr* addr = NULL, const UDPSOCKET* = NULL);
      void updateMux(CUDTSocket* s, const CUDTSocket* ls);
@@ -137,7 +149,7 @@
   private:
      std::map<int, CMultiplexer> m_mMultiplexer;		// UDP multiplexer
 *** src/core.h	2013-02-20 17:35:26.000000000 +0100
---- src/core.h	2018-01-30 16:37:00.257445696 +0100
+--- src/core.h	2018-09-06 11:11:03.567706051 +0200
 ***************
 *** 76,82 ****
      ~CUDT();
@@ -156,7 +168,7 @@
      static UDTSOCKET socket(int af, int type = SOCK_STREAM, int protocol = 0);
      static int bind(UDTSOCKET u, const sockaddr* name, int namelen);
 *** src/queue.cpp	2013-02-20 17:35:26.000000000 +0100
---- src/queue.cpp	2018-01-30 16:28:35.517698626 +0100
+--- src/queue.cpp	2018-09-06 10:48:47.570160807 +0200
 ***************
 *** 487,493 ****
      delete m_pSndUList;
@@ -250,7 +262,7 @@
         DWORD threadID;
         m_WorkerThread = CreateThread(NULL, 0, CRcvQueue::worker, this, 0, &threadID);
 *** src/queue.h	2013-02-20 17:35:26.000000000 +0100
---- src/queue.h	2018-01-30 16:27:28.557735132 +0100
+--- src/queue.h	2018-09-06 10:48:47.570160807 +0200
 ***************
 *** 384,390 ****
         // Returned value:
@@ -286,21 +298,14 @@
         // Functionality:
         //    Read a packet for a specific UDT socket id.
 *** src/udt.h	2013-02-20 17:35:26.000000000 +0100
---- src/udt.h	2018-01-30 16:38:56.185391171 +0100
+--- src/udt.h	2018-09-06 11:07:50.667142873 +0200
 ***************
-*** 309,315 ****
-  #undef ERROR
+*** 310,315 ****
+--- 310,316 ----
   UDT_API extern const int ERROR;
   
-! UDT_API int startup();
-  UDT_API int cleanup();
-  UDT_API UDTSOCKET socket(int af, int type, int protocol);
-  UDT_API int bind(UDTSOCKET u, const struct sockaddr* name, int namelen);
---- 309,315 ----
-  #undef ERROR
-  UDT_API extern const int ERROR;
-  
-! UDT_API int startup(uint32_t garbageCollectorStackSize=1024*1024*2,uint32_t sndQueueStackSize=1024*1024*2,uint32_t rcvQueueStackSize=1024*1024*2);
+  UDT_API int startup();
++ UDT_API int startup2(uint32_t garbageCollectorStackSize=1024*1024*2,uint32_t sndQueueStackSize=1024*1024*2,uint32_t rcvQueueStackSize=1024*1024*2);
   UDT_API int cleanup();
   UDT_API UDTSOCKET socket(int af, int type, int protocol);
   UDT_API int bind(UDTSOCKET u, const struct sockaddr* name, int namelen);
