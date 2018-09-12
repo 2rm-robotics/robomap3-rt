@@ -23,3 +23,13 @@ OECMAKE_SOURCEPATH= "${S}"
 OECMAKE_BUILDPATH= "${S}/build"
 
 BBCLASSEXTEND = "nativesdk"
+
+#add a symlink, because in old recipes robomap3 for poky dizzy, version.patch was wrong and declared the lib as 7.31
+#so keep a symlink for compatibility
+#should be removed when nobody uses 1.7.3 toolchain anylonger
+do_install_append () {
+	cd ${D}${libdir}/
+	ln -s libvrpn.so.7.33 libvrpn.so.7.31
+    ln -s libquat.so.7.33 libquat.so.7.31
+}
+
