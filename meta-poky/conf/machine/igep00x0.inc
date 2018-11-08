@@ -25,7 +25,5 @@ EXTRA_IMAGECMD_jffs2 = "-lnp "
 SERIAL_CONSOLE = "115200 ttyO2"
 
 PREFERRED_PROVIDER_virtual/kernel ?= "linux-igep"
-#PREFERRED_VERSION_linux-libc-headers ?= "2.6.37"
-PREFERRED_VERSION_udev = "164"
 
 KERNEL_IMAGETYPE = "zImage"
