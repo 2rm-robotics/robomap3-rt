@@ -13,4 +13,5 @@ RDEPENDS_${PN} = "\
     interactive-markers-dev \
     laser-proc-dev \
     teraranger-dev \
+    processing-lidar-objects-dev \
     "
