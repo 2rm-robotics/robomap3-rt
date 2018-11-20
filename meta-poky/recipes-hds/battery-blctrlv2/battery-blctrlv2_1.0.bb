@@ -11,7 +11,7 @@ S = "${WORKDIR}"
 
 COMPATIBLE_MACHINE = "(uav|overo)"
 
-DEPENDS = "virtual/kernel xenomai i2c-omap"
+DEPENDS = "virtual/kernel xenomai i2c-omap-rtdm"
 PR = "r0"
 
 do_compile() {

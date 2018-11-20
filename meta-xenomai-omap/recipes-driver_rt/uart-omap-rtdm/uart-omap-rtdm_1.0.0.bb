@@ -10,7 +10,7 @@ SRC_URI = "git://git.renater.fr/omap3-rtdrivers.git;protocol=git \
 	file://rt_serial/Correct-Misconfiguration-of-divisor-for-uart-speed.patch \
 	file://uart.conf \
 "
-SRCREV = "a5a86afd886e3dad7ecd42a710b1b03bf7730086"
+SRCREV = "74156c343281f1fd09bf9a54c0327f28f6f31290"
 
 S = "${WORKDIR}/git/rt_serial"
 
@@ -25,7 +25,7 @@ do_compile () {
 
 do_install () {
 	install -d ${D}${base_libdir}/modules/${KERNEL_VERSION}/kernel/drivers/rt
-	install -m 0644 ${S}/uart_omap*${KERNEL_OBJECT_SUFFIX} ${D}${base_libdir}/modules/${KERNEL_VERSION}/kernel/drivers/rt
+	install -m 0644 ${S}/uart_omap_rtdm*${KERNEL_OBJECT_SUFFIX} ${D}${base_libdir}/modules/${KERNEL_VERSION}/kernel/drivers/rt
 
 	install -d ${D}/etc/modules-load.d
 	install -m 0644 ${WORKDIR}/uart.conf ${D}/etc/modules-load.d/

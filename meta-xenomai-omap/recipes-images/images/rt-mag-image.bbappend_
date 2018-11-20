@@ -1,7 +1,7 @@
 
-RTDM_DRIVERS = " uart-omap \
-		 i2c-omap i2c-omap-dev \
-		 capture-radio-omap \			   
+RTDM_DRIVERS = " uart-omap-rtdm \
+		 i2c-omap-rtdm i2c-omap-rtdm-dev \
+		 capture-radio-omap-rtdm \			   
  "
 # All drivers that can be installed :    capture-radio-omap \ uart-omap \ i2c-omap \ i2c-omap-dev
  

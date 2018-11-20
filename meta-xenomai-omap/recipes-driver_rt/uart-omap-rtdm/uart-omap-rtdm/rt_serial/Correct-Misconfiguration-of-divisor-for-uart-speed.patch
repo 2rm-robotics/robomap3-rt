@@ -6,8 +6,8 @@ in table 17-30 (page 2699); the baudrate can be set to any value in:
 The maximum baudrate is 3,686,400 Baud
 
 diff -u rt_serial/uart_omap.c-orig rt_serial/uart_omap.c
---- rt_serial/uart_omap.c-orig	2013-12-08 17:28:20.000000000 +0100
-+++ rt_serial/uart_omap.c	2014-11-09 16:49:28.086805670 +0100
+--- rt_serial/uart_omap_rtdm.c-orig	2013-12-08 17:28:20.000000000 +0100
++++ rt_serial/uart_omap_rtdm.c	2014-11-09 16:49:28.086805670 +0100
 @@ -17,6 +17,8 @@
   */
  /*

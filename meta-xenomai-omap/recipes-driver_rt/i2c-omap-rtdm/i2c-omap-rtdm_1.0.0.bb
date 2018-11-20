@@ -10,7 +10,7 @@ SRC_URI = "git://git.renater.fr/omap3-rtdrivers.git;protocol=git \
 	file://i2c.conf \
 "
 
-SRCREV = "a5a86afd886e3dad7ecd42a710b1b03bf7730086"
+SRCREV = "3a448c9dcaa0501c54aa6b0411a363431120753b"
 
 S = "${WORKDIR}/git/rt_i2c"
 
@@ -20,12 +20,12 @@ COMPATIBLE_MACHINE = "(uav|overo)"
 
 do_compile () {
 	unset CFLAGS CPPFLAGS CXXFLAGS LDFLAGS CC LD CPP
-	make KSRC="${STAGING_KERNEL_DIR}"
+	make KSRC="${STAGING_KERNEL_DIR}" XENO_INC_DIR=${STAGING_INCDIR}/xenomai
 }
 
 do_install () {
 	install -d ${D}${base_libdir}/modules/${KERNEL_VERSION}/kernel/drivers/rt
-	install -m 0644 ${S}/i2c_omap*${KERNEL_OBJECT_SUFFIX} ${D}${base_libdir}/modules/${KERNEL_VERSION}/kernel/drivers/rt
+	install -m 0644 ${S}/i2c_omap_rtdm*${KERNEL_OBJECT_SUFFIX} ${D}${base_libdir}/modules/${KERNEL_VERSION}/kernel/drivers/rt
 	
 	install -d ${D}/etc/modules-load.d
 	install -m 0644 ${WORKDIR}/i2c.conf ${D}/etc/modules-load.d/
