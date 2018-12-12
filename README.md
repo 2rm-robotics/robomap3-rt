@@ -77,14 +77,14 @@ Create a directory for poky stuffs (avoid using a directory within an ecryptfs l
 ```
 mkdir -p /opt/poky/workdir
 ```
-be sure your user owns this directory.
+And be sure your user owns this directory. This directory will be accessible from your host and from the container.
 
 then run the container: (do it each time you need to build robomap3)
 ```
 sudo docker run --net=host --rm -it -v /opt/poky/workdir:/workdir crops/poky:ubuntu-16.04 --workdir=/workdir
 ```
 
-and the follow the tutorial
+and then follow the tutorial, using the workdir directory to share files between host and container.
 
 ### Installation
 
