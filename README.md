@@ -56,6 +56,36 @@ For more information, see the section [below](#ros-nodes-cross-compilation).
 
 ## Quick start
 
+Everything has been tested on Ubuntu 16.04 / Mint 18.
+
+If you are on a newer version, please consider using docker (otherwise build will fail); see below.
+
+
+### Additionnal packages
+
+Install the following packages
+
+```
+sudo apt install git texinfo chrpath g++
+```
+
+### Using docker on newer linux distros
+
+If you don't have it, install docker CE from https://docs.docker.com/glossary/?term=installation
+
+Create a directory for poky stuffs (avoid using a directory within an ecryptfs like home), for exemple:
+```
+mkdir -p /opt/poky/workdir
+```
+be sure your user owns this directory.
+
+then run the container: (do it each time you need to build robomap3)
+```
+sudo docker run --net=host --rm -it -v /opt/poky/workdir:/workdir crops/poky:ubuntu-16.04 --workdir=/workdir
+```
+
+and the follow the tutorial
+
 ### Installation
 
 If you don't have an OpenEmbedded system installed, [please consult this documentation to setup your system first](https://www.yoctoproject.org/docs/2.4.2/yocto-project-qs/yocto-project-qs.html).
