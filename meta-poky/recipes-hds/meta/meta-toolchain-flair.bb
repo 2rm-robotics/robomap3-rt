@@ -30,16 +30,6 @@ QT_DIR_NAME = "qtopia"
 
 QT_TOOLS_PREFIX = "${SDKPATHNATIVE}${bindir_nativesdk}"
 
-SRC_URI = "file://toolchain-shar-template.sh "
-
-DEPENDS = "\
-    nativesdk-catkin\
-"
-
-create_shar_prepend() {
-	cp ../toolchain-shar-template.sh ./
-}
-
 create_sdk_files_append_genericx86-64() {
     mkdir -p ${SDK_OUTPUT}${SDKPATHNATIVE}/environment-setup.d/
     script=${SDK_OUTPUT}${SDKPATHNATIVE}/environment-setup.d/${QT_DIR_NAME}.sh
