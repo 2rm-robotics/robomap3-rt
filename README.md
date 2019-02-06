@@ -71,7 +71,7 @@ sudo apt install git texinfo chrpath g++
 
 ### Using docker on newer linux distros
 
-If you don't have it, install docker CE from https://docs.docker.com/glossary/?term=installation
+If you don't have it, install docker CE from https://docs.docker.com/install/linux/docker-ce/ubuntu/
 
 Create a directory for poky stuffs (avoid using a directory within an ecryptfs like home), for exemple:
 ```
