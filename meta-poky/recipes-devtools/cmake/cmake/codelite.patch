@@ -139,7 +139,7 @@ diff -u "../T\303\251l\303\251chargements/cmake-3.7.1/Source/cmExtraCodeLiteGene
 +      xml.Element("BuildCommand", GetBuildCommand(mf));
 +      xml.Element("SingleFileCommand", GetSingleFileBuildCommand(mf));
 +      xml.Element("PreprocessFileCommand");
-+      xml.Element("WorkingDirectory", "$(WorkspacePath)");
++      xml.Element("WorkingDirectory", "$(ProjectPath)");
 +    }
 +    if(t->GetType()==cmState::TargetType::GLOBAL_TARGET) {
 +      xml.StartElement("Target");
