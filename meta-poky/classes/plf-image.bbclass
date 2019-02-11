@@ -1,4 +1,4 @@
-IMAGE_DEPENDS_plf = "plftool-native"
+IMAGE_DEPENDS_plf = "plftool-native bash-native"
 
 IMAGE_TYPEDEP_plf = "cpio"
 
@@ -8,7 +8,9 @@ echo "${BOOT_PARAMS}" | tr -d '\n' > ${S}/bootparams.txt
 
 #create ini file for plftool
 IMAGE_SIZE=$(stat ${DEPLOY_DIR_IMAGE}/${IMAGE_NAME}.rootfs.cpio --format="%s")
-let OFFSET=4+${IMAGE_SIZE}+0x81000000
+#let OFFSET=4+${IMAGE_SIZE}+0x81000000
+#let is not installed in the poky docker image, use expr in decimals
+OFFSET=$(expr 4 + ${IMAGE_SIZE} + 2164260864)
 
 cat > ${S}/installer.ini <<EOF
 [file]
