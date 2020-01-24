@@ -2,18 +2,10 @@ QTNAME = "qte"
 QTNAME_genericx86-64 = "qt"
 QTNAME_genericx86 = "qt"
 
-#TOOLCHAIN_HOST_TASK = "nativesdk-packagegroup-${QTNAME}-toolchain-host packagegroup-cross-canadian-${MACHINE} nativesdk-cmake nativesdk-pkgconfig nativesdk-doxygen"
-#TOOLCHAIN_HOST_TASK_uav = "nativesdk-packagegroup-${QTNAME}-toolchain-host packagegroup-cross-canadian-${MACHINE} nativesdk-cmake nativesdk-pkgconfig nativesdk-doxygen nativesdk-plftool nativesdk-ardrone2-usbload"
-#TOOLCHAIN_HOST_TASK_rpi-hds = "nativesdk-packagegroup-${QTNAME}-toolchain-host packagegroup-cross-canadian-${MACHINE} nativesdk-cmake nativesdk-pkgconfig nativesdk-doxygen"
-
-#TOOLCHAIN_TARGET_TASK_BASE = "packagegroup-${QTNAME}-toolchain-target packagegroup-core-standalone-sdk-target packagegroup-flair-toolchain-target"
-#TOOLCHAIN_TARGET_TASK = "${TOOLCHAIN_TARGET_TASK_BASE}"
-#TOOLCHAIN_TARGET_TASK_genericx86-64 = "${TOOLCHAIN_TARGET_TASK_BASE} qt-mobility-x11-dev qwt-dev qtserialport-dev qwtdataviewerlib-dev irrlicht-dev libxshmfence libusb-compat-dev"
-#TOOLCHAIN_TARGET_TASK_genericx86    = "${TOOLCHAIN_TARGET_TASK_BASE} qt-mobility-x11-dev qwt-dev qtserialport-dev qwtdataviewerlib-dev irrlicht-dev libxshmfence"
-
-TOOLCHAIN_HOST_TASK = "packagegroup-cross-canadian-${MACHINE} nativesdk-cmake nativesdk-pkgconfig nativesdk-doxygen"
-TOOLCHAIN_HOST_TASK_genericx86-64 = "nativesdk-packagegroup-${QTNAME}-toolchain-host packagegroup-cross-canadian-${MACHINE} nativesdk-cmake nativesdk-pkgconfig nativesdk-doxygen"
-TOOLCHAIN_HOST_TASK_uav = "packagegroup-cross-canadian-${MACHINE} nativesdk-cmake nativesdk-pkgconfig nativesdk-doxygen nativesdk-plftool nativesdk-ardrone2-usbload"
+TOOLCHAIN_HOST_TASK_BASE = "packagegroup-cross-canadian-${MACHINE} nativesdk-cmake nativesdk-pkgconfig nativesdk-doxygen"
+TOOLCHAIN_HOST_TASK_genericx86-64 = "nativesdk-packagegroup-${QTNAME}-toolchain-host ${TOOLCHAIN_HOST_TASK_BASE}"
+TOOLCHAIN_HOST_TASK_uav = "${TOOLCHAIN_HOST_TASK_BASE} nativesdk-plftool nativesdk-ardrone2-usbload"
+TOOLCHAIN_HOST_TASK_airborne = "${TOOLCHAIN_HOST_TASK_BASE} nativesdk-plftool"
 
 TOOLCHAIN_TARGET_TASK_BASE = "packagegroup-core-standalone-sdk-target packagegroup-flair-toolchain-target"
 TOOLCHAIN_TARGET_TASK = "${TOOLCHAIN_TARGET_TASK_BASE}"
