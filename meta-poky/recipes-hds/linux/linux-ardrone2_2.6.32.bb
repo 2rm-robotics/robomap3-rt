@@ -31,7 +31,6 @@ do_configure() {
 
         rm -f ${S}/.config || true
 
-        oe_runmake ardrone2_defconfig
 	if [ "${MACHINE}" = "ardrone2" ];then
 		oe_runmake ardrone2_defconfig
     elif [ "${MACHINE}" = "ardrone2-installer" ];then
