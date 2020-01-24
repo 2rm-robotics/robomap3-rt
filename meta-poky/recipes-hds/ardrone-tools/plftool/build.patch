@@ -1,0 +1,19 @@
+*** build.c.orig	2020-01-24 12:00:56.199071623 +0100
+--- build.c	2020-01-24 12:01:13.107125435 +0100
+***************
+*** 177,183 ****
+          ++error;
+      }
+  
+!     if (cfg->hdr_version < 10 || cfg->hdr_version > 11)
+      {
+          printf("!!! unsupported header version");
+          ++error;
+--- 177,183 ----
+          ++error;
+      }
+  
+!     if (cfg->hdr_version < 10 || cfg->hdr_version > 13)
+      {
+          printf("!!! unsupported header version");
+          ++error;

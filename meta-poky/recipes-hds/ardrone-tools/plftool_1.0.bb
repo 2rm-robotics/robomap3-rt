@@ -8,6 +8,7 @@ SRC_URI[md5sum] = "b6b859c59a738fde659032fbae8c4d6d"
 SRC_URI[sha256sum] = "df9137ef37202676ba94b58f6f8a36ae61e32ace2692f72401b4cdd9dd303df1"
 SRC_URI = "https://storage.googleapis.com/google-code-archive-source/v2/code.google.com/ardrone-tool/source-archive.zip \
  	file://plf.patch;pnum=0 \
+	file://build.patch;pnum=0 \
 	file://Makefile.patch;pnum=0"
 
 S = "${WORKDIR}/ardrone-tool/projects/plftool/trunk"
