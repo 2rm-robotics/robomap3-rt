@@ -4,7 +4,7 @@ QTNAME_genericx86 = "qt"
 
 TOOLCHAIN_HOST_TASK_BASE = "nativesdk-packagegroup-${QTNAME}-toolchain-host packagegroup-cross-canadian-${MACHINE} nativesdk-cmake nativesdk-pkgconfig nativesdk-doxygen"
 TOOLCHAIN_HOST_TASK_uav = "${TOOLCHAIN_HOST_TASK_BASE} nativesdk-plftool nativesdk-ardrone2-usbload"
-TOOLCHAIN_HOST_TASK_airborne = "${TOOLCHAIN_HOST_TASK_BASE} nativesdk-plftool"
+TOOLCHAIN_HOST_TASK_mambo = "${TOOLCHAIN_HOST_TASK_BASE} nativesdk-plftool"
 TOOLCHAIN_HOST_TASK_rpi-hds = "${TOOLCHAIN_HOST_TASK_BASE} nativesdk-packagegroup-ros-toolchain-host"
 
 #TOOLCHAIN_TARGET_TASK_BASE = "packagegroup-${QTNAME}-toolchain-target packagegroup-core-standalone-sdk-target packagegroup-framework-uav-toolchain-target packagegroup-ros-mavlink packagegroup-ros-toolchain-target"

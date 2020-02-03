@@ -5,7 +5,7 @@ QTNAME_genericx86 = "qt"
 TOOLCHAIN_HOST_TASK_BASE = "packagegroup-cross-canadian-${MACHINE} nativesdk-cmake nativesdk-pkgconfig nativesdk-doxygen"
 TOOLCHAIN_HOST_TASK_genericx86-64 = "nativesdk-packagegroup-${QTNAME}-toolchain-host ${TOOLCHAIN_HOST_TASK_BASE}"
 TOOLCHAIN_HOST_TASK_uav = "${TOOLCHAIN_HOST_TASK_BASE} nativesdk-plftool nativesdk-ardrone2-usbload"
-TOOLCHAIN_HOST_TASK_airborne = "${TOOLCHAIN_HOST_TASK_BASE} nativesdk-plftool"
+TOOLCHAIN_HOST_TASK_mambo = "${TOOLCHAIN_HOST_TASK_BASE} nativesdk-plftool"
 
 TOOLCHAIN_TARGET_TASK_BASE = "packagegroup-core-standalone-sdk-target packagegroup-flair-toolchain-target"
 TOOLCHAIN_TARGET_TASK = "${TOOLCHAIN_TARGET_TASK_BASE}"
