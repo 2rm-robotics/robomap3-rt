@@ -44,3 +44,30 @@ do_install() {
                 bbnote "no modules to install"
         fi
 }
+
+#necessary for plf-kernel.bbclass
+create_plf_ini() {
+
+#create ini file for plftool
+cat > ${S}/kernel.ini <<EOF
+[file]
+Type=kernel
+EntryPoint=0x40800000
+HdrVersion=13
+VersionMajor=0
+VersionMinor=0
+VersionBugfix=0
+TargetPlat=0x4
+TargetAppl=0x82
+HwCompatibility=0x955371ec
+LanguageZone=0
+
+[zImage]
+LoadAddr=0x40800000
+File=${DEPLOYDIR}/zImage
+
+[BootParams]
+LoadAddr=0x40700000
+File=${S}/bootparams.txt
+EOF
+}
