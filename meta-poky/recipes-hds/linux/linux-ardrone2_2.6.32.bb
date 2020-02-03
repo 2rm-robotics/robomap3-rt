@@ -43,7 +43,7 @@ do_configure() {
 # Override the do_install of kernel because of compilation problems with poky migration
 # Indeed, the installation directories use the wrong paths and this works whithout it
 do_install() {
-	#
+		#
         # First install the modules
         #
         unset CFLAGS CPPFLAGS CXXFLAGS LDFLAGS MACHINE
