@@ -1,0 +1,4 @@
+#! /bin/sh
+echo -n "ultra_snd.0" > /sys/bus/platform/drivers/ultra_snd/unbind
+insmod /lib/modules/2.6.36/kernel/drivers/us/ultra_snd.ko
+/etc/init.d/dropbear start
