@@ -12,7 +12,7 @@ COMPATIBLE_MACHINE = "mambo"
 inherit kernel autotools-brokensep
 DEPENDS +="plftool-native"
 
-SRCREV = "10"
+SRCREV = "14"
 SRC_URI = "svn://devel.hds.utc.fr/svn/mambo_src/trunk;module=linux-${PV};protocol=https"
 S = "${WORKDIR}/linux-${PV}"
 

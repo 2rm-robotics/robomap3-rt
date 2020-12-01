@@ -111,7 +111,6 @@ usb_dev_handle* usb_connect(uint16_t idVendor, uint16_t idProduct,uint16_t idPro
         					printf("- Manufacturer: %s\n", buffer);
            					usb_get_string_simple(udev, dev->descriptor.iProduct, buffer, sizeof(buffer));
 			        		printf("- Product: %s\n", buffer);
-							usb_claim_interface(udev,0);
                             return udev;
 
 						}
