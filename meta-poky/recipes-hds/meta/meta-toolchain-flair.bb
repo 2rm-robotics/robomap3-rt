@@ -9,7 +9,7 @@ TOOLCHAIN_HOST_TASK_mambo = "${TOOLCHAIN_HOST_TASK_BASE} nativesdk-plftool"
 
 TOOLCHAIN_TARGET_TASK_BASE = "packagegroup-core-standalone-sdk-target packagegroup-flair-toolchain-target"
 TOOLCHAIN_TARGET_TASK = "${TOOLCHAIN_TARGET_TASK_BASE}"
-TOOLCHAIN_TARGET_TASK_genericx86-64 = "${TOOLCHAIN_TARGET_TASK_BASE} packagegroup-${QTNAME}-toolchain-target qt-mobility-x11-dev qwt-dev qtserialport-dev qwtdataviewerlib-dev irrlicht-dev libxshmfence libusb-compat-dev"
+TOOLCHAIN_TARGET_TASK_genericx86-64 = "${TOOLCHAIN_TARGET_TASK_BASE} packagegroup-${QTNAME}-toolchain-target qt-mobility-x11-dev qwt-dev qtserialport-dev qwtdataviewerlib-dev irrlicht-dev libxshmfence libusb-compat-dev libsumo-dev"
 
 
 TOOLCHAIN_OUTPUTNAME = "${SDK_NAME}-${DISTRO_VERSION}"

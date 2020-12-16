@@ -1,0 +1,51 @@
+--- CMakeLists.txt	2020-12-16 10:59:00.442003999 +0100
++++ CMakeLists.txt.new	2020-12-16 11:53:33.562003999 +0100
+@@ -21,7 +21,7 @@
+ # main library
+ find_package(Threads REQUIRED)
+ include_directories(lib)
+-add_library(sumo
++add_library(sumo SHARED
+ 		lib/decode.cpp
+ 		lib/control.cpp
+ 		lib/common.cpp
+@@ -35,33 +35,10 @@
+     target_link_libraries(sumo ${RT})
+ endif()
+ 
+-# build analyzer only if PCAP was found
+-find_package(Pcap)
+-if(PCAP_FOUND)
+-	add_executable(analyze analyze/network.cpp analyze/main.cpp)
+-	target_link_libraries(analyze ${PCAP_LIBRARIES} sumo)
+-endif()
+-
+-add_executable(test_sumo test/test.cpp)
+-target_link_libraries(test_sumo sumo)
+-
+-# qsumo
+-set(CMAKE_AUTOMOC ON)
+-set(CMAKE_INCLUDE_CURRENT_DIR ON)
+-#set(CMAKE_AUTOUIC ON) # works only with cmake >= 3.0
+-
+-find_package(Qt4 COMPONENTS QtCore QtGui REQUIRED)
+-include(${QT_USE_FILE})
+-
+-set(qsumo_SRCS qsumo/qsumo.cpp qsumo/sumo-widget.cpp)
+-
+-QT4_WRAP_UI(ui_widget.h qsumo/widget.ui)
+-
+-add_executable(qs ${qsumo_SRCS} ui_widget.h)
+-
+-target_link_libraries(qs
+-	${QT_LIBRARIES}
+-	sumo
+-)
+-
++install(TARGETS sumo 
++	LIBRARY DESTINATION lib)
+ 
++INSTALL (
++    DIRECTORY lib/
++    DESTINATION include/sumo
++    FILES_MATCHING PATTERN "*.h*")
