@@ -80,6 +80,7 @@ mkdir -p /opt/poky/workdir
 
 #### using official poky docker
 **note**: this is no langer working as the container comes with a too recent toolchain for poky-krogoth
+
 And be sure your user owns this directory. This directory will be accessible from your host and from the container.
 
 then run the container: (do it each time you need to build robomap3)
