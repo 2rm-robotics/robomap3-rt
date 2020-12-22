@@ -77,6 +77,9 @@ Create a directory for poky stuffs (avoid using a directory within an ecryptfs l
 ```
 mkdir -p /opt/poky/workdir
 ```
+
+#### using official poky docker
+**note**: this is no langer working as the container comes with a too recent toolchain for poky-krogoth
 And be sure your user owns this directory. This directory will be accessible from your host and from the container.
 
 then run the container: (do it each time you need to build robomap3)
@@ -84,6 +87,21 @@ then run the container: (do it each time you need to build robomap3)
 sudo docker run --net=host --rm -it -v /opt/poky/workdir:/workdir crops/poky:ubuntu-16.04 --workdir=/workdir
 ```
 
+and then follow the tutorial, using the workdir directory to share files between host and container.
+
+#### using the supplied Dockerfile
+go to the docker directory of the repository and build the container:
+```
+sudo docker build -t robomap3_poky_docker .
+```
+then run the container: (do it each time you need to build robomap3)
+```
+sudo docker run --net=host --rm -it -v /opt/poky/workdir:/workdir robomap3_poky_docker
+```
+go to the wordkir
+```
+cd /workdir
+```
 and then follow the tutorial, using the workdir directory to share files between host and container.
 
 ### Installation
