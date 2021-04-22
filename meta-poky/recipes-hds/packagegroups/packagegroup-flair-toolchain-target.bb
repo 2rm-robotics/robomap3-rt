@@ -19,4 +19,5 @@ RDEPENDS_${PN} = "\
     nmealib-dev \
     tclap-dev \
     filelib-dev \
+    mavlink1-dev \
     "
