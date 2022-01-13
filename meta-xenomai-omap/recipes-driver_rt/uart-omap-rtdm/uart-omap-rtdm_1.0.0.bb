@@ -6,7 +6,7 @@ RDEPENDS_${PN} = "kernel"
 DEPENDS = "virtual/kernel xenomai"
 PR = "r7"
 
-SRC_URI = "git://git.renater.fr/omap3-rtdrivers.git;protocol=git \
+SRC_URI = "git://git.renater.fr/anonscm/git/omap3-rtdrivers/omap3-rtdrivers.git;protocol=https \
 	file://rt_serial/Correct-Misconfiguration-of-divisor-for-uart-speed.patch \
 	file://uart.conf \
 "

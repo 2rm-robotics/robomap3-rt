@@ -6,7 +6,7 @@ RDEPENDS_${PN} = "kernel xenomai"
 DEPENDS = "virtual/kernel xenomai"
 PR = "r10"
 
-SRC_URI = "git://git.renater.fr/omap3-rtdrivers.git;protocol=git \
+SRC_URI = "git://git.renater.fr/anonscm/git/omap3-rtdrivers/omap3-rtdrivers.git;protocol=https \
 	file://i2c.conf \
 "
 

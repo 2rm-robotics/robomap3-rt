@@ -6,7 +6,7 @@ RDEPENDS_${PN} = "kernel"
 DEPENDS = "virtual/kernel xenomai"
 PR = "r1"
 
-SRC_URI = "git://git.renater.fr/omap3-rtdrivers.git;protocol=git \
+SRC_URI = "git://git.renater.fr/anonscm/git/omap3-rtdrivers/omap3-rtdrivers.git;protocol=https \
 	file://capture.conf \
 "
 SRCREV = "74156c343281f1fd09bf9a54c0327f28f6f31290"

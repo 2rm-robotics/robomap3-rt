@@ -4,11 +4,10 @@ HOMEPAGE = "http://www.cs.ubc.ca/~mariusm/index.php/FLANN/FLANN"
 LICENSE = "BSD"
 LIC_FILES_CHKSUM = "file://COPYING;md5=040a44ba915aa6b3b099ea189c7b7e20"
 
-#SRC_URI = "http://people.cs.ubc.ca/~mariusm/uploads/FLANN/flann-1.8.4-src.zip"
-SRC_URI = "http://www.cs.ubc.ca/research/flann/uploads/FLANN/flann-1.8.4-src.zip"
-SRC_URI[md5sum] = "a0ecd46be2ee11a68d2a7d9c6b4ce701"
-SRC_URI[sha256sum] = "dfbb9321b0d687626a644c70872a2c540b16200e7f4c7bd72f91ae032f445c08"
+SRC_URI = "https://github.com/flann-lib/flann/archive/refs/tags/1.8.4.zip"
+SRC_URI[md5sum] = "11490b77a2583d5b0c1b33eafe421e77"
+SRC_URI[sha256sum] = "22dfa2ef97b696f7ea5bf5b44aaa8590067244cddcfa1f6837f0c0d8c88c6e5c"
 
-S = "${WORKDIR}/flann-${PV}-src"
+S = "${WORKDIR}/flann-${PV}"
 
 inherit cmake
