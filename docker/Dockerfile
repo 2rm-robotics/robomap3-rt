@@ -1,3 +1,9 @@
+#build it with:
+#sudo docker build -t robomap3_poky_docker .
+
+#run it with 
+#sudo docker run --net=host --rm -it -v /opt/poky/workdir:/workdir robomap3_poky_docker
+
 from ubuntu:16.04
 
 RUN apt-get update
