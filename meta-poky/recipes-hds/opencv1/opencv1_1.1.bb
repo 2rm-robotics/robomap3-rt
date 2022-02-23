@@ -9,11 +9,11 @@ DEPENDS = "v4l-utils libtool jpeg glib-2.0 automake tiff"
 DEPENDS_class-nativesdk = "libtool glib-2.0 automake tiff"
 RDEPENDS_${PN}-share= "python"
 
-SRCREV = "648"
-SRC_URI = "svn://devel.hds.utc.fr/svn/uav_lib/trunk;module=opencv-1.1.0;protocol=https \
+SRC_URI = "git://gitlab.utc.fr/uav-hds/framework-uav/uav-lib;branch=main;protocol=https \
 	   file://fix_narrowing_conversions_from_unsigned_int_to_int.patch \
-	  "
-S = "${WORKDIR}/opencv-1.1.0"
+"
+SRCREV = "29c2af66fa1537272ffd1810258d596f55194365"
+S = "${WORKDIR}/git/opencv-1.1.0"
 
 inherit autotools
 

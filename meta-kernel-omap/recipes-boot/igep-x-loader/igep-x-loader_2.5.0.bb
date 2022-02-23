@@ -9,9 +9,12 @@ COMPATIBLE_MACHINE = "(airbox|uav|overo|pacpus)"
 VER = "${PV}-2"
 PR = "r6"
 
-SRCREV = "507"
-SRC_URI = "svn://devel.hds.utc.fr/svn/igep_src/trunk;module=igep-x-loader;protocol=https \
-            file://igep.ini"
+SRC_URI = "git://gitlab.utc.fr/uav-hds/igep/igep-x-loader.git;branch=main;protocol=https \
+	   file://igep.ini \
+"
+SRCREV = "d5b85fa84ebba2cdc7003b960c4af7dc08561994"
+
+S = "${WORKDIR}/git"
 
 inherit deploy
 
@@ -72,5 +75,3 @@ addtask deploy before do_build after do_compile
 
 FILES_${PN} = "/boot"
 PACKAGE_ARCH = "${MACHINE_ARCH}"
-
-S = "${WORKDIR}/${PN}"

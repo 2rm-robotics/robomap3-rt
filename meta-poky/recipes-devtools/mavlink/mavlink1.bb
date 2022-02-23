@@ -4,10 +4,10 @@ LICENSE = "LGPLv3"
 LIC_FILES_CHKSUM = "file://COPYING;md5=54ad3cbe91bebcf6b1823970ff1fb97f"
 
 #use the same mavlink definitions as ardupilot
-SRC_URI = "svn://devel.hds.utc.fr/svn/intel-aero_src/trunk;module=ardupilot_3.6.12/modules/mavlink;protocol=https"
-SRCREV = "68"
+SRC_URI = "git://gitlab.utc.fr/uav-hds/intel-aero/ardupilot.git;branch=Copter-3.6;protocol=https"
+SRCREV = "2719d84341788589d7958219b6d9fe43cb18c886"
 
-S = "${WORKDIR}/ardupilot_3.6.12/modules/mavlink"
+S = "${WORKDIR}/git/modules/mavlink"
 
 inherit pythonnative
 

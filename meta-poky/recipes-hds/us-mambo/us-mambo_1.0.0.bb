@@ -5,12 +5,11 @@ LIC_FILES_CHKSUM = "file://${COMMON_LICENSE_DIR}/GPL-2.0;md5=801f80980d171dd6425
 RDEPENDS_${PN} = "kernel"
 DEPENDS = "virtual/kernel"
 
-SRC_URI = "svn://devel.hds.utc.fr/svn/mambo_src/trunk;module=us_module;protocol=https \
-			file://us.conf "
+SRC_URI = "git://gitlab.utc.fr/uav-hds/parrot/mambo/us-kernel-module.git;branch=main;protocol=https \
+            file://us.conf "
+SRCREV = "4b7d6396953f43e0981f37b6cf5c5bfce4c7ae9a"
 
-SRCREV = "12"
-
-S = "${WORKDIR}/us_module"
+S = "${WORKDIR}/git"
 
 inherit module
 

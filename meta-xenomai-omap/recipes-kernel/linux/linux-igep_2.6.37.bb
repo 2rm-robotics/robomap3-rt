@@ -20,10 +20,12 @@ inherit kernel autotools-brokensep
 PR = "r18"
 KV = "${PV}-9"
 
-SRCREV = "507"
-SRC_URI = "svn://devel.hds.utc.fr/svn/igep_src/trunk;module=linux-omap-${KV};protocol=https \
+SRC_URI = "git://gitlab.utc.fr/uav-hds/igep/linux.git;branch=linux-omap-2.6.37-y;protocol=https \
 	   file://disable-gcc5-sra-optimization.patch \
 "
+SRCREV = "1c813d59dcf7fa0c610e428b2ec608f76b724432"
+
+S = "${WORKDIR}/git"
 
 do_configure() {
 	rm -f ${S}/.config || true
@@ -65,5 +67,3 @@ do_install() {
 do_install_prepend() {
         unset LDFLAGS
 }
-
-S = "${WORKDIR}/linux-omap-${KV}"

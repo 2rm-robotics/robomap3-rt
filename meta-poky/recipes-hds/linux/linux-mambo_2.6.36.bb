@@ -12,9 +12,10 @@ COMPATIBLE_MACHINE = "mambo"
 inherit kernel autotools-brokensep
 DEPENDS +="plftool-native"
 
-SRCREV = "14"
-SRC_URI = "svn://devel.hds.utc.fr/svn/mambo_src/trunk;module=linux-${PV};protocol=https"
-S = "${WORKDIR}/linux-${PV}"
+SRC_URI = "git://gitlab.utc.fr/uav-hds/parrot/mambo/linux.git;branch=mambo-2.6.36;protocol=https"
+SRCREV = "47b583e8070866858c0628bd421fb55b393ae7bf"
+
+S = "${WORKDIR}/git"
 
 
 do_configure() {
