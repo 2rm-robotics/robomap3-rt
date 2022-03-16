@@ -277,15 +277,17 @@ var=${var//-/_} # replace - by _
 comment-and-add ~/.bashrc $var "$target_sdk_dir/toolchain.cmake"
 echo "Added $var in ~/.bashrc"
 
+var=OECORE_${DEFAULTTUNE^^}_NATIVE_SYSROOT
+var=${var//-/_} # replace - by _
+VALUE=$(cat $env_setup_script | grep "export OECORE_NATIVE_SYSROOT=" | sed 's/.*=\(.*\)/\1/')
+comment-and-add ~/.bashrc $var $VALUE
+echo "Added $var in ~/.bashrc"
 
 if [ "$MACHINE" = "genericx86-64" ] || [ "$MACHINE" = "genericx86" ] ; then
 	VALUE=$(cat $env_setup_script | grep "export SDKTARGETSYSROOT=" | sed 's/.*=\(.*\)/\1/')
 	comment-and-add ~/.bashrc OECORE_HOST_SYSROOT $VALUE
 	echo "Added OECORE_HOST_SYSROOT in ~/.bashrc"
 
-	VALUE=$(cat $env_setup_script | grep "export OECORE_NATIVE_SYSROOT=" | sed 's/.*=\(.*\)/\1/')
-	comment-and-add ~/.bashrc OECORE_HOST_NATIVE_SYSROOT $VALUE
-	echo "Added OECORE_HOST_NATIVE_SYSROOT in ~/.bashrc"
 fi
 
 echo done
