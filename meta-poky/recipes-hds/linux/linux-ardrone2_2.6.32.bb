@@ -14,11 +14,11 @@ COMPATIBLE_MACHINE = "(ardrone2|ardrone2-installer|ardrone2-updater)"
 inherit kernel autotools-brokensep
 DEPENDS +="plftool-native"
 
-PR = "r10"
+PR = "r11"
 KV = "${PV}-9"
 
 SRC_URI = "git://gitlab.utc.fr/uav-hds/parrot/ardrone2/linux.git;branch=ardrone2-2.6.32-9;protocol=https"
-SRCREV = "bf6fde3b9ffc1d0e0d1a0830320fbdea7bc7cad0"
+SRCREV = "de0263aad11d5656bddb2bf163e67807ac62800e"
 
 S = "${WORKDIR}/git"
 
