@@ -74,7 +74,7 @@ The Raspberry Pi image includes ROS.
 Its toolchain can be directly downloaded with:
 
 ```
-wget https://uav.hds.utc.fr/src/rpi/latest/core-image-flair-ros-rpi-hds.rpi-sdimg
+wget https://devel.hds.utc.fr/flair/rpi/robomap3/core-image-flair-ros-rpi-hds.rpi-sdimg
 ```
 
 ##### Toolchain
@@ -90,7 +90,7 @@ You can find the generated toolchain in build/tmp/deploy/sdk/...
 Or you can download directly the toolchain :
 
 ```
-wget https://uav.hds.utc.fr/src/toolchain/robomap3-glibc-x86_64-meta-toolchain-flair-ros-cortexa7hf-neon-vfpv4-2.1.3.sh
+wget https://devel.hds.utc.fr/flair/toolchain/r1/robomap3-glibc-x86_64-meta-toolchain-flair-ros-cortexa7hf-neon-vfpv4-2.1.3.sh
 ```
 
 ### How to use it ?
