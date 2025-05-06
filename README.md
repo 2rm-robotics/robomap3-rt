@@ -61,7 +61,7 @@ Everything has been tested on Ubuntu 16.04 / Mint 18.
 If you are on a newer version, please consider using docker (otherwise build will fail); see below.
 
 
-### Additionnal packages
+### Additionnal packages (if not using docker)
 
 Install the following packages
 
@@ -79,7 +79,7 @@ mkdir -p /opt/poky/workdir
 ```
 
 #### using official poky docker
-**note**: this is no langer working as the container comes with a too recent toolchain for poky-krogoth
+**note**: this is no longer working as the container comes with a too recent toolchain for poky-krogoth
 
 And be sure your user owns this directory. This directory will be accessible from your host and from the container.
 
