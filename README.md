@@ -60,7 +60,7 @@ git clone https://gitlab.utc.fr/uav-hds/yoctoproject/meta-hds.git
 ```
 3. Run the container with a docker mount
 ```sh
-docker run --rm -it -v $(pwd):/workdir/build robomap3_poky_docker /workdir/build.sh NAME_OF_YOUR_DRONE_TARGET
+docker run --rm -it -v $(pwd)/build:/workdir/build robomap3_poky_docker /workdir/build.sh NAME_OF_YOUR_DRONE_TARGET
 ```
 
 It will download build dependencies and build the right image for your drone.
