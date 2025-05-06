@@ -1,0 +1,4 @@
+docker/meta-hds
+docker/build/conf/*
+!docker/build/conf/bblayers.conf.sample
+!docker/build/conf/local.conf.sample

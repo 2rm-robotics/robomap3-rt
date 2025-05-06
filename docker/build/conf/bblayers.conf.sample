@@ -1,0 +1,22 @@
+# POKY_BBLAYERS_CONF_VERSION is increased each time build/conf/bblayers.conf
+# changes incompatibly
+POKY_BBLAYERS_CONF_VERSION = "2"
+
+BBPATH = "${TOPDIR}"
+BBFILES ?= "" 
+
+BBLAYERS ?= " \
+  /workdir/poky-krogoth-15.0.3/meta \
+  /workdir/poky-krogoth-15.0.3/meta-poky \
+  /workdir/poky-krogoth-15.0.3/meta-yocto-bsp \
+  /workdir/robomap3-rt/meta-external/meta-oe \
+  /workdir/robomap3-rt/meta-external/meta-qt4 \
+  /workdir/robomap3-rt/meta-external/meta-python \
+  /workdir/robomap3-rt/meta-external/meta-ros \
+  /workdir/robomap3-rt/meta-external/meta-isee \
+  /workdir/robomap3-rt/meta-xenomai-omap \
+  /workdir/robomap3-rt/meta-kernel-omap \
+  /workdir/robomap3-rt/meta-poky \
+  /workdir/robomap3-rt/meta-external/meta-raspberrypi \
+  /workdir/robomap3-rt/meta-external/meta-rpi \
+  "

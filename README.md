@@ -46,150 +46,32 @@ What we call "flair" is in fact the name of a framework developed by the Heudias
 
 You may found some other strange things like that, don't panic, they won't beat you ;)
 
-### About the cross-compilation folder
-
-For now the project just uses other layers from the community to build a specific system using OMAP3 processor. Sharing is a good thing, but where the real added value ? The cross-compilation folder.
-
-Indeed the cross-compilation folder contains the packages to let you cross-compile ROS nodes, using a generated toolchain instead of the whole system (no bitbake here !) and the correct stuff to make your cross-compiled nodes work on your target.
-
-For more information, see the section [below](#ros-nodes-cross-compilation).
-
 ## Quick start
 
-Everything has been tested on Ubuntu 16.04 / Mint 18.
-
-If you are on a newer version, please consider using docker (otherwise build will fail); see below.
-
-
-### Additionnal packages (if not using docker)
-
-Install the following packages
-
-```
-sudo apt install git texinfo chrpath g++
-```
-
-### Using docker on newer linux distros
-
-If you don't have it, install docker CE from https://docs.docker.com/install/linux/docker-ce/ubuntu/
-
-Create a directory for poky stuffs (avoid using a directory within an ecryptfs like home), for exemple:
-```
-mkdir -p /opt/poky/workdir
-```
-
-#### using official poky docker
-**note**: this is no longer working as the container comes with a too recent toolchain for poky-krogoth
-
-And be sure your user owns this directory. This directory will be accessible from your host and from the container.
-
-then run the container: (do it each time you need to build robomap3)
-```
-sudo docker run --net=host --rm -it -v /opt/poky/workdir:/workdir crops/poky:ubuntu-16.04 --workdir=/workdir
-```
-
-and then follow the tutorial, using the workdir directory to share files between host and container.
-
-#### using the supplied Dockerfile
-go to the docker directory of the repository and build the container:
-```
-sudo docker build -t robomap3_poky_docker .
-```
-then run the container: (do it each time you need to build robomap3)
-```
-sudo docker run --net=host --rm -it -v /opt/poky/workdir:/workdir robomap3_poky_docker
-```
-go to the wordkir
-```
-cd /workdir
-```
-and then follow the tutorial, using the workdir directory to share files between host and container.
-
-### Installation
-
-If you don't have an OpenEmbedded system installed, [please consult this documentation to setup your system first](https://www.yoctoproject.org/docs/2.4.2/yocto-project-qs/yocto-project-qs.html).
-
-**Important** : all the recipes have been tested with **Poky 2.1.3 (Krogoth-15.0.3)**. You can find the download links [here](https://lists.yoctoproject.org/pipermail/yocto-announce/2017-July/000117.html). A recent version will not work because we use the toolchain to compile ardrone uav kernel which is a 2.6.x version and starting from Poky Morty, it supports only 3.x kernel versions.
-
-We suppose that all your developments are located in the same place and we will use the variable ${YOUR_SRC_PATH} to refer to this path.
-
-Once you get the Poky recipes, just clone this repository in order to get all recipes. You won't need more recipes in order to compile.
-
-```
-cd ${YOUR_SRC_PATH}
+1. Clone this repository, go in its `docker` directory and build the container
+```sh
 git clone https://github.com/2rm-robotics/robomap3-rt.git
+cd robomap3-rt/docker
+docker build -t robomap3_poky_docker .
+```
+2. (Optionnal) If you need and have access to the [HDS specific configuration](https://gitlab.utc.fr/uav-hds/yoctoproject/meta-hds), first clone them in the current `docker` directory
+```sh
+git clone https://gitlab.utc.fr/uav-hds/yoctoproject/meta-hds.git
+```
+3. Run the container with a docker mount
+```sh
+docker run --rm -it -v $(pwd):/workdir/build robomap3_poky_docker /workdir/build.sh NAME_OF_YOUR_DRONE_TARGET
 ```
 
-Next step, source your environment (among other features, it will permit you to use the bitbake command):
+It will download build dependencies and build the right image for your drone.
+Generated images can be found `build/tmp/deploy/images`.
 
-```
-source ${YOUR_SRC_PATH}/poky-krogoth-15.0.3/oe-init-build-env
-```
-
-We don't use a system to generate automatically all stuff to launch bitbake from here. You have to add the layers and some config in build/conf files.
-
-#### Setup the layers for the Raspberry Pi target
-
-Modify the build/conf/bblayers.conf to add all the layers. Don't forget to replace ${YOUR_SRC_PATH} by the path you clone Poky and robomap3-rt.
-
-```
-BBLAYERS ?= " \
-  ${YOUR_SRC_PATH}/poky-krogoth-15.0.3/meta \
-  ${YOUR_SRC_PATH}/poky-krogoth-15.0.3/meta-poky \
-  ${YOUR_SRC_PATH}/poky-krogoth-15.0.3/meta-yocto-bsp \
-  ${YOUR_SRC_PATH}/robomap3-rt/meta-external/meta-oe \
-  ${YOUR_SRC_PATH}/robomap3-rt/meta-external/meta-qt4 \
-  ${YOUR_SRC_PATH}/robomap3-rt/meta-external/meta-python \
-  ${YOUR_SRC_PATH}/robomap3-rt/meta-external/meta-ros \
-  ${YOUR_SRC_PATH}/robomap3-rt/meta-external/meta-isee \
-  ${YOUR_SRC_PATH}/robomap3-rt/meta-xenomai-omap \
-  ${YOUR_SRC_PATH}/robomap3-rt/meta-kernel-omap \
-  ${YOUR_SRC_PATH}/robomap3-rt/meta-poky \
-  ${YOUR_SRC_PATH}/robomap3-rt/meta-external/meta-raspberrypi \
-  ${YOUR_SRC_PATH}/robomap3-rt/meta-external/meta-rpi \
-  "
-```
-
-#### Setup the compilation configuration for the Raspberry Pi target
-
-Edit the build/conf/local.conf file to adjust some configuration parameters.
-
-The machine we build is called rpi-hdsn which is based on the raspberrypi machine.
-
-```
-MACHINE="rpi-hds"
-DISTRO ?= "robomap3"
-PACKAGE_CLASSES ?= "package_ipk"
-```
-
-We have some extra distro features, maybe you don't need it but by default, you should consider putting them for your first compilation :
-
-```
-DISTRO_FEATURES_DEFAULT ?= "alsa argp bluetooth largefile usbgadget usbhost wifi xattr nfs"
-DISTRO_FEATURES_DEFAULT_genericx86-64 ?="alsa argp bluetooth largefile usbgadget usbhost wifi xattr nfs x11"
-```
-
-If you are short in disk space, you can add a configuration to remove all build files (it saves a lot of space !) :
-
-```
-INHERIT += "rm_work"
-```
-
-### Compilation
-
-Once everything is installed and setup just launch bitbake.
+### Note for raspberry pis
 
 ##### Image
 
-To generate the Raspberry Pi image, which includes ROS :
-
-```
-bitbake core-image-flair-ros
-```
-
-You can find the generated image in build/tmp/deploy/images...
-
-Or you can download directly the toolchain :
+The Raspberry Pi image includes ROS.
+Its toolchain can be directly downloaded with:
 
 ```
 wget https://uav.hds.utc.fr/src/rpi/latest/core-image-flair-ros-rpi-hds.rpi-sdimg
