@@ -4,10 +4,10 @@ HOMEPAGE = "http://eigen.tuxfamily.org/"
 LICENSE = "MPL-2.0"
 LIC_FILES_CHKSUM = "file://COPYING.MPL2;md5=815ca599c9df247a0c7f619bab123dad"
 
-SRC_URI = "http://bitbucket.org/eigen/eigen/get/${PV}.tar.bz2 \
+SRC_URI = "https://gitlab.com/libeigen/eigen/-/archive/${PV}/eigen-${PV}.tar.bz2 \
            file://0001-CMakeLists.txt-install-FindEigen3.cmake-script.patch"
-SRC_URI[md5sum] = "87274966745d2d3e7964fcc654d0a24b"
-SRC_URI[sha256sum] = "8a3352f9a5361fe90e451a7305fb1896fc7f771dc16cc0edd8e6b157f52c343e"
+SRC_URI[md5sum] = "5fd398d656f10223f7ac12bf54689e60"
+SRC_URI[sha256sum] = "6ab7f3d8ffe0bd409895728a8a287771da3d17a58a8c9a09b926d75b93ad30f2"
 
 S = "${WORKDIR}/eigen-eigen-c58038c56923"
 

@@ -9,7 +9,7 @@ LIC_FILES_CHKSUM = "file://COPYING;md5=878618a5c4af25e9b93ef0be1a93f774"
 
 DEPENDS = "libnl pkgconfig"
 
-SRC_URI = "http://wireless.kernel.org/download/iw/${P}.tar.bz2 \
+SRC_URI = "https://mirrors.edge.kernel.org/pub/software/network/iw/${P}.tar.bz2 \
            file://0001-iw-version.sh-don-t-use-git-describe-for-versioning.patch \
 "
 

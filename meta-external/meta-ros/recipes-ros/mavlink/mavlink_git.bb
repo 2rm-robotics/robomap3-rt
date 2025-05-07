@@ -2,7 +2,7 @@ DESCRIPTION = "MAVLink message marshaling library"
 LICENSE = "LGPLv3"
 LIC_FILES_CHKSUM = "file://COPYING;md5=54ad3cbe91bebcf6b1823970ff1fb97f"
 
-SRC_URI = "git://github.com/mavlink/mavlink-gbp-release.git;branch=release/kinetic/mavlink"
+SRC_URI = "git://github.com/mavlink/mavlink-gbp-release.git;protocol=https;branch=release/kinetic/mavlink"
 SRCREV = "release/kinetic/mavlink/2017.8.8-0"
 
 SRC_URI += "file://0001-do-not-require-python2.patch"

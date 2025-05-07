@@ -18,9 +18,9 @@ SRCREV_party3 = "81a676001ca8075ada498583e4166079e5744668"
 IPP_MD5 = "808b791a6eac9ed78d32a7666804320e"
 
 SRCREV_FORMAT = "opencv"
-SRC_URI = "git://github.com/Itseez/opencv.git;name=opencv \
-            git://github.com/Itseez/opencv_contrib.git;destsuffix=contrib;name=contrib \
-            git://github.com/Itseez/opencv_3rdparty.git;branch=ippicv/master_20151201;destsuffix=party3;name=party3 \
+SRC_URI = "git://github.com/opencv/opencv.git;name=opencv;protocol=https \
+            git://github.com/opencv/opencv_contrib.git;destsuffix=contrib;name=contrib;protocol=https \
+            git://github.com/opencv/opencv_3rdparty.git;branch=ippicv/master_20151201;destsuffix=party3;name=party3;protocol=https \
             file://0001-3rdparty-ippicv-Use-pre-downloaded-ipp.patch \
             file://fixpkgconfig.patch"
 

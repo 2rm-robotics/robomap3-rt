@@ -14,8 +14,8 @@ SRC_URI = " \
     file://add-ptest.patch \
     file://run-ptest \
 "
-SRC_URI[md5sum] = "dab267ec30216a069747d10314079ec7"
-SRC_URI[sha256sum] = "4c88c2a9aeb4047074f344fc9b2b6577b219972d359e192f6d12ccf983a13fd7"
+SRC_URI[md5sum] = "74d0d3728b3cdc60db872d842e7f1598"
+SRC_URI[sha256sum] = "524ee4d8e83a6c663f6879004216a9a5bcb1c68b11920d653eb87b79d008e0b8"
 export LIBS=" -lpcap"
 
 inherit autotools-brokensep ptest
