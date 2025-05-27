@@ -12,7 +12,7 @@ LIC_FILES_CHKSUM = " \
 inherit pkgconfig
 
 SRC_URI = " \
-    git://gitorious.org/qt/qtserialport.git;branch=stable \
+    git://github.com/qt/qtserialport.git;branch=stable;protocol=https \
 "
 
 S = "${WORKDIR}/git"

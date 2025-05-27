@@ -6,7 +6,7 @@ SECTION = "xenomai"
 HOMEPAGE = "http://www.xenomai.org/"
 PR = "r0"
 
-SRC_URI = "https://xenomai.org/downloads/xenomai/stable/xenomai-${PV}.tar.bz2 \
+SRC_URI = "https://ftp.denx.de/pub/xenomai/xenomai/stable/xenomai-${PV}.tar.bz2 \
 		file://rti2c.h"
 
 SRC_URI[md5sum] = "9f83c39cfb10535df6bf51702714e716"

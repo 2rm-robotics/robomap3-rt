@@ -9,7 +9,7 @@ SRC_URI = "https://gitlab.com/libeigen/eigen/-/archive/${PV}/eigen-${PV}.tar.bz2
 SRC_URI[md5sum] = "5fd398d656f10223f7ac12bf54689e60"
 SRC_URI[sha256sum] = "6ab7f3d8ffe0bd409895728a8a287771da3d17a58a8c9a09b926d75b93ad30f2"
 
-S = "${WORKDIR}/eigen-eigen-c58038c56923"
+S = "${WORKDIR}/eigen-${PV}"
 
 inherit cmake
 
