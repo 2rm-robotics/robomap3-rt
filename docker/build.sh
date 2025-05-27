@@ -8,32 +8,43 @@ then
     exit
 fi
 
-declare -rA SUPPORTED_DRONES=(
+declare -rA TARGETS=(
     [ardrone2]=core-image-flair
     [uav]=core-image-flair
     [mambo]=core-image-flair
     [bebop]=core-image-flair
     [beaglebone-blue]=core-image-flair
     [beaglebone-hds]=core-image-flair
+
     [ardrone2-updater]=core-image-minimal-mtdutils
     [ardrone2-installer]=core-image-minimal-mtdutils
+
     [rpi-hds]=core-image-flair-ros
+
+    [toolchain-ardrone2]=meta-toolchain-flair
+    [toolchain-uav]=meta-toolchain-flair
+    [toolchain-mambo]=meta-toolchain-flair
+    [toolchain-bebop]=meta-toolchain-flair
+    [toolchain-genericx86-64]=meta-toolchain-flair
+
+    [toolchain-rpi-hds]=meta-toolchain-flair-ros
 )
 
-drone=$1
+TARGET=$1
 
-if [[ -z "$drone" ]]
+if [[ -z "$TARGET" ]]
 then
-    echo "Missing argument. Please provide a drone name within ${!SUPPORTED_DRONES[@]}" >&2
+    echo "Missing argument. Please provide a target name within ${!TARGETS[@]}" >&2
     exit 1
 fi
 shift
-if [[ -z "${SUPPORTED_DRONES[${drone}]}" ]]
+if [[ -z "${TARGETS[${TARGET}]}" ]]
 then
-    echo "Unknown drone '$drone'. Please provide a drone name within ${!SUPPORTED_DRONES[@]}" >&2
+    echo "Unknown target '$TARGET'. Please provide a target name within ${!TARGETS[@]}" >&2
     exit 1
 fi
 
+sudo mkdir -p /workdir/build/conf
 sudo chmod 777 /workdir/build{,/conf}
 
 if [ ! -f /workdir/build/conf/bblayers.conf ]
@@ -47,7 +58,8 @@ then
     fi
 fi
 
-sed -i 's@^MACHINE=".*?"'@MACHINE="$drone"@g /workdir/build/conf/local.conf
+ARCH=${TARGET#toolchain-*}
+sed -i 's@^MACHINE=".*"'@MACHINE="\"$ARCH\""@g /workdir/build/conf/local.conf
 
 source /workdir/poky-krogoth-15.0.3/oe-init-build-env
-bitbake "${SUPPORTED_DRONES[$drone]}"
+bitbake -k "${TARGETS[$TARGET]}"

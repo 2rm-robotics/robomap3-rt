@@ -60,7 +60,7 @@ MACHINE="ardrone2"
 #
 # The default is a downloads directory under TOPDIR which is the build directory.
 #
-DL_DIR ?= "/workdir/poky/downloads/poky-15"
+#DL_DIR ?= "/workdir/poky/downloads/poky-15"
 
 #
 # Where to place shared-state files
