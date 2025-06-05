@@ -9,15 +9,15 @@ LIC_FILES_CHKSUM = "file://COPYING;md5=2c7f2caf277a3933e3acdf7f89d54cc1"
 PRDATE = "20130314"
 PR = "r${PRDATE}"
 
-SRC_URI = "https://github.com/uxlfoundation/oneTBB/archive/refs/tags/${PV}.tar.gz \
+SRC_URI = "https://devel.hds.utc.fr/flair/tbb41_20130314oss_src.tgz \
            file://cross-compile.patch \
            file://allow-to-build-for-older-arm-cores.patch \
            file://tbb.pc"
 
-# S = "${WORKDIR}/tbb41_${PRDATE}oss/"
+S = "${WORKDIR}/tbb41_${PRDATE}oss/"
 
-SRC_URI[md5sum] = "d08226763de59a18992ab5f076dd7c13"
-SRC_URI[sha256sum] = "65101b3a0eda38320ec3e3603daa79c54e6a60fb59ed2959738eaf4ce6d17f0a"
+SRC_URI[md5sum] = "ed4af7ccfa122f16cf9920b241633a3a"
+SRC_URI[sha256sum] = "32fd5979971b772caa96d40646cee585ed0070516ba2dbbcb1f9b6033d08a92d"
 
 do_compile() {
     oe_runmake compiler=gcc arch=${HOST_ARCH} runtime=cc4
